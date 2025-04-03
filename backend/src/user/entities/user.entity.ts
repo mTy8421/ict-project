@@ -12,6 +12,10 @@ type UserRoleType =
   | 'admin'
   | 'หัวหน้าสำนักงาน'
   | 'พนักงาน'
+  | 'พนักงานฝ่ายวิจัยและนวัตถกรรม'
+  | 'พนักงานฝ่ายคุณภาพนิสิต'
+  | 'พนักงานฝ่ายยุทธศาสตร์และพัฒนาองค์กร'
+  | 'พนักงานฝ่ายวิชาการ'
   | 'คณบดี'
   | 'คณบดีฝ่ายยุทธศาสตร์และพัฒนาองค์กร'
   | 'รองคณบดีฝ่ายวิชาการ'
@@ -22,7 +26,7 @@ type UserRoleType =
 export class User {
   @PrimaryGeneratedColumn()
   user_id: number;
-  @Column()
+  @Column({ unique: true })
   user_email: string;
   @Column()
   user_name: string;
@@ -34,6 +38,10 @@ export class User {
       'admin',
       'หัวหน้าสำนักงาน',
       'พนักงาน',
+      'พนักงานฝ่ายวิจัยและนวัตถกรรม',
+      'พนักงานฝ่ายคุณภาพนิสิต',
+      'พนักงานฝ่ายยุทธศาสตร์และพัฒนาองค์กร',
+      'พนักงานฝ่ายวิชาการ',
       'คณบดี',
       'คณบดีฝ่ายยุทธศาสตร์และพัฒนาองค์กร',
       'รองคณบดีฝ่ายวิชาการ',
@@ -57,4 +65,21 @@ export class User {
     // console.log(`update : ${this.user_password}`);
     this.user_password = pass;
   }
+}
+@Entity()
+export class titleWork {
+  @PrimaryGeneratedColumn()
+  title_id: number;
+  @Column()
+  title_topic: string;
+  @Column()
+  title_detail: string;
+  @Column()
+  title_type: string;
+  @Column()
+  title_time: string;
+  @Column()
+  title_date: string;
+  @Column()
+  title_status: number;
 }
