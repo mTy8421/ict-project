@@ -1,0 +1,17 @@
+services:
+  mysql:
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=project
+    ports:
+      - 3306:3306
+    image: mysql
+  phpmyadmin:
+    container_name: phpmyadmin
+    links:
+      - mysql:db
+    ports:
+      - 8765:80
+    image: phpmyadmin/phpmyadmin
+networks: {}
