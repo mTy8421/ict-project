@@ -1,3 +1,4 @@
+
 import axios from "axios"
 import { useForm, type SubmitHandler } from "react-hook-form"
 
@@ -8,14 +9,14 @@ type Input = {
   lastname: string
 }
 
-export default function Navbar({ }: Props) {
+export default function Form({ }: Props) {
   const { register, handleSubmit } = useForm<Input>()
 
   const dataSubmit: SubmitHandler<Input> = (data) => {
     const formData = new FormData()
     const name = formData.append('name', data.name)
     const lastname = formData.append('lastname', data.lastname)
-    const result = axios.post('test', { name, lastname })
+    const result = axios.post('/api', { name, lastname })
     console.log(result)
   }
 
