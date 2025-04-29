@@ -15,7 +15,9 @@ export default function user() {
       <div className="grid grid-cols-6">
 
         <div className="col-span-1">
-          <Navbar role="พนักงาน" name="พนักงาน" />
+          <div className="fixed">
+            <Navbar role="พนักงาน" name="พนักงาน" />
+          </div>
         </div>
 
         <div className="col-span-5">

@@ -2,7 +2,7 @@ import { useState } from "react";
 
 type Props = {};
 
-export default function Table({}: Props) {
+export default function Table({ }: Props) {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 3;
 
@@ -71,9 +71,8 @@ export default function Table({}: Props) {
           {Array.from({ length: totalPages }, (_, index) => (
             <input
               key={index}
-              className={`join-item btn btn-square ${
-                currentPage === index + 1 ? "btn-active" : ""
-              }`}
+              className={`join-item btn btn-square ${currentPage === index + 1 ? "btn-active" : ""
+                }`}
               type="radio"
               name="options"
               aria-label={`${index + 1}`}
