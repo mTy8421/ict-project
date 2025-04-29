@@ -1,31 +1,43 @@
-import axios from "axios"
-import { useForm, type SubmitHandler } from "react-hook-form"
+import { Link } from "react-router"
 
-type Props = {}
+import "./css/styles.css"
 
-type Input = {
-  name: string
-  lastname: string
+type Props = {
+  name: string,
+  role: string
 }
 
-export default function Navbar({ }: Props) {
-  const { register, handleSubmit } = useForm<Input>()
-
-  const dataSubmit: SubmitHandler<Input> = (data) => {
-    const formData = new FormData()
-    const name = formData.append('name', data.name)
-    const lastname = formData.append('lastname', data.lastname)
-    const result = axios.post('/api', { name, lastname })
-    console.log(result)
-  }
+export default function Navbar({ role, name }: Props) {
 
   return (
     <>
-      <form onSubmit={handleSubmit(dataSubmit)}>
-        <input type="text" {...register("name")} placeholder="name" />
-        <input type="text" {...register("lastname")} placeholder="lastname" />
-        <input type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="submit" />
-      </form>
+
+      <aside className="relative bg-sidebar h-screen w-64 hidden sm:block shadow-xl">
+        <div className="p-6">
+          <Link to={'#'} className="text-white text-3xl font-semibold uppercase hover:text-gray-300">{role}</Link>
+          <button className="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
+            <i className="fas fa-plus mr-3"></i> {name}
+          </button>
+        </div>
+        <nav className="text-white text-base font-semibold pt-3">
+          <Link to={'#'} className="flex items-center active-nav-link text-white py-4 pl-6 nav-item">
+            <i className="fas fa-tachometer-alt mr-3"></i>
+            หน้าหลัก
+          </Link>
+          <Link to={'#'} className="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+            <i className="fas fa-sticky-note mr-3"></i>
+            ภาระงานที่ได้รับมอบหมาย
+          </Link>
+          <Link to={'#'} className="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+            <i className="fas fa-table mr-3"></i>
+            ประวัติการทำงาน
+          </Link>
+        </nav>
+        <Link to={'#'} className="absolute w-full upgrade-btn bottom-0 active-nav-link text-white flex items-center justify-center py-4">
+          <i className="fas fa-arrow-circle-up mr-3"></i>
+          ออกจากระบบ
+        </Link>
+      </aside>
     </>
   )
 }

@@ -1,0 +1,28 @@
+import Navbar from "~/components/user/navbar"
+
+import type { Route } from "../+types/home";
+import { WorkUser } from "~/components/user/content";
+
+export function meta({ }: Route.MetaArgs) {
+  return [
+    { title: "Work" },
+  ];
+}
+
+export default function work() {
+  return (
+    <>
+      <div className="grid grid-cols-6">
+
+        <div className="col-span-1">
+          <Navbar role="พนักงาน" name="พนักงาน" />
+        </div>
+
+        <div className="col-span-5">
+          <WorkUser />
+        </div>
+
+      </div>
+    </>
+  )
+}

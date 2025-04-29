@@ -1,4 +1,5 @@
 import { Link } from "react-router"
+
 import "./css/styles.css"
 
 type Props = {
@@ -10,7 +11,6 @@ export default function Navbar({ role, name }: Props) {
 
   return (
     <>
-
       <aside className="relative bg-sidebar h-screen w-64 hidden sm:block shadow-xl">
         <div className="p-6">
           <Link to={'#'} className="text-white text-3xl font-semibold uppercase hover:text-gray-300">{role}</Link>

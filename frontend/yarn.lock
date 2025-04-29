@@ -1698,6 +1698,11 @@ d3-zoom@^3.0.0:
     d3-selection "2 - 3"
     d3-transition "2 - 3"
 
+daisyui@^5.0.28:
+  version "5.0.28"
+  resolved "https://registry.yarnpkg.com/daisyui/-/daisyui-5.0.28.tgz#0cc3d0003d1b536d30c3ab1a25d70f92cd9b91f7"
+  integrity sha512-H082p8Lg3c7Se9wTbjfSOOhfUbp3BnOM2+cdr3OeY5G1Ll7GYLXB9NWLHgitkTsB1pQKwHRYYchqN2YG0VVShg==
+
 date-fns@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-4.1.0.tgz#64b3d83fff5aa80438f5b1a633c2e83b8a1c2d14"

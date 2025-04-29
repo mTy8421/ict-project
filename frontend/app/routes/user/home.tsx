@@ -1,6 +1,7 @@
 import Navbar from "~/components/user/navbar"
 
 import type { Route } from "../+types/home";
+import { HomeUser } from "~/components/user/content";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -12,12 +13,15 @@ export default function user() {
   return (
     <>
       <div className="grid grid-cols-6">
+
         <div className="col-span-1">
           <Navbar role="พนักงาน" name="พนักงาน" />
         </div>
+
         <div className="col-span-5">
-          <p className="text-9xl text-center">hello world</p>
+          <HomeUser />
         </div>
+
       </div>
     </>
   )
