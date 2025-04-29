@@ -1,6 +1,5 @@
-import Navbar from "~/components/navbar";
-
-import type { Route } from "../+types/home";
+import Navbar from "~/components/admin/navbar";
+import type { Route } from "../home/+types/home";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -11,7 +10,7 @@ export function meta({ }: Route.MetaArgs) {
 export default function admin() {
   return (
     <>
-      <Navbar />
+      <Navbar role="admin" name="test" />
     </>
   )
 }

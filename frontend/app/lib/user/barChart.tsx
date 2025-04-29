@@ -22,7 +22,7 @@ ChartJS.register(
 export const options = {
   plugins: {
     title: {
-      display: true,
+      display: false,
       text: 'test',
     },
   },
@@ -37,6 +37,7 @@ export const options = {
     },
     y: {
       stacked: true,
+      display: false,
     },
   },
 };
@@ -48,7 +49,7 @@ export const data = {
   labels,
   datasets: [
     {
-      label: 'Dataset 1',
+      label: 'จำนวนภาระงาน',
       // data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
       data: datas,
       backgroundColor: 'rgb(255, 99, 132)',

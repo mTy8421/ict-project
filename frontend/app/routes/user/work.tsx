@@ -1,6 +1,6 @@
 import Navbar from "~/components/user/navbar"
 
-import type { Route } from "../+types/home";
+import type { Route } from "../home/+types/home";
 import { WorkUser } from "~/components/user/content";
 
 export function meta({ }: Route.MetaArgs) {
