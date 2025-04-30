@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {};
 
@@ -35,6 +35,11 @@ export default function Table({ }: Props) {
     setCurrentPage(page);
   };
 
+
+  useEffect(() => {
+
+  }, [])
+
   return (
     <>
       <div className="overflow-x-auto">
@@ -42,9 +47,6 @@ export default function Table({ }: Props) {
           {/* head */}
           <thead>
             <tr>
-              <th>
-                <input type="checkbox" className="checkbox" />
-              </th>
               <th>Name</th>
               <th>Job</th>
               <th>Favorite Color</th>
@@ -53,9 +55,6 @@ export default function Table({ }: Props) {
           <tbody>
             {paginatedData.map((row) => (
               <tr key={row.id}>
-                <th>
-                  <input type="checkbox" className="checkbox" />
-                </th>
                 <td>{row.name}</td>
                 <td>{row.job}</td>
                 <td>{row.color}</td>

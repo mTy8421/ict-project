@@ -42,7 +42,7 @@ export function WorkUser({ }: Props) {
   return (
     <>
       <div>
-        <p className="text-9xl text-center">WorkUser</p>
+        <p className="text-9xl text-center">Work User</p>
         <Table />
       </div>
     </>

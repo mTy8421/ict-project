@@ -1,26 +1,52 @@
-import type { Route } from "./+types/home";
+import { useForm, type SubmitHandler } from "react-hook-form"
 
+import type { Route } from "./+types/home";
 import './css/style.css'
 
 export function meta({ }: Route.MetaArgs) {
   return [
-    { title: "Home" },
+    { title: "Login" },
   ];
 }
 
+type Input = {
+  email: string
+  password: string
+}
+
 export default function Home() {
+
+  const { register, handleSubmit } = useForm<Input>()
+
+  const dataSubmit: SubmitHandler<Input> = async (data) => {
+    const formData = new FormData()
+    formData.append('email', data.email)
+    formData.append('password', data.password)
+
+    const email = formData.get('email')
+    const password = formData.get('password')
+
+    if (email == "" || password == "") {
+      alert("password is worng!!")
+    } else {
+      window.location.href = "/user"
+    }
+
+  }
+
   return (
     <>
       <div className="wrapper">
         <h1>Support Staff Workload System</h1>
         <p id="error-message"></p>
-        <form id="form" method="post" action="/user">
+        <form id="form" onSubmit={handleSubmit(dataSubmit)}>
           <div>
             <label>
               <span>@</span>
             </label>
             <input
               type="text"
+              {...register("email")}
               name="email"
               id="email-input"
               placeholder="Email"
@@ -41,6 +67,7 @@ export default function Home() {
             </label>
             <input
               type="password"
+              {...register("password")}
               name="password"
               id="password-input"
               placeholder="Password"

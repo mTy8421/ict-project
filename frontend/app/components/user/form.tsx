@@ -12,12 +12,13 @@ type Input = {
 export default function Form({ }: Props) {
   const { register, handleSubmit } = useForm<Input>()
 
-  const dataSubmit: SubmitHandler<Input> = (data) => {
+  const dataSubmit: SubmitHandler<Input> = async (data) => {
     const formData = new FormData()
     const name = formData.append('name', data.name)
     const lastname = formData.append('lastname', data.lastname)
-    const result = axios.post('/api', { name, lastname })
-    console.log(result)
+
+    const result: any = await axios.post('/api', { name, lastname })
+    console.log(result.data)
   }
 
   return (
