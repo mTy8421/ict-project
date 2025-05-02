@@ -2,6 +2,7 @@ import Navbar from "~/components/user/navbar"
 
 import type { Route } from "../home/+types/home";
 import { WorkUser } from "~/components/user/content";
+import Form from "~/components/user/form";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -20,6 +21,7 @@ export default function work() {
 
         <div className="col-span-5">
           <WorkUser />
+          <Form />
         </div>
 
       </div>
