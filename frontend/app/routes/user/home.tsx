@@ -20,8 +20,8 @@ export default function user() {
           </div>
         </div>
 
-        <div className="col-span-5">
-          <HomeUser />
+        <div className="col-span-5 mt-4">
+          <HomeUser name="Profile" />
         </div>
 
       </div>

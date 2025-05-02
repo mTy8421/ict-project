@@ -37,13 +37,26 @@ export const options = {
     },
     y: {
       stacked: true,
-      display: false,
+      // display: false,
     },
   },
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-const datas = ['10', '20', '30', '40', '50', '60', '70'];
+const labels = [
+  ["มกราคม"],
+  ["กุมภาพันธ์"],
+  ["มีนาคม"],
+  ["เมษายน"],
+  ["พฤษภาคม"],
+  ["มิถุนายน"],
+  ["กรกฎาคม"],
+  ["สิงหาคม"],
+  ["กันยายน"],
+  ["ตุลาคม"],
+  ["พฤศจิกายน"],
+  ["ธันวาคม"],
+];
+const datas = ['10', '20', '30', '40', '50', '60', '70', '30', '40', '50', '60', '70'];
 
 export const data = {
   labels,

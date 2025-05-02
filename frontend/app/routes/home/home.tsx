@@ -27,7 +27,7 @@ export default function Home() {
     const password = formData.get('password')
 
     if (email == "" || password == "") {
-      alert("password is worng!!")
+      alert("Enter your Email or Password")
     } else {
       window.location.href = "/user"
     }

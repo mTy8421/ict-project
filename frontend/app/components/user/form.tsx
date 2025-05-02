@@ -1,14 +1,12 @@
-
 import axios from "axios"
 import { useForm, type SubmitHandler } from "react-hook-form"
-
-type Props = {}
 
 type Input = {
   name: string
   lastname: string
 }
 
+type Props = {}
 export default function Form({ }: Props) {
   const { register, handleSubmit } = useForm<Input>()
 
@@ -23,11 +21,21 @@ export default function Form({ }: Props) {
 
   return (
     <>
-      <form onSubmit={handleSubmit(dataSubmit)}>
-        <input type="text" {...register("name")} placeholder="name" />
-        <input type="text" {...register("lastname")} placeholder="lastname" />
-        <input type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="submit" />
-      </form>
+      <div className="md:col-span-1">
+        <div className="rounded overflow-hidden shadow-lg">
+          <div className="px-6 py-4">
+            <div className="font-bold text-xl mb-2 text-center">Edit Form</div>
+
+            <form onSubmit={handleSubmit(dataSubmit)}>
+              <span>ประเถทงาน</span>
+              <input type="text" {...register("name")} placeholder="name" />
+              <input type="text" {...register("lastname")} placeholder="lastname" />
+              <button type="submit">Submit</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
     </>
   )
 }
