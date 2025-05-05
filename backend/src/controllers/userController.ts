@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { User } from "../models/User";
+import * as bcrypt from "bcrypt";
 
 // Get all users
 export const getUsers = async (_req: Request, res: Response): Promise<void> => {
@@ -84,5 +85,32 @@ export const deleteUser = async (
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: "Failed to delete user" });
+  }
+};
+
+// Login function
+export const login = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, password } = req.body;
+
+    // Find user by email
+    const user = await AppDataSource.getRepository(User).findOneBy({ email });
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    // Compare passwords
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      res.status(401).json({ error: "Invalid credentials" });
+      return;
+    }
+
+    // Respond with user data (excluding password)
+    const { password: _, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to login" });
   }
 };
