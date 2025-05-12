@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Card, Typography, Layout, Menu, Button, Row, Col, Table, Tag, Space, Input, Select, DatePicker } from 'antd';
-import { SearchOutlined, FilterOutlined, PlusOutlined, SyncOutlined } from '@ant-design/icons';
+import { Card, Typography, Layout, Menu, Button, Row, Col, Table, Tag, Space, Input, Select, DatePicker, Tooltip, Modal, message } from 'antd';
+import { SearchOutlined, FilterOutlined, PlusOutlined, SyncOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import axiosInstance from '../../utils/axios';
 import { logout } from '../home/home';
 import theme from '../../theme';
@@ -11,6 +11,8 @@ import {
   BarChartOutlined,
   LogoutOutlined,
 } from '@ant-design/icons';
+import DeanHeader from '../../components/dean/Header';
+import DeanNavbar from '../../components/dean/Navbar';
 
 const { Header, Content, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -38,20 +40,40 @@ const DeanWorkload: React.FC = () => {
   const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
   const [dateRange, setDateRange] = useState<[string, string] | null>(null);
 
-  useEffect(() => {
-    const fetchWorkloads = async () => {
-      try {
-        const response = await axiosInstance.get('/workload');
-        setWorkloads(response.data);
-      } catch (error) {
-        console.error('Error fetching workloads:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchWorkloads = async () => {
+    try {
+      const response = await axiosInstance.get('/workload');
+      setWorkloads(response.data);
+    } catch (error) {
+      console.error('Error fetching workloads:', error);
+      message.error('ไม่สามารถดึงข้อมูลภาระงานได้');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchWorkloads();
   }, []);
+
+  const handleDelete = async (id: number) => {
+    Modal.confirm({
+      title: 'ยืนยันการลบ',
+      content: 'คุณต้องการลบภาระงานนี้ใช่หรือไม่?',
+      okText: 'ยืนยัน',
+      cancelText: 'ยกเลิก',
+      onOk: async () => {
+        try {
+          await axiosInstance.delete(`/workload/${id}`);
+          message.success('ลบภาระงานสำเร็จ');
+          fetchWorkloads();
+        } catch (error) {
+          console.error('Error deleting workload:', error);
+          message.error('ไม่สามารถลบภาระงานได้');
+        }
+      },
+    });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -167,15 +189,32 @@ const DeanWorkload: React.FC = () => {
     {
       title: 'จัดการ',
       key: 'action',
-      render: (_: any, record: Workload) => (
+      render: (record: Workload) => (
         <Space size="middle">
-          <Button 
-            type="link" 
-            onClick={() => navigate(`/dean/workload/${record.id}`)}
-            style={{ color: theme.primary }}
-          >
-            ดูรายละเอียด
-          </Button>
+          <Tooltip title="ดูรายละเอียด">
+            <Button
+              type="text"
+              icon={<EyeOutlined />}
+              onClick={() => navigate(`/dean/workload/${record.id}`)}
+              style={{ color: theme.primary }}
+            />
+          </Tooltip>
+          <Tooltip title="แก้ไข">
+            <Button
+              type="text"
+              icon={<EditOutlined />}
+              onClick={() => navigate(`/dean/workload/${record.id}/edit`)}
+              style={{ color: theme.primary }}
+            />
+          </Tooltip>
+          <Tooltip title="ลบ">
+            <Button
+              type="text"
+              danger
+              icon={<DeleteOutlined />}
+              onClick={() => handleDelete(record.id)}
+            />
+          </Tooltip>
         </Space>
       ),
     },
@@ -218,122 +257,56 @@ const DeanWorkload: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: '100vh', background: theme.background }}>
-      <Header style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'space-between',
-        background: theme.headerBg,
-        padding: `0 ${theme.spacing.xl}`,
-        boxShadow: theme.shadowLarge,
-        position: 'sticky',
-        top: 0,
-        zIndex: theme.zIndex.header,
-        height: '70px',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <img src="/logo.png" alt="Logo" style={{ height: '45px', marginRight: theme.spacing.lg }} />
-          <Title level={4} style={{ margin: 0, color: theme.white, fontWeight: theme.fontWeight.semibold }}>
-            ระบบจัดการภาระงานพนักงาน
-          </Title>
-        </div>
-        <Button 
-          type="text" 
-          icon={<LogoutOutlined />} 
-          onClick={logout}
-          style={{ 
-            fontSize: theme.fontSize.md,
-            color: theme.white,
-            height: '40px',
-            padding: `0 ${theme.spacing.md}`,
-            display: 'flex',
-            alignItems: 'center',
-            gap: theme.spacing.sm,
-            borderRadius: theme.borderRadius.md,
-            transition: theme.transition.default,
-          }}
-        >
-          ออกจากระบบ
-        </Button>
-      </Header>
+      <DeanHeader />
       <Layout style={{ height: 'calc(100vh - 70px)' }}>
-        <Sider width={280} style={{ 
-          background: theme.sidebarBg,
-          position: 'sticky',
-          top: 70,
-          height: 'calc(100vh - 70px)',
-          boxShadow: theme.shadowLarge,
-          overflow: 'auto',
-        }}>
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={['2']}
-            style={{ 
-              height: '100%', 
-              borderRight: 0,
-              padding: `${theme.spacing.lg} 0`,
-              background: theme.sidebarBg,
-            }}
-            theme="light"
-          >
-            <Menu.Item 
-              key="1" 
-              icon={<BarChartOutlined style={{ fontSize: theme.fontSize.xl, color: theme.primary }} />}
-              style={{
-                margin: `${theme.spacing.sm} ${theme.spacing.md}`,
-                borderRadius: theme.borderRadius.md,
-                height: '48px',
-                lineHeight: '48px',
-                color: theme.primary,
-              }}
-            >
-              <Link to="/dean" style={{ fontSize: theme.fontSize.md, color: theme.primary }}>ภาพรวม</Link>
-            </Menu.Item>
-            <Menu.Item 
-              key="2" 
-              icon={<FileTextOutlined style={{ fontSize: theme.fontSize.xl, color: theme.primary }} />}
-              style={{
-                margin: `${theme.spacing.sm} ${theme.spacing.md}`,
-                borderRadius: theme.borderRadius.md,
-                height: '48px',
-                lineHeight: '48px',
-                color: theme.primary,
-              }}
-            >
-              <Link to="/dean/workload" style={{ fontSize: theme.fontSize.md, color: theme.primary }}>จัดการภาระงาน</Link>
-            </Menu.Item>
-            <Menu.Item 
-              key="3" 
-              icon={<UserOutlined style={{ fontSize: theme.fontSize.xl, color: theme.primary }} />}
-              style={{
-                margin: `${theme.spacing.sm} ${theme.spacing.md}`,
-                borderRadius: theme.borderRadius.md,
-                height: '48px',
-                lineHeight: '48px',
-                color: theme.primary,
-              }}
-            >
-              <Link to="/dean/users" style={{ fontSize: theme.fontSize.md, color: theme.primary }}>จัดการผู้ใช้</Link>
-            </Menu.Item>
-          </Menu>
-        </Sider>
+        <DeanNavbar />
         <Layout style={{ padding: theme.spacing.xl, overflow: 'auto' }}>
-          <Content style={{ maxWidth: '1600px' }}>
-            <div style={{ marginBottom: theme.spacing.xl }}>
-              <Title level={3} style={{ margin: 0, color: theme.primary, fontWeight: theme.fontWeight.semibold }}>
-                จัดการภาระงาน
-              </Title>
-              <p style={{ color: theme.textLight, marginTop: theme.spacing.sm, fontSize: theme.fontSize.md }}>
-                ดูและจัดการภาระงานทั้งหมดในระบบ
-              </p>
+          <Content style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ 
+              marginBottom: theme.spacing.xl,
+              background: theme.white,
+              padding: theme.spacing.xl,
+              borderRadius: theme.borderRadius.lg,
+              boxShadow: theme.shadow,
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <Title level={3} style={{ margin: 0, color: theme.primary, fontWeight: theme.fontWeight.semibold }}>
+                    จัดการภาระงาน
+                  </Title>
+                  <Text style={{ color: theme.textLight, marginTop: theme.spacing.sm, display: 'block' }}>
+                    ดูและจัดการภาระงานทั้งหมด
+                  </Text>
+                </div>
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={() => navigate('/dean/workload/new')}
+                  style={{
+                    background: theme.primary,
+                    borderColor: theme.primary,
+                    height: '45px',
+                    padding: `0 ${theme.spacing.xl}`,
+                    borderRadius: theme.borderRadius.md,
+                    fontSize: theme.fontSize.md,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: theme.spacing.sm,
+                  }}
+                >
+                  เพิ่มภาระงาน
+                </Button>
+              </div>
             </div>
 
             <Card
               style={{
                 borderRadius: theme.borderRadius.lg,
                 boxShadow: theme.shadow,
+                background: theme.white,
                 marginBottom: theme.spacing.xl,
-                padding: theme.spacing.lg,
               }}
+              bodyStyle={{ padding: theme.spacing.xl }}
             >
               <Row gutter={[24, 24]} align="middle">
                 <Col xs={24} sm={8} style={{ paddingBottom: theme.spacing.md }}>
@@ -383,22 +356,6 @@ const DeanWorkload: React.FC = () => {
                     }}
                   />
                 </Col>
-                <Col xs={24} sm={12} style={{ textAlign: 'right', paddingBottom: theme.spacing.md }}>
-                  <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => navigate('/dean/workload/new')}
-                    style={{
-                      background: theme.primary,
-                      borderColor: theme.primary,
-                      height: '40px',
-                      padding: `0 ${theme.spacing.lg}`,
-                      borderRadius: theme.borderRadius.md,
-                    }}
-                  >
-                    เพิ่มภาระงานใหม่
-                  </Button>
-                </Col>
               </Row>
             </Card>
 
@@ -406,19 +363,20 @@ const DeanWorkload: React.FC = () => {
               style={{
                 borderRadius: theme.borderRadius.lg,
                 boxShadow: theme.shadow,
+                background: theme.white,
               }}
+              bodyStyle={{ padding: theme.spacing.xl }}
             >
               <Table
                 columns={columns}
                 dataSource={filteredWorkloads}
-                loading={loading}
                 rowKey="id"
+                loading={loading}
                 pagination={{
                   pageSize: 10,
                   showSizeChanger: true,
                   showTotal: (total) => `ทั้งหมด ${total} รายการ`,
                 }}
-                style={{ fontSize: theme.fontSize.sm }}
               />
             </Card>
           </Content>

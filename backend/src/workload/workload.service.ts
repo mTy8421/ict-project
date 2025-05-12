@@ -40,6 +40,8 @@ export class WorkloadService {
     const workload = this.workloadRepository.create({
       ...createWorkloadDto,
       assignedTo: user,
+      start_date: createWorkloadDto.start_date,
+      end_date: createWorkloadDto.end_date,
     });
 
     return this.workloadRepository.save(workload);

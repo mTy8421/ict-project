@@ -1,14 +1,9 @@
+import React from 'react';
 import { useForm, type SubmitHandler } from "react-hook-form"
-import axios from 'axios';
+import axiosInstance from '../../utils/axios';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/style.css'
-
-export function meta({ }: Route.MetaArgs) {
-  return [
-    { title: "Login" },
-  ];
-}
 
 type Input = {
   email: string
@@ -30,11 +25,7 @@ export default function Home() {
     const token = localStorage.getItem('token');
     if (token) {
       // Verify token and get user role
-      axios.get('http://localhost:3000/user/profile', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
+      axiosInstance.get('/user/profile')
       .then(response => {
         const userRole = response.data.user_role;
         // Redirect based on role
@@ -72,7 +63,7 @@ export default function Home() {
   const dataSubmit: SubmitHandler<Input> = async (data) => {
     try {
       console.log('Sending login request...');
-      const response = await axios.post('http://localhost:3000/auth/login', {
+      const response = await axiosInstance.post('/auth/login', {
         email: data.email,
         password: data.password
       });
@@ -86,11 +77,7 @@ export default function Home() {
         localStorage.setItem('token', token);
         
         // Fetch user data using the token
-        const userResponse = await axios.get('http://localhost:3000/user/profile', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+        const userResponse = await axiosInstance.get('/user/profile');
         
         console.log('User data:', userResponse.data);
         

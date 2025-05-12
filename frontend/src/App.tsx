@@ -5,6 +5,7 @@ import UserWork from './pages/user/work';
 import Admin from './pages/admin/admin';
 import DeanDashboard from './pages/dean/dashboard';
 import DeanWorkload from './pages/dean/workload';
+import DeanWorkloadNew from './pages/dean/workload-new';
 import DeanUsers from './pages/dean/users';
 import StrategyDashboard from './pages/vice-dean/strategy/dashboard';
 import StrategyWorkload from './pages/vice-dean/strategy/workload';
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/dean" element={<DeanDashboard />} />
         <Route path="/dean/workload" element={<DeanWorkload />} />
+        <Route path="/dean/workload/new" element={<DeanWorkloadNew />} />
         <Route path="/dean/users" element={<DeanUsers />} />
         <Route path="/vice-dean/strategy" element={<StrategyDashboard />} />
         <Route path="/vice-dean/strategy/workload" element={<StrategyWorkload />} />

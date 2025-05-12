@@ -24,11 +24,11 @@ export class AuthService {
     password: string,
   ): Promise<UserResponse | null> {
     const user = await this.userService.findByEmail(email);
-    if (user && (await bcrypt.compare(password, user.user_password))) {
+      if (user && (await bcrypt.compare(password, user.user_password))) {
       const { user_password, ...result } = user;
       return result as UserResponse;
-    }
-    return null;
+      }
+      return null;
   }
 
   async login(user: User) {

@@ -1,21 +1,18 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import type { User } from '../../types/home';
 import Navbar from "../../components/user/navbar";
-
-import type { Route } from "../home/+types/home";
 import { HomeUser } from "../../components/user/content";
 
-export function meta({ }: Route.MetaArgs) {
-  return [{ title: "User" }];
-}
-
-export default function user() {
+export default function UserHome() {
   return (
     <div className="flex h-screen">
       <div className="w-64 flex-shrink-0">
-        <Navbar role="พนักงาน" name="พนักงาน" />
-      </div>
+            <Navbar role="พนักงาน" name="พนักงาน" />
+          </div>
       <div className="flex-1 overflow-auto p-4">
-        <HomeUser name="Profile" />
+          <HomeUser name="Profile" />
+        </div>
       </div>
-    </div>
   );
 }
