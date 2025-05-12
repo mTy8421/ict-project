@@ -1,157 +1,253 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Card, Typography, Layout, Menu, Button, Table, Input, Select, Space, Tag } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-import { Column } from '@ant-design/plots';
+import React, { useEffect, useState } from 'react';
+import { Layout, Table, Button, Space, Tag, Input, Select, DatePicker } from 'antd';
+import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../utils/axios';
+import theme from '../../../theme';
+import ViceDeanHeader from '../../../components/vice-dean/Header';
+import ViceDeanNavbar from '../../../components/vice-dean/Navbar';
 
-const { Header, Content, Sider } = Layout;
-const { Title } = Typography;
-const { Option } = Select;
+const { Content } = Layout;
+const { RangePicker } = DatePicker;
 
 interface Workload {
   id: number;
-  name: string;
+  title: string;
   department: string;
   assignedTo: {
     user_name: string;
-    user_role: string;
   };
-  status: string;
+  status: 'pending' | 'in_progress' | 'completed';
+  priority: 'low' | 'medium' | 'high';
+  createdAt: string;
+  updatedAt: string;
 }
 
-const DisciplineViceDeanWorkload: React.FC = () => {
-  const [searchText, setSearchText] = useState('');
-  const [selectedDepartment, setSelectedDepartment] = useState('all');
-  const [data, setData] = useState<Workload[]>([]);
+const ViceDeanDisciplineWorkload: React.FC = () => {
+  const navigate = useNavigate();
+  const [workloads, setWorkloads] = useState<Workload[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [priorityFilter, setPriorityFilter] = useState<string | null>(null);
+  const [dateRange, setDateRange] = useState<[string, string] | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosInstance.get('/workload/department/ฝ่ายงานแผนงาน');
-        setData(response.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchWorkloads();
   }, []);
+
+  const fetchWorkloads = async () => {
+    try {
+      const response = await axiosInstance.get('/workload');
+      setWorkloads(response.data);
+    } catch (error) {
+      console.error('Error fetching workloads:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatusTag = (status: string) => {
+    const statusConfig = {
+      pending: { color: 'warning', text: 'รอดำเนินการ' },
+      in_progress: { color: 'processing', text: 'กำลังดำเนินการ' },
+      completed: { color: 'success', text: 'เสร็จสิ้น' },
+    };
+    const config = statusConfig[status as keyof typeof statusConfig];
+    return <Tag color={config.color}>{config.text}</Tag>;
+  };
+
+  const getPriorityTag = (priority: string) => {
+    const priorityConfig = {
+      low: { color: 'success', text: 'ต่ำ' },
+      medium: { color: 'warning', text: 'ปานกลาง' },
+      high: { color: 'error', text: 'สูง' },
+    };
+    const config = priorityConfig[priority as keyof typeof priorityConfig];
+    return <Tag color={config.color}>{config.text}</Tag>;
+  };
 
   const columns = [
     {
-      title: 'ชื่อ-นามสกุล',
-      dataIndex: ['assignedTo', 'user_name'],
-      key: 'name',
+      title: 'หัวข้อ',
+      dataIndex: 'title',
+      key: 'title',
+      render: (text: string, record: Workload) => (
+        <a onClick={() => navigate(`/vice-dean/discipline/workload/${record.id}`)}>{text}</a>
+      ),
     },
     {
-      title: 'ฝ่าย',
+      title: 'แผนก',
       dataIndex: 'department',
       key: 'department',
     },
     {
-      title: 'ตำแหน่ง',
-      dataIndex: ['assignedTo', 'user_role'],
-      key: 'position',
-    },
-    {
-      title: 'จำนวนภาระงาน',
-      dataIndex: 'workload',
-      key: 'workload',
+      title: 'ผู้รับผิดชอบ',
+      dataIndex: ['assignedTo', 'user_name'],
+      key: 'assignedTo',
     },
     {
       title: 'สถานะ',
       dataIndex: 'status',
       key: 'status',
-      render: (status: string) => (
-        <Tag color={status === 'ปกติ' ? 'green' : 'red'}>
-          {status}
-        </Tag>
+      render: (status: string) => getStatusTag(status),
+    },
+    {
+      title: 'ความสำคัญ',
+      dataIndex: 'priority',
+      key: 'priority',
+      render: (priority: string) => getPriorityTag(priority),
+    },
+    {
+      title: 'วันที่สร้าง',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (date: string) => new Date(date).toLocaleDateString('th-TH'),
+    },
+    {
+      title: 'จัดการ',
+      key: 'action',
+      render: (_: any, record: Workload) => (
+        <Space size="middle">
+          <Button type="link" onClick={() => navigate(`/vice-dean/discipline/workload/${record.id}/edit`)}>
+            แก้ไข
+          </Button>
+          <Button type="link" danger onClick={() => handleDelete(record.id)}>
+            ลบ
+          </Button>
+        </Space>
       ),
     },
   ];
 
-  // ข้อมูลสำหรับกราฟ
-  const workloadData = [
-    { department: 'ฝ่ายงานแผนงาน', count: data.length },
-  ];
-
-  const config = {
-    data: workloadData,
-    xField: 'count',
-    yField: 'department',
-    seriesField: 'department',
-    legend: {
-      position: 'top-left' as const,
-    },
+  const handleDelete = async (id: number) => {
+    try {
+      await axiosInstance.delete(`/workload/${id}`);
+      fetchWorkloads();
+    } catch (error) {
+      console.error('Error deleting workload:', error);
+    }
   };
 
-  const filteredData = data.filter(item => {
-    const matchesSearch = item.assignedTo.user_name.toLowerCase().includes(searchText.toLowerCase());
-    const matchesDepartment = selectedDepartment === 'all' || item.department === selectedDepartment;
-    return matchesSearch && matchesDepartment;
+  const filteredWorkloads = workloads.filter(workload => {
+    const matchesSearch = workload.title.toLowerCase().includes(searchText.toLowerCase()) ||
+                         workload.department.toLowerCase().includes(searchText.toLowerCase()) ||
+                         workload.assignedTo.user_name.toLowerCase().includes(searchText.toLowerCase());
+    const matchesStatus = !statusFilter || workload.status === statusFilter;
+    const matchesPriority = !priorityFilter || workload.priority === priorityFilter;
+    const matchesDate = !dateRange || (
+      new Date(workload.createdAt) >= new Date(dateRange[0]) &&
+      new Date(workload.createdAt) <= new Date(dateRange[1])
+    );
+    return matchesSearch && matchesStatus && matchesPriority && matchesDate;
   });
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <img src="/logo.png" alt="Logo" style={{ height: '40px', marginRight: '16px' }} />
-          <Title level={4} style={{ color: 'white', margin: 0 }}>Support Staff Workload - System ICT</Title>
-        </div>
-        <div style={{ color: 'white' }}>
-          <span>รองคณบดีฝ่ายวินัยและนวัตกรรม</span>
-          <Button type="link" style={{ color: 'white', marginLeft: '16px' }}>ออกจากระบบ</Button>
-        </div>
-      </Header>
-      <Layout>
-        <Sider width={200} style={{ background: '#fff' }}>
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={['2']}
-            style={{ height: '100%', borderRight: 0 }}
-          >
-            <Menu.Item key="1">
-              <Link to="/vice-dean/discipline">หน้าหลัก</Link>
-            </Menu.Item>
-            <Menu.Item key="2">
-              <Link to="/vice-dean/discipline/workload">ภาระงาน</Link>
-            </Menu.Item>
-          </Menu>
-        </Sider>
-        <Layout style={{ padding: '24px' }}>
-          <Content style={{ background: '#fff', padding: 24, margin: 0, minHeight: 280 }}>
-            <Title level={3}>รายการภาระงาน</Title>
-            <div style={{ marginBottom: '24px' }}>
-              <Card title="กราฟแสดงภาระงานตามฝ่าย">
-                <Column {...config} />
-              </Card>
+    <Layout style={{ minHeight: '100vh', background: theme.background }}>
+      <ViceDeanHeader role="รองคณบดีฝ่ายวินัย" />
+      <Layout style={{ height: 'calc(100vh - 70px)' }}>
+        <ViceDeanNavbar basePath="/vice-dean/discipline" />
+        <Layout style={{ padding: theme.spacing.xl, overflow: 'auto' }}>
+          <Content style={{ 
+            maxWidth: '1200px', 
+            margin: '0 auto', 
+            padding: `0 ${theme.spacing.xl}`,
+            background: theme.white,
+            borderRadius: theme.borderRadius.lg,
+            boxShadow: theme.shadow,
+          }}>
+            <div style={{ 
+              marginBottom: theme.spacing.xl,
+              padding: theme.spacing.xl,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+              <h2 style={{ 
+                margin: 0, 
+                color: theme.primary, 
+                fontWeight: theme.fontWeight.semibold,
+                fontSize: theme.fontSize.xxl,
+                letterSpacing: '0.5px',
+              }}>
+                จัดการภาระงาน
+              </h2>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => navigate('/vice-dean/discipline/workload/new')}
+                style={{
+                  background: theme.primary,
+                  borderColor: theme.primary,
+                  height: '40px',
+                  padding: `0 ${theme.spacing.xl}`,
+                  borderRadius: theme.borderRadius.md,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: theme.spacing.sm,
+                }}
+              >
+                สร้างภาระงานใหม่
+              </Button>
             </div>
-            <Space style={{ marginBottom: 16 }}>
+            <div style={{ 
+              padding: `0 ${theme.spacing.xl} ${theme.spacing.xl}`,
+              display: 'flex',
+              gap: theme.spacing.md,
+              flexWrap: 'wrap',
+            }}>
               <Input
-                placeholder="ค้นหาชื่อ-นามสกุล"
+                placeholder="ค้นหาภาระงาน..."
                 prefix={<SearchOutlined />}
                 value={searchText}
                 onChange={e => setSearchText(e.target.value)}
-                style={{ width: 200 }}
+                style={{ width: '300px' }}
               />
               <Select
-                defaultValue="all"
-                style={{ width: 200 }}
-                onChange={value => setSelectedDepartment(value)}
+                placeholder="สถานะ"
+                allowClear
+                style={{ width: '150px' }}
+                onChange={value => setStatusFilter(value)}
               >
-                <Option value="all">ทุกฝ่าย</Option>
-                <Option value="ฝ่ายงานแผนงาน">ฝ่ายงานแผนงาน</Option>
+                <Select.Option value="pending">รอดำเนินการ</Select.Option>
+                <Select.Option value="in_progress">กำลังดำเนินการ</Select.Option>
+                <Select.Option value="completed">เสร็จสิ้น</Select.Option>
               </Select>
-            </Space>
-            <Table columns={columns} dataSource={filteredData} />
+              <Select
+                placeholder="ความสำคัญ"
+                allowClear
+                style={{ width: '150px' }}
+                onChange={value => setPriorityFilter(value)}
+              >
+                <Select.Option value="low">ต่ำ</Select.Option>
+                <Select.Option value="medium">ปานกลาง</Select.Option>
+                <Select.Option value="high">สูง</Select.Option>
+              </Select>
+              <RangePicker
+                onChange={(dates) => {
+                  if (dates) {
+                    setDateRange([
+                      dates[0]?.toISOString() || '',
+                      dates[1]?.toISOString() || '',
+                    ]);
+                  } else {
+                    setDateRange(null);
+                  }
+                }}
+              />
+            </div>
+            <div style={{ padding: `0 ${theme.spacing.xl} ${theme.spacing.xl}` }}>
+              <Table
+                columns={columns}
+                dataSource={filteredWorkloads}
+                loading={loading}
+                rowKey="id"
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  overflow: 'hidden',
+                }}
+              />
+            </div>
           </Content>
         </Layout>
       </Layout>
@@ -159,4 +255,4 @@ const DisciplineViceDeanWorkload: React.FC = () => {
   );
 };
 
-export default DisciplineViceDeanWorkload; 
+export default ViceDeanDisciplineWorkload; 

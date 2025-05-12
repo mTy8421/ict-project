@@ -130,9 +130,9 @@ export default function Table({ department, searchText }: Props) {
         </div>
         <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-center">
           <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-            {Array.from({ length: totalPages }, (_, index) => (
+          {Array.from({ length: totalPages }, (_, index) => (
               <button
-                key={index}
+              key={index}
                 onClick={() => handlePageChange(index + 1)}
                 className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                   currentPage === index + 1
@@ -142,7 +142,7 @@ export default function Table({ department, searchText }: Props) {
               >
                 {index + 1}
               </button>
-            ))}
+          ))}
           </nav>
         </div>
       </div>

@@ -1,11 +1,7 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from "../../components/admin/navbar";
-import type { Route } from "../home/+types/home";
-
-export function meta({ }: Route.MetaArgs) {
-  return [
-    { title: "Admin" },
-  ];
-}
+import type { User } from '../../types/home';
 
 export default function admin() {
   return (

@@ -7,6 +7,12 @@ export enum WorkloadStatus {
   COMPLETED = 'เสร็จสิ้น'
 }
 
+export enum WorkloadPriority {
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high'
+}
+
 @Entity()
 export class Workload {
   @PrimaryGeneratedColumn()
@@ -25,6 +31,13 @@ export class Workload {
   })
   status: WorkloadStatus;
 
+  @Column({
+    type: 'enum',
+    enum: WorkloadPriority,
+    default: WorkloadPriority.MEDIUM
+  })
+  priority: WorkloadPriority;
+
   @ManyToOne(() => User, user => user.workloads)
   assignedTo: User;
 
@@ -36,4 +49,10 @@ export class Workload {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({ type: 'date', nullable: true })
+  start_date: Date;
+
+  @Column({ type: 'date', nullable: true })
+  end_date: Date;
 } 

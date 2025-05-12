@@ -25,16 +25,16 @@ export function HomeUser({ name }: PropsHomeUser) {
           <h2 className="text-xl font-bold mb-4 text-center">จำนวนภาระงานประจำเดือน</h2>
           <div className="h-64 flex items-center justify-center">
             <div className="w-full h-full">
-              <BarChart />
+                <BarChart />
+              </div>
             </div>
           </div>
-        </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6">
           <h2 className="text-xl font-bold mb-4 text-center">จำนวนภาระงาน</h2>
           <div className="h-64 flex items-center justify-center">
             <div className="w-48 h-48">
-              <Doughnuts />
+                <Doughnuts />
             </div>
           </div>
         </div>

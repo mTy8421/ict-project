@@ -1,5 +1,5 @@
 import { IsString, IsNotEmpty, IsEnum, IsNumber } from 'class-validator';
-import { WorkloadStatus } from '../entities/workload.entity';
+import { WorkloadStatus, WorkloadPriority } from '../entities/workload.entity';
 
 export class CreateWorkloadDto {
   @IsString()
@@ -13,6 +13,9 @@ export class CreateWorkloadDto {
   @IsEnum(WorkloadStatus)
   status: WorkloadStatus;
 
+  @IsEnum(WorkloadPriority)
+  priority: WorkloadPriority;
+
   @IsNumber()
   @IsNotEmpty()
   assignedToId: number;
@@ -20,4 +23,10 @@ export class CreateWorkloadDto {
   @IsString()
   @IsNotEmpty()
   department: string;
+
+  @IsString()
+  start_date?: string;
+
+  @IsString()
+  end_date?: string;
 } 

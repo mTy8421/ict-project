@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Menu, Card, Row, Col, Statistic, Table, Button } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
-import {
-  UserOutlined,
-  FileTextOutlined,
-  BarChartOutlined,
-  LogoutOutlined,
-} from '@ant-design/icons';
+import { Layout, Card, Row, Col, Statistic, Table } from 'antd';
 import axiosInstance from '../../../utils/axios';
-import { logout } from '../../home/home';
+import theme from '../../../theme';
+import ViceDeanHeader from '../../../components/vice-dean/Header';
+import ViceDeanNavbar from '../../../components/vice-dean/Navbar';
 
-const { Header, Sider, Content } = Layout;
+const { Content } = Layout;
 
 interface WorkloadStats {
   department: string;
@@ -21,7 +16,6 @@ interface WorkloadStats {
 }
 
 const ViceDeanAcademicDashboard: React.FC = () => {
-  const navigate = useNavigate();
   const [workloadStats, setWorkloadStats] = useState<WorkloadStats[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -69,68 +63,107 @@ const ViceDeanAcademicDashboard: React.FC = () => {
   ];
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'space-between',
-        background: '#fff',
-        padding: '0 24px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <img src="/logo.png" alt="Logo" style={{ height: '40px', marginRight: '16px' }} />
-          <h1 style={{ margin: 0, fontSize: '20px' }}>ระบบจัดการภาระงานพนักงาน</h1>
-        </div>
-        <Button 
-          type="text" 
-          icon={<LogoutOutlined />} 
-          onClick={logout}
-          style={{ fontSize: '16px' }}
-        >
-          ออกจากระบบ
-        </Button>
-      </Header>
-      <Layout>
-        <Sider width={200} style={{ background: '#fff' }}>
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={['1']}
-            style={{ height: '100%', borderRight: 0 }}
-          >
-            <Menu.Item key="1" icon={<BarChartOutlined />}>
-              <Link to="/vice-dean/academic">ภาพรวม</Link>
-            </Menu.Item>
-            <Menu.Item key="2" icon={<FileTextOutlined />}>
-              <Link to="/vice-dean/academic/workload">จัดการภาระงาน</Link>
-            </Menu.Item>
-            <Menu.Item key="3" icon={<UserOutlined />}>
-              <Link to="/vice-dean/academic/users">จัดการผู้ใช้</Link>
-            </Menu.Item>
-          </Menu>
-        </Sider>
-        <Layout style={{ padding: '24px' }}>
-          <Content style={{ background: '#fff', padding: 24, margin: 0, minHeight: 280 }}>
-            <h2>ภาพรวมภาระงานตามแผนก</h2>
-            <Row gutter={16} style={{ marginBottom: '24px' }}>
+    <Layout style={{ minHeight: '100vh', background: theme.background }}>
+      <ViceDeanHeader role="รองคณบดีฝ่ายวิชาการ" />
+      <Layout style={{ height: 'calc(100vh - 70px)' }}>
+        <ViceDeanNavbar basePath="/vice-dean/academic" />
+        <Layout style={{ padding: theme.spacing.xl, overflow: 'auto' }}>
+          <Content style={{ 
+            maxWidth: '1200px', 
+            margin: '0 auto', 
+            padding: `0 ${theme.spacing.xl}`,
+            background: theme.white,
+            borderRadius: theme.borderRadius.lg,
+            boxShadow: theme.shadow,
+          }}>
+            <div style={{ 
+              marginBottom: theme.spacing.xl,
+              padding: theme.spacing.xl,
+            }}>
+              <h2 style={{ 
+                margin: 0, 
+                color: theme.primary, 
+                fontWeight: theme.fontWeight.semibold,
+                fontSize: theme.fontSize.xxl,
+                letterSpacing: '0.5px',
+              }}>
+                ภาพรวมภาระงานตามแผนก
+              </h2>
+            </div>
+            <Row gutter={[24, 24]} style={{ padding: `0 ${theme.spacing.xl}` }}>
               {workloadStats.map((stat) => (
-                <Col span={6} key={stat.department}>
-                  <Card loading={loading}>
+                <Col xs={24} sm={24} md={12} key={stat.department}>
+                  <Card 
+                    loading={loading}
+                    style={{
+                      borderRadius: theme.borderRadius.lg,
+                      boxShadow: theme.shadow,
+                      height: '100%',
+                    }}
+                  >
                     <Statistic
-                      title={stat.department}
+                      title={
+                        <span style={{
+                          fontSize: theme.fontSize.xl,
+                          fontWeight: theme.fontWeight.semibold,
+                          color: theme.primary,
+                        }}>
+                          {stat.department}
+                        </span>
+                      }
                       value={stat.total}
-                      suffix={`/ ${stat.completed} เสร็จสิ้น`}
+                      suffix={
+                        <span style={{
+                          fontSize: theme.fontSize.lg,
+                          color: theme.textLight,
+                        }}>
+                          / {stat.completed} เสร็จสิ้น
+                        </span>
+                      }
+                      valueStyle={{
+                        fontSize: theme.fontSize.xxl,
+                        fontWeight: theme.fontWeight.bold,
+                        color: theme.text,
+                      }}
                     />
+                    <div style={{ 
+                      marginTop: theme.spacing.lg,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      gap: theme.spacing.md,
+                    }}>
+                      <Statistic
+                        title="รอดำเนินการ"
+                        value={stat.pending}
+                        valueStyle={{ color: theme.warning }}
+                      />
+                      <Statistic
+                        title="กำลังดำเนินการ"
+                        value={stat.inProgress}
+                        valueStyle={{ color: theme.primary }}
+                      />
+                      <Statistic
+                        title="เสร็จสิ้น"
+                        value={stat.completed}
+                        valueStyle={{ color: theme.success }}
+                      />
+                    </div>
                   </Card>
                 </Col>
               ))}
             </Row>
-            <Table
-              columns={columns}
-              dataSource={workloadStats}
-              loading={loading}
-              rowKey="department"
-            />
+            <div style={{ padding: theme.spacing.xl }}>
+              <Table
+                columns={columns}
+                dataSource={workloadStats}
+                loading={loading}
+                rowKey="department"
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  overflow: 'hidden',
+                }}
+              />
+            </div>
           </Content>
         </Layout>
       </Layout>

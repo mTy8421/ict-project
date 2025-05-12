@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Card, Typography, Layout, Menu, Button, Row, Col, Statistic, Table } from 'antd';
-import { Column, Pie } from '@ant-design/plots';
+import { Layout, Card, Row, Col, Statistic, Table } from 'antd';
 import axiosInstance from '../../../utils/axios';
-import { logout } from '../../home/home';
-import {
-  UserOutlined,
-  FileTextOutlined,
-  BarChartOutlined,
-  LogoutOutlined,
-} from '@ant-design/icons';
+import theme from '../../../theme';
+import ViceDeanHeader from '../../../components/vice-dean/Header';
+import ViceDeanNavbar from '../../../components/vice-dean/Navbar';
 
-const { Header, Content, Sider } = Layout;
-const { Title } = Typography;
+const { Content } = Layout;
 
 interface WorkloadStats {
   department: string;
@@ -22,41 +15,24 @@ interface WorkloadStats {
   completed: number;
 }
 
-const StudentQualityViceDeanDashboard: React.FC = () => {
-  const navigate = useNavigate();
-  const [stats, setStats] = useState<WorkloadStats[]>([]);
+const ViceDeanStudentQualityDashboard: React.FC = () => {
+  const [workloadStats, setWorkloadStats] = useState<WorkloadStats[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchWorkloadStats = async () => {
       try {
         const response = await axiosInstance.get('/workload/stats/department');
-        setStats(response.data);
+        setWorkloadStats(response.data);
       } catch (error) {
-        console.error('Error fetching stats:', error);
+        console.error('Error fetching workload stats:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStats();
+    fetchWorkloadStats();
   }, []);
-
-  // ข้อมูลสำหรับกราฟ
-  const workloadData = stats.map(dept => ({
-    department: dept.department,
-    count: dept.total,
-  }));
-
-  const config = {
-    data: workloadData,
-    xField: 'count',
-    yField: 'department',
-    seriesField: 'department',
-    legend: {
-      position: 'top-left' as const,
-    },
-  };
 
   const columns = [
     {
@@ -86,90 +62,108 @@ const StudentQualityViceDeanDashboard: React.FC = () => {
     },
   ];
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'space-between',
-        background: '#fff',
-        padding: '0 24px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <img src="/logo.png" alt="Logo" style={{ height: '40px', marginRight: '16px' }} />
-          <Title level={4} style={{ color: 'white', margin: 0 }}>Support Staff Workload - System ICT</Title>
-        </div>
-        <Button 
-          type="text" 
-          icon={<LogoutOutlined />} 
-          onClick={logout}
-          style={{ fontSize: '16px' }}
-        >
-          ออกจากระบบ
-        </Button>
-      </Header>
-      <Layout>
-        <Sider width={200} style={{ background: '#fff' }}>
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={['1']}
-            style={{ height: '100%', borderRight: 0 }}
-          >
-            <Menu.Item key="1" icon={<BarChartOutlined />}>
-              <Link to="/vice-dean/student-quality">ภาพรวม</Link>
-            </Menu.Item>
-            <Menu.Item key="2" icon={<FileTextOutlined />}>
-              <Link to="/vice-dean/student-quality/workload">จัดการภาระงาน</Link>
-            </Menu.Item>
-            <Menu.Item key="3" icon={<UserOutlined />}>
-              <Link to="/vice-dean/student-quality/users">จัดการผู้ใช้</Link>
-            </Menu.Item>
-          </Menu>
-        </Sider>
-        <Layout style={{ padding: '24px' }}>
-          <Content style={{ background: '#fff', padding: 24, margin: 0, minHeight: 280 }}>
-            <Title level={3}>ภาพรวมภาระงาน</Title>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-              <Card title="กราฟแสดงภาระงานตามฝ่าย">
-                <Column {...config} />
-              </Card>
-              <Card title="สัดส่วนภาระงาน">
-                <Pie
-                  data={workloadData}
-                  angleField="count"
-                  colorField="department"
-                  radius={0.8}
-                  label={{
-                    type: 'outer',
-                  }}
-                />
-              </Card>
+    <Layout style={{ minHeight: '100vh', background: theme.background }}>
+      <ViceDeanHeader role="รองคณบดีฝ่ายคุณภาพนักศึกษา" />
+      <Layout style={{ height: 'calc(100vh - 70px)' }}>
+        <ViceDeanNavbar basePath="/vice-dean/student-quality" />
+        <Layout style={{ padding: theme.spacing.xl, overflow: 'auto' }}>
+          <Content style={{ 
+            maxWidth: '1200px', 
+            margin: '0 auto', 
+            padding: `0 ${theme.spacing.xl}`,
+            background: theme.white,
+            borderRadius: theme.borderRadius.lg,
+            boxShadow: theme.shadow,
+          }}>
+            <div style={{ 
+              marginBottom: theme.spacing.xl,
+              padding: theme.spacing.xl,
+            }}>
+              <h2 style={{ 
+                margin: 0, 
+                color: theme.primary, 
+                fontWeight: theme.fontWeight.semibold,
+                fontSize: theme.fontSize.xxl,
+                letterSpacing: '0.5px',
+              }}>
+                ภาพรวมภาระงานตามแผนก
+              </h2>
             </div>
-            <h2>ภาพรวมภาระงานตามแผนก</h2>
-            <Row gutter={16} style={{ marginBottom: '24px' }}>
-              {stats.map((stat) => (
-                <Col span={6} key={stat.department}>
-                  <Card loading={loading}>
+            <Row gutter={[24, 24]} style={{ padding: `0 ${theme.spacing.xl}` }}>
+              {workloadStats.map((stat) => (
+                <Col xs={24} sm={24} md={12} key={stat.department}>
+                  <Card 
+                    loading={loading}
+                    style={{
+                      borderRadius: theme.borderRadius.lg,
+                      boxShadow: theme.shadow,
+                      height: '100%',
+                    }}
+                  >
                     <Statistic
-                      title={stat.department}
+                      title={
+                        <span style={{
+                          fontSize: theme.fontSize.xl,
+                          fontWeight: theme.fontWeight.semibold,
+                          color: theme.primary,
+                        }}>
+                          {stat.department}
+                        </span>
+                      }
                       value={stat.total}
-                      suffix={`/ ${stat.completed} เสร็จสิ้น`}
+                      suffix={
+                        <span style={{
+                          fontSize: theme.fontSize.lg,
+                          color: theme.textLight,
+                        }}>
+                          / {stat.completed} เสร็จสิ้น
+                        </span>
+                      }
+                      valueStyle={{
+                        fontSize: theme.fontSize.xxl,
+                        fontWeight: theme.fontWeight.bold,
+                        color: theme.text,
+                      }}
                     />
+                    <div style={{ 
+                      marginTop: theme.spacing.lg,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      gap: theme.spacing.md,
+                    }}>
+                      <Statistic
+                        title="รอดำเนินการ"
+                        value={stat.pending}
+                        valueStyle={{ color: theme.warning }}
+                      />
+                      <Statistic
+                        title="กำลังดำเนินการ"
+                        value={stat.inProgress}
+                        valueStyle={{ color: theme.primary }}
+                      />
+                      <Statistic
+                        title="เสร็จสิ้น"
+                        value={stat.completed}
+                        valueStyle={{ color: theme.success }}
+                      />
+                    </div>
                   </Card>
                 </Col>
               ))}
             </Row>
-            <Table
-              columns={columns}
-              dataSource={stats}
-              loading={loading}
-              rowKey="department"
-            />
+            <div style={{ padding: theme.spacing.xl }}>
+              <Table
+                columns={columns}
+                dataSource={workloadStats}
+                loading={loading}
+                rowKey="department"
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  overflow: 'hidden',
+                }}
+              />
+            </div>
           </Content>
         </Layout>
       </Layout>
@@ -177,4 +171,4 @@ const StudentQualityViceDeanDashboard: React.FC = () => {
   );
 };
 
-export default StudentQualityViceDeanDashboard; 
+export default ViceDeanStudentQualityDashboard; 
