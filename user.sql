@@ -60,3 +60,32 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+-- Insert admin user
+INSERT INTO `user` (`user_email`, `user_name`, `user_password`, `user_role`) 
+VALUES ('admin@ict.com', 'Admin User', 'admin123', 'admin');
+
+-- Insert dean user
+INSERT INTO `user` (`user_email`, `user_name`, `user_password`, `user_role`) 
+VALUES ('dean@ict.com', 'Dean User', 'dean123', 'คณบดี');
+
+-- Insert vice dean users
+INSERT INTO `user` (`user_email`, `user_name`, `user_password`, `user_role`) 
+VALUES ('vicedean.academic@ict.com', 'Academic Vice Dean', 'vicedean123', 'รองคณบดีฝ่ายวิชาการ');
+
+INSERT INTO `user` (`user_email`, `user_name`, `user_password`, `user_role`) 
+VALUES ('vicedean.strategy@ict.com', 'Strategy Vice Dean', 'vicedean123', 'คณบดีฝ่ายยุทธศาสตร์และพัฒนาองค์กร');
+
+INSERT INTO `user` (`user_email`, `user_name`, `user_password`, `user_role`) 
+VALUES ('vicedean.student@ict.com', 'Student Quality Vice Dean', 'vicedean123', 'รองคณบดีฝ่ายคุณภาพนิสิต');
+
+-- Insert staff users
+INSERT INTO `user` (`user_email`, `user_name`, `user_password`, `user_role`) 
+VALUES ('staff.academic@ict.com', 'Academic Staff', 'staff123', 'พนักงานฝ่ายวิชาการ');
+
+INSERT INTO `user` (`user_email`, `user_name`, `user_password`, `user_role`) 
+VALUES ('staff.strategy@ict.com', 'Strategy Staff', 'staff123', 'พนักงานฝ่ายยุทธศาสตร์และพัฒนาองค์กร');
+
+INSERT INTO `user` (`user_email`, `user_name`, `user_password`, `user_role`) 
+VALUES ('staff.student@ict.com', 'Student Quality Staff', 'staff123', 'พนักงานฝ่ายคุณภาพนิสิต');

@@ -4,9 +4,11 @@ import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
+import { Workload } from '../../workload/entities/workload.entity';
 
 type UserRoleType =
   | 'admin'
@@ -52,18 +54,19 @@ export class User {
   })
   user_role: UserRoleType;
 
+  @OneToMany(() => Workload, workload => workload.assignedTo)
+  workloads: Workload[];
+
   @BeforeInsert()
-  async beforeInsert() {
-    const pass = await bcrypt.hash(this.user_password, 10);
-    // console.log(`insert : ${this.user_password}`);
-    this.user_password = pass;
+  async hashPassword() {
+    this.user_password = await bcrypt.hash(this.user_password, 10);
   }
 
   @BeforeUpdate()
-  async beforeUpdate() {
-    const pass = await bcrypt.hash(this.user_password, 10);
-    // console.log(`update : ${this.user_password}`);
-    this.user_password = pass;
+  async updatePassword() {
+    if (this.user_password) {
+      this.user_password = await bcrypt.hash(this.user_password, 10);
+    }
   }
 }
 @Entity()
