@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, Repository, Like } from 'typeorm';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -39,5 +39,35 @@ export class UserService {
 
   async findByEmail(email: string): Promise<User | null> {
     return this.userRepository.findOne({ where: { user_email: email } });
+  }
+
+  async findByUsername(username: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { user_name: username } });
+  }
+
+  async search(query: string): Promise<User[]> {
+    return this.userRepository.find({
+      where: [
+        { user_name: Like(`%${query}%`) },
+        { user_email: Like(`%${query}%`) },
+      ],
+    });
+  }
+
+  async filterByDepartment(department: string): Promise<User[]> {
+    const roles = [
+      'พนักงานฝ่ายวิจัยและนวัตถกรรม',
+      'พนักงานฝ่ายคุณภาพนิสิต',
+      'พนักงานฝ่ายยุทธศาสตร์และพัฒนาองค์กร',
+      'พนักงานฝ่ายวิชาการ',
+      'คณบดีฝ่ายยุทธศาสตร์และพัฒนาองค์กร',
+      'รองคณบดีฝ่ายวิชาการ',
+      'รองคณบดีฝ่ายวิจัยและนวัตถกรรม',
+      'รองคณบดีฝ่ายคุณภาพนิสิต'
+    ] as const;
+
+    return this.userRepository.find({
+      where: roles.map(role => ({ user_role: role }))
+    });
   }
 }
