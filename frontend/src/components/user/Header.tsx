@@ -7,7 +7,12 @@ import theme from "../../theme";
 const { Header } = Layout;
 const { Title } = Typography;
 
-const DeanHeader: React.FC = () => {
+interface Props {
+  // Define any props if needed
+  name: string;
+}
+
+const DeanHeader: React.FC<Props> = ({ name }) => {
   return (
     <Header
       style={{
@@ -45,7 +50,7 @@ const DeanHeader: React.FC = () => {
             fontWeight: theme.fontWeight.semibold,
           }}
         >
-          ระบบจัดการภาระงานพนักงาน
+          Support Staff Workload - System ICT
         </Title>
       </div>
       <div
@@ -58,7 +63,7 @@ const DeanHeader: React.FC = () => {
             fontSize: theme.fontSize.md,
           }}
         >
-          คณบดี
+          พนักงาน : {name}
         </span>
         <Button
           type="text"

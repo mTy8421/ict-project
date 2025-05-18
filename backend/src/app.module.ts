@@ -15,7 +15,7 @@ import { WorkloadModule } from './workload/workload.module';
       host: process.env.DATABASE_HOST || 'localhost',
       port: 3306,
       username: process.env.DATABASE_USER || 'root',
-      password: process.env.DATABASE_PASSWORD || '',
+      password: process.env.DATABASE_PASSWORD || 'root',
       database: process.env.DATABASE_NAME || 'project',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: process.env.NODE_ENV !== 'production',

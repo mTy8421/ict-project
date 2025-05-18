@@ -63,11 +63,11 @@ export class UserService {
       'คณบดีฝ่ายยุทธศาสตร์และพัฒนาองค์กร',
       'รองคณบดีฝ่ายวิชาการ',
       'รองคณบดีฝ่ายวิจัยและนวัตถกรรม',
-      'รองคณบดีฝ่ายคุณภาพนิสิต'
+      'รองคณบดีฝ่ายคุณภาพนิสิต',
     ] as const;
 
     return this.userRepository.find({
-      where: roles.map(role => ({ user_role: role }))
+      where: roles.map((role) => ({ user_role: role })),
     });
   }
 }

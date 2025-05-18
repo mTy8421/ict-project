@@ -1,21 +1,22 @@
 import React from "react";
 import { Layout, Menu } from "antd";
 import { Link, useLocation } from "react-router-dom";
-import { FileTextOutlined, BarChartOutlined } from "@ant-design/icons";
+import {
+  FileTextOutlined,
+  BarChartOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import theme from "../../theme";
 
 const { Sider } = Layout;
 
-interface ViceDeanNavbarProps {
-  basePath: string;
-}
-
-const ViceDeanNavbar: React.FC<ViceDeanNavbarProps> = ({ basePath }) => {
+const DeanNavbar: React.FC = () => {
   const location = useLocation();
 
   const getSelectedKey = () => {
-    if (location.pathname === basePath) return "1";
-    if (location.pathname.startsWith(`${basePath}/workload`)) return "2";
+    if (location.pathname === "/user") return "1";
+    if (location.pathname.startsWith("/user/work")) return "2";
+    if (location.pathname.startsWith("/user/history")) return "3";
     return "1";
   };
 
@@ -59,7 +60,7 @@ const ViceDeanNavbar: React.FC<ViceDeanNavbarProps> = ({ basePath }) => {
           }}
         >
           <Link
-            to={basePath}
+            to="/user"
             style={{ fontSize: theme.fontSize.md, color: "#fff" }}
           >
             ภาพรวม
@@ -82,10 +83,33 @@ const ViceDeanNavbar: React.FC<ViceDeanNavbarProps> = ({ basePath }) => {
           }}
         >
           <Link
-            to={`${basePath}/workload`}
+            to="/user/work"
             style={{ fontSize: theme.fontSize.md, color: "#fff" }}
           >
             จัดการภาระงาน
+          </Link>
+        </Menu.Item>
+        <Menu.Item
+          key="3"
+          icon={
+            <FileTextOutlined
+              style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
+            />
+          }
+          style={{
+            margin: `${theme.spacing.sm} ${theme.spacing.md}`,
+            borderRadius: theme.borderRadius.md,
+            height: "48px",
+            lineHeight: "48px",
+            color: theme.primary,
+            background: getSelectedKey() === "3" ? "#5746b6" : "",
+          }}
+        >
+          <Link
+            to="/user/history"
+            style={{ fontSize: theme.fontSize.md, color: "#fff" }}
+          >
+            ประวัติภาระงาน
           </Link>
         </Menu.Item>
       </Menu>
@@ -93,4 +117,4 @@ const ViceDeanNavbar: React.FC<ViceDeanNavbarProps> = ({ basePath }) => {
   );
 };
 
-export default ViceDeanNavbar;
+export default DeanNavbar;
