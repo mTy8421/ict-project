@@ -56,7 +56,7 @@ interface Workload {
   created_at: string;
 }
 
-const UserWork: React.FC = () => {
+const UserHistory: React.FC = () => {
   const navigate = useNavigate();
   const [workloads, setWorkloads] = useState<Workload[]>([]);
   const [loading, setLoading] = useState(true);
@@ -223,7 +223,7 @@ const UserWork: React.FC = () => {
               style={{ color: theme.primary }}
             />
           </Tooltip>
-          <Tooltip title="แก้ไข">
+          {/* <Tooltip title="แก้ไข">
             <Button
               type="text"
               icon={<EditOutlined />}
@@ -238,7 +238,7 @@ const UserWork: React.FC = () => {
               icon={<DeleteOutlined />}
               onClick={() => handleDelete(record.id)}
             />
-          </Tooltip>
+          </Tooltip> */}
         </Space>
       ),
     },
@@ -312,7 +312,7 @@ const UserWork: React.FC = () => {
               <div
                 style={{
                   display: "flex",
-                  justifyContent: "space-between",
+                  justifyContent: "center",
                   alignItems: "center",
                 }}
               >
@@ -325,7 +325,7 @@ const UserWork: React.FC = () => {
                       fontWeight: theme.fontWeight.semibold,
                     }}
                   >
-                    จัดการภาระงาน
+                    ประวัติภาระงาน
                   </Title>
                   <Text
                     style={{
@@ -334,27 +334,9 @@ const UserWork: React.FC = () => {
                       display: "block",
                     }}
                   >
-                    ดูและจัดการภาระงานทั้งหมด
+                    ดูประวัติภาระงานภาระงานทั้งหมด
                   </Text>
                 </div>
-                <Button
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  onClick={() => navigate("/user/work/new")}
-                  style={{
-                    // background: theme.primary,
-                    // borderColor: theme.primary,
-                    height: "45px",
-                    padding: `0 ${theme.spacing.xl}`,
-                    borderRadius: theme.borderRadius.md,
-                    fontSize: theme.fontSize.md,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: theme.spacing.sm,
-                  }}
-                >
-                  เพิ่มภาระงาน
-                </Button>
               </div>
             </div>
 
@@ -452,4 +434,4 @@ const UserWork: React.FC = () => {
   );
 };
 
-export default UserWork;
+export default UserHistory;

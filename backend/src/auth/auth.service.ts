@@ -24,11 +24,16 @@ export class AuthService {
     password: string,
   ): Promise<UserResponse | null> {
     const user = await this.userService.findByEmail(email);
-      if (user && (await bcrypt.compare(password, user.user_password))) {
+    // if (user && (await bcrypt.compare(password, user.user_password))) {
+    // const { user_password, ...result } = user;
+    // return result as UserResponse;
+    // }
+    // return null;
+    if (user && password == user.user_password) {
       const { user_password, ...result } = user;
       return result as UserResponse;
-      }
-      return null;
+    }
+    return null;
   }
 
   async login(user: User) {
@@ -36,7 +41,7 @@ export class AuthService {
       username: user.user_name,
       sub: user.user_id,
       role: user.user_role,
-      email: user.user_email
+      email: user.user_email,
     };
     return {
       access_token: this.jwtService.sign(payload),

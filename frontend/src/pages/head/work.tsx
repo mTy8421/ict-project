@@ -36,8 +36,8 @@ import {
   BarChartOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
-import DeanHeader from "../../components/user/Header";
-import DeanNavbar from "../../components/user/Navbar";
+import DeanHeader from "../../components/head/Header";
+import DeanNavbar from "../../components/head/Navbar";
 
 const { Header, Content, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -56,7 +56,7 @@ interface Workload {
   created_at: string;
 }
 
-const UserWork: React.FC = () => {
+const HeadWork: React.FC = () => {
   const navigate = useNavigate();
   const [workloads, setWorkloads] = useState<Workload[]>([]);
   const [loading, setLoading] = useState(true);
@@ -163,7 +163,16 @@ const UserWork: React.FC = () => {
         </Text>
       ),
     },
-
+    {
+      title: "แผนก",
+      dataIndex: "department",
+      key: "department",
+    },
+    {
+      title: "ผู้รับผิดชอบ",
+      dataIndex: "assignee",
+      key: "assignee",
+    },
     {
       title: "สถานะ",
       dataIndex: "status",
@@ -299,7 +308,7 @@ const UserWork: React.FC = () => {
       <Layout style={{ height: "calc(100vh - 70px)" }}>
         <DeanNavbar />
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
-          <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <Content style={{ maxWidth: "1200px", margin: "0 15%" }}>
             <div
               style={{
                 marginBottom: theme.spacing.xl,
@@ -312,7 +321,7 @@ const UserWork: React.FC = () => {
               <div
                 style={{
                   display: "flex",
-                  justifyContent: "space-between",
+                  justifyContent: "center",
                   alignItems: "center",
                 }}
               >
@@ -337,24 +346,6 @@ const UserWork: React.FC = () => {
                     ดูและจัดการภาระงานทั้งหมด
                   </Text>
                 </div>
-                <Button
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  onClick={() => navigate("/user/work/new")}
-                  style={{
-                    // background: theme.primary,
-                    // borderColor: theme.primary,
-                    height: "45px",
-                    padding: `0 ${theme.spacing.xl}`,
-                    borderRadius: theme.borderRadius.md,
-                    fontSize: theme.fontSize.md,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: theme.spacing.sm,
-                  }}
-                >
-                  เพิ่มภาระงาน
-                </Button>
               </div>
             </div>
 
@@ -452,4 +443,4 @@ const UserWork: React.FC = () => {
   );
 };
 
-export default UserWork;
+export default HeadWork;

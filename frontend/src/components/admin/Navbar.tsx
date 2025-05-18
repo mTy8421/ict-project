@@ -1,21 +1,22 @@
 import React from "react";
 import { Layout, Menu } from "antd";
 import { Link, useLocation } from "react-router-dom";
-import { FileTextOutlined, BarChartOutlined } from "@ant-design/icons";
+import {
+  FileTextOutlined,
+  BarChartOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import theme from "../../theme";
 
 const { Sider } = Layout;
 
-interface ViceDeanNavbarProps {
-  basePath: string;
-}
-
-const ViceDeanNavbar: React.FC<ViceDeanNavbarProps> = ({ basePath }) => {
+const DeanNavbar: React.FC = () => {
   const location = useLocation();
 
   const getSelectedKey = () => {
-    if (location.pathname === basePath) return "1";
-    if (location.pathname.startsWith(`${basePath}/workload`)) return "2";
+    if (location.pathname === "/admin") return "1";
+    if (location.pathname.startsWith("/admin/workload")) return "2";
+    if (location.pathname.startsWith("/admin/users")) return "3";
     return "1";
   };
 
@@ -59,7 +60,7 @@ const ViceDeanNavbar: React.FC<ViceDeanNavbarProps> = ({ basePath }) => {
           }}
         >
           <Link
-            to={basePath}
+            to="/admin"
             style={{ fontSize: theme.fontSize.md, color: "#fff" }}
           >
             ภาพรวม
@@ -82,7 +83,7 @@ const ViceDeanNavbar: React.FC<ViceDeanNavbarProps> = ({ basePath }) => {
           }}
         >
           <Link
-            to={`${basePath}/workload`}
+            to="/admin/workload"
             style={{ fontSize: theme.fontSize.md, color: "#fff" }}
           >
             จัดการภาระงาน
@@ -93,4 +94,4 @@ const ViceDeanNavbar: React.FC<ViceDeanNavbarProps> = ({ basePath }) => {
   );
 };
 
-export default ViceDeanNavbar;
+export default DeanNavbar;

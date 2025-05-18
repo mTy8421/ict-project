@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `user_email` varchar(255) NOT NULL,
   `user_name` varchar(255) NOT NULL,
   `user_password` varchar(255) NOT NULL,
-  `user_role` enum('admin','คณบดี','รองคณบดีฝ่ายวิชาการ','รองคณบดีฝ่ายยุทธศาสตร์และพัฒนาองค์กร','รองคณบดีฝ่ายวิจัยและนวัตกรรม','รองคณบดีฝ่ายคุณภาพนิสิต','พนักงาน') NOT NULL DEFAULT 'พนักงาน',
+  `user_role` varchar(255) NOT NULL DEFAULT 'admin',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `IDX_65d72a4b8a5fcdad6edee8563b` (`user_email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

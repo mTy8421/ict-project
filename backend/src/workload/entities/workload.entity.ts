@@ -1,16 +1,23 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+} from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 
 export enum WorkloadStatus {
   PENDING = 'รอดำเนินการ',
   IN_PROGRESS = 'กำลังดำเนินการ',
-  COMPLETED = 'เสร็จสิ้น'
+  COMPLETED = 'เสร็จสิ้น',
 }
 
 export enum WorkloadPriority {
   LOW = 'low',
   MEDIUM = 'medium',
-  HIGH = 'high'
+  HIGH = 'high',
 }
 
 @Entity()
@@ -24,21 +31,31 @@ export class Workload {
   @Column('text')
   description: string;
 
-  @Column({
-    type: 'enum',
-    enum: WorkloadStatus,
-    default: WorkloadStatus.PENDING
-  })
-  status: WorkloadStatus;
+  // @Column({
+  //   type: 'enum',
+  //   enum: WorkloadStatus,
+  //   default: WorkloadStatus.PENDING,
+  // })
+  // status: WorkloadStatus;
 
   @Column({
-    type: 'enum',
-    enum: WorkloadPriority,
-    default: WorkloadPriority.MEDIUM
+    default: 'รอดำเนินการ',
   })
-  priority: WorkloadPriority;
+  status: string;
 
-  @ManyToOne(() => User, user => user.workloads)
+  // @Column({
+  //   type: 'enum',
+  //   enum: WorkloadPriority,
+  //   default: WorkloadPriority.MEDIUM,
+  // })
+  // priority: WorkloadPriority;
+
+  @Column({
+    default: 'medium',
+  })
+  priority: string;
+
+  @ManyToOne(() => User, (user) => user.workloads)
   assignedTo: User;
 
   @Column()
@@ -55,4 +72,4 @@ export class Workload {
 
   @Column({ type: 'date', nullable: true })
   end_date: Date;
-} 
+}
