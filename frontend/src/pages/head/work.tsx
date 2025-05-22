@@ -56,9 +56,16 @@ interface Workload {
   created_at: string;
 }
 
+interface User {
+  user_id: number;
+  user_name: string;
+  user_role: string;
+}
+
 const HeadWork: React.FC = () => {
   const navigate = useNavigate();
   const [workloads, setWorkloads] = useState<Workload[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
@@ -77,8 +84,19 @@ const HeadWork: React.FC = () => {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      const response = await axiosInstance.get("/user");
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
+    }
+  };
+
   useEffect(() => {
     fetchWorkloads();
+    fetchUsers();
   }, []);
 
   const handleDelete = async (id: number) => {
@@ -170,8 +188,8 @@ const HeadWork: React.FC = () => {
     },
     {
       title: "ผู้รับผิดชอบ",
-      dataIndex: "assignee",
-      key: "assignee",
+      dataIndex: "username",
+      key: "username",
     },
     {
       title: "สถานะ",
@@ -308,7 +326,7 @@ const HeadWork: React.FC = () => {
       <Layout style={{ height: "calc(100vh - 70px)" }}>
         <DeanNavbar />
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
-          <Content style={{ maxWidth: "1200px", margin: "0 15%" }}>
+          <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
             <div
               style={{
                 marginBottom: theme.spacing.xl,

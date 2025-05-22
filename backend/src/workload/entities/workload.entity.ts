@@ -55,6 +55,9 @@ export class Workload {
   })
   priority: string;
 
+  @Column()
+  username: string;
+
   @ManyToOne(() => User, (user) => user.workloads)
   assignedTo: User;
 

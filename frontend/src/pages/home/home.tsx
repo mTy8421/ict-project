@@ -50,6 +50,9 @@ export default function Home() {
             case "รองคณบดีฝ่ายคุณภาพนิสิต":
               navigate("/vice-dean/student-quality");
               break;
+            case "หัวหน้าสำนักงาน":
+              navigate("/head");
+              break;
             case "พนักงาน":
             default:
               navigate("/user");
@@ -107,6 +110,9 @@ export default function Home() {
           case "รองคณบดีฝ่ายคุณภาพนิสิต":
             navigate("/vice-dean/student-quality");
             break;
+          case "หัวหน้าสำนักงาน":
+            navigate("/head");
+            break;
           case "พนักงาน":
           default:
             navigate("/user");
@@ -128,7 +134,9 @@ export default function Home() {
   return (
     <>
       <div className="wrapper">
-        <h1>Support Staff Workload System</h1>
+        <h1 className="text-3xl font-bold mb-5">
+          Support Staff Workload System
+        </h1>
         <p id="error-message"></p>
         <form id="form" onSubmit={handleSubmit(dataSubmit)}>
           <div>

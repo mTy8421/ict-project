@@ -29,4 +29,4 @@ export class CreateWorkloadDto {
 
   @IsString()
   end_date?: string;
-} 
+}

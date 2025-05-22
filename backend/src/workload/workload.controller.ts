@@ -75,4 +75,17 @@ export class WorkloadController {
   remove(@Param('id') id: number): Promise<void> {
     return this.workloadService.remove(id);
   }
+
+  @Put('edit/:id')
+  update(
+    @Param('id') id: number,
+    @Body() createWorkloadDto: CreateWorkloadDto,
+  ): Promise<Workload> {
+    return this.workloadService.update(id, createWorkloadDto);
+  }
+
+  @Get('edit/:id')
+  findOneById(@Param('id') id: number): Promise<Workload> {
+    return this.workloadService.findOneById(id);
+  }
 }

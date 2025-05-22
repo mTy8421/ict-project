@@ -77,6 +77,35 @@ export class WorkloadService {
     return this.workloadRepository.save(workload);
   }
 
+  async update(
+    id: number,
+    updateWorkloadDto: Partial<CreateWorkloadDto>,
+  ): Promise<Workload> {
+    const workload = await this.workloadRepository.findOne({
+      where: { id },
+      relations: ['assignedTo'],
+    });
+    if (!workload) {
+      throw new NotFoundException('Workload not found');
+    }
+
+    // If assignedToId is provided, update the assigned user
+    if (updateWorkloadDto.assignedToId) {
+      const user = await this.userRepository.findOneBy({
+        user_id: updateWorkloadDto.assignedToId,
+      });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      workload.assignedTo = user;
+    }
+
+    // Update other fields
+    Object.assign(workload, updateWorkloadDto);
+
+    return this.workloadRepository.save(workload);
+  }
+
   async remove(id: number): Promise<void> {
     const result = await this.workloadRepository.delete(id);
     if (result.affected === 0) {
@@ -132,9 +161,13 @@ export class WorkloadService {
     return {
       department: 'user',
       total: workloads.length,
-      pending: workloads.filter((w) => w.status === WorkloadStatus.PENDING).length,
-      inProgress: workloads.filter((w) => w.status === WorkloadStatus.IN_PROGRESS).length,
-      completed: workloads.filter((w) => w.status === WorkloadStatus.COMPLETED).length,
+      pending: workloads.filter((w) => w.status === WorkloadStatus.PENDING)
+        .length,
+      inProgress: workloads.filter(
+        (w) => w.status === WorkloadStatus.IN_PROGRESS,
+      ).length,
+      completed: workloads.filter((w) => w.status === WorkloadStatus.COMPLETED)
+        .length,
     };
   }
 
@@ -145,4 +178,15 @@ export class WorkloadService {
       .where('user.user_name LIKE :name', { name: `%${name}%` })
       .getMany();
   }
-} 
+
+  async findOneById(id: number): Promise<Workload> {
+    const workload = await this.workloadRepository.findOne({
+      where: { id },
+      relations: ['assignedTo'],
+    });
+    if (!workload) {
+      throw new NotFoundException('Workload not found');
+    }
+    return workload;
+  }
+}
