@@ -21,6 +21,7 @@ import axiosInstance from "../../utils/axios";
 import theme from "../../theme";
 import DeanHeader from "../../components/user/Header";
 import DeanNavbar from "../../components/user/Navbar";
+import ReHeader from "../../components/user/NavbarHeader";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -131,9 +132,18 @@ const User: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
-      <DeanHeader name="test" />
+      <div className="hidden md:block">
+        <DeanHeader name="test" />
+      </div>
+
+      <div className="md:hidden">
+        <ReHeader />
+      </div>
+
       <Layout style={{ height: "calc(100vh - 70px)" }}>
-        <DeanNavbar />
+        <div className="hidden md:block">
+          <DeanNavbar />
+        </div>
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
           <Content style={{ maxWidth: "1200px", margin: "0 15%" }}>
             <div

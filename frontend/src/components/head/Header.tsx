@@ -1,8 +1,10 @@
-import React from "react";
-import { Layout, Typography, Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { Layout, Typography, Button, message } from "antd";
 import { LogoutOutlined } from "@ant-design/icons";
 import { logout } from "../../pages/home/home";
 import theme from "../../theme";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../utils/axios";
 
 const { Header } = Layout;
 const { Title } = Typography;
@@ -12,7 +14,35 @@ interface Props {
   name: string;
 }
 
+interface User {
+  user_id: number;
+  user_name: string;
+  user_role: string;
+}
+
 const DeanHeader: React.FC<Props> = ({ name }) => {
+  const [profile, setProfile] = useState<User | undefined>();
+  const navigate = useNavigate();
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axiosInstance.get("/user/profile");
+      setProfile(response.data);
+    } catch (error: any) {
+      console.error("Error fetching users:", error);
+      if (error.response?.status === 401) {
+        message.error("กรุณาเข้าสู่ระบบใหม่");
+        navigate("/login");
+      } else {
+        message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   return (
     <Header
       style={{
@@ -63,7 +93,7 @@ const DeanHeader: React.FC<Props> = ({ name }) => {
             fontSize: theme.fontSize.md,
           }}
         >
-          พนักงาน : {name}
+          {profile?.user_name} : {profile?.user_role}
         </span>
         <Button
           type="text"

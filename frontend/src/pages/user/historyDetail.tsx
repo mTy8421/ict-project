@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Form,
   Input,
@@ -21,6 +21,7 @@ import DeanHeader from "../../components/user/Header";
 import DeanNavbar from "../../components/user/Navbar";
 import ReHeader from "../../components/user/NavbarHeader";
 import "./workload-new.override.css";
+import moment from "moment";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -42,7 +43,8 @@ interface User {
   user_role: string;
 }
 
-const UserWorkLoad: React.FC = () => {
+const UserHistoryDetail: React.FC = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -76,24 +78,44 @@ const UserWorkLoad: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axiosInstance.get("/user/profile");
-        setUsers(response.data);
-        setProfile(response.data);
-      } catch (error: any) {
-        console.error("Error fetching users:", error);
-        if (error.response?.status === 401) {
-          message.error("กรุณาเข้าสู่ระบบใหม่");
-          navigate("/login");
-        } else {
-          message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
-        }
+  const fetchUsers = async () => {
+    try {
+      const response = await axiosInstance.get("/user/profile");
+      setUsers(response.data);
+      setProfile(response.data);
+    } catch (error: any) {
+      console.error("Error fetching users:", error);
+      if (error.response?.status === 401) {
+        message.error("กรุณาเข้าสู่ระบบใหม่");
+        navigate("/login");
+      } else {
+        message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
       }
-    };
+    }
+  };
 
+  const fetchWorkload = async () => {
+    try {
+      const response = await axiosInstance.get(`/workload/edit/${id}`);
+      const workload = response.data;
+
+      form.setFieldsValue({
+        title: workload.title,
+        department: workload.department,
+        assignee: workload.assignedTo.user_id,
+        priority: workload.priority,
+        description: workload.description,
+        dateRange: [moment(workload.start_date), moment(workload.end_date)],
+      });
+    } catch (error: any) {
+      console.error("Error fetching workload:", error);
+      message.error("ไม่สามารถดึงข้อมูลภาระงานได้");
+    }
+  };
+
+  useEffect(() => {
     fetchUsers();
+    fetchWorkload();
   }, [navigate]);
   const onFinish = async (values: WorkloadForm) => {
     try {
@@ -109,12 +131,14 @@ const UserWorkLoad: React.FC = () => {
         start_date: start_date.format("YYYY-MM-DD"),
         end_date: end_date.format("YYYY-MM-DD"),
         status: "pending",
-        username: profile?.user_name || "unknown",
       };
 
       console.log("Sending data:", workloadData);
 
-      const response = await axiosInstance.post("/workload", workloadData);
+      const response = await axiosInstance.put(
+        `/workload/edit/${id}`,
+        workloadData
+      );
       console.log("Response:", response.data);
 
       message.success("เพิ่มภาระงานสำเร็จ");
@@ -161,7 +185,7 @@ const UserWorkLoad: React.FC = () => {
               <Button
                 type="link"
                 icon={<ArrowLeftOutlined />}
-                onClick={() => navigate("/user/work")}
+                onClick={() => navigate("/user/history")}
                 style={{
                   padding: 0,
                   marginBottom: theme.spacing.md,
@@ -173,7 +197,7 @@ const UserWorkLoad: React.FC = () => {
                   gap: theme.spacing.sm,
                 }}
               >
-                กลับไปหน้ารายการภาระงาน
+                กลับไปหน้าประวัติภาระงาน
               </Button>
               <Title
                 level={3}
@@ -185,7 +209,7 @@ const UserWorkLoad: React.FC = () => {
                   letterSpacing: "0.5px",
                 }}
               >
-                เพิ่มภาระงานใหม่
+                ประวัติภาระงาน
               </Title>
               <Text
                 style={{
@@ -195,7 +219,7 @@ const UserWorkLoad: React.FC = () => {
                   fontSize: theme.fontSize.md,
                 }}
               >
-                กรอกข้อมูลภาระงานที่ต้องการเพิ่ม
+                ดูรายระเอียดประวัติภาระงานภาระงาน
               </Text>
             </div>
 
@@ -231,6 +255,7 @@ const UserWorkLoad: React.FC = () => {
                       style={{ width: "100%" }}
                     >
                       <Input
+                        disabled
                         placeholder="กรอกหัวข้อภาระงาน"
                         style={{
                           height: 48,
@@ -302,6 +327,7 @@ const UserWorkLoad: React.FC = () => {
                       ]}
                     >
                       <Select
+                        disabled
                         placeholder="เลือกความสำคัญ"
                         style={{
                           height: 48,
@@ -325,6 +351,7 @@ const UserWorkLoad: React.FC = () => {
                       ]}
                     >
                       <RangePicker
+                        disabled
                         style={{
                           width: "100%",
                           height: 48,
@@ -345,6 +372,7 @@ const UserWorkLoad: React.FC = () => {
                       ]}
                     >
                       <TextArea
+                        disabled
                         placeholder="กรอกรายละเอียดภาระงาน"
                         rows={4}
                         style={{
@@ -361,7 +389,7 @@ const UserWorkLoad: React.FC = () => {
                 <Divider style={{ margin: `${theme.spacing.xl} 0` }} />
 
                 <Form.Item style={{ textAlign: "right", marginBottom: 0 }}>
-                  <Button
+                  {/* <Button
                     type="primary"
                     htmlType="submit"
                     loading={loading}
@@ -380,7 +408,7 @@ const UserWorkLoad: React.FC = () => {
                     }}
                   >
                     บันทึกภาระงาน
-                  </Button>
+                  </Button> */}
                 </Form.Item>
               </Form>
             </Card>
@@ -391,4 +419,4 @@ const UserWorkLoad: React.FC = () => {
   );
 };
 
-export default UserWorkLoad;
+export default UserHistoryDetail;
