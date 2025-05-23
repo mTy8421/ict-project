@@ -7,6 +7,19 @@
     "@types/express": "^5.0.1",
     "@types/node": "^22.15.3",
     "bcrypt": "^5.1.1",
+<<<<<<< HEAD
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "multer": "^2.0.0",
+    "mysql2": "^3.13.0",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "sharp": "^0.34.2",
+    "typeorm": "^0.3.21"
+=======
     "express": "^5.1.0",
     "install": "^0.13.0",
     "mysql2": "^3.14.1",
@@ -20,6 +33,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts"
+>>>>>>> origin/main
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2"
