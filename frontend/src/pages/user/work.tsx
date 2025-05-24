@@ -308,153 +308,338 @@ const UserWork: React.FC = () => {
           <DeanNavbar />
         </div>
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
-          <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
-            <div
-              style={{
-                marginBottom: theme.spacing.xl,
-                background: theme.white,
-                padding: theme.spacing.xl,
-                borderRadius: theme.borderRadius.lg,
-                boxShadow: theme.shadow,
-              }}
-            >
+          <div className="hidden md:block max-w-[1200px]">
+            <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  marginBottom: theme.spacing.xl,
+                  background: theme.white,
+                  padding: theme.spacing.xl,
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <div>
+                    <Title
+                      level={3}
+                      style={{
+                        margin: 0,
+                        color: theme.primary,
+                        fontWeight: theme.fontWeight.semibold,
+                      }}
+                    >
+                      จัดการภาระงาน
+                    </Title>
+                    <Text
+                      style={{
+                        color: theme.textLight,
+                        marginTop: theme.spacing.sm,
+                        display: "block",
+                      }}
+                    >
+                      ดูและจัดการภาระงานทั้งหมด
+                    </Text>
+                  </div>
+                  <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => navigate("/user/work/new")}
+                    style={{
+                      // background: theme.primary,
+                      // borderColor: theme.primary,
+                      height: "45px",
+                      padding: `0 ${theme.spacing.xl}`,
+                      borderRadius: theme.borderRadius.md,
+                      fontSize: theme.fontSize.md,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: theme.spacing.sm,
+                    }}
+                  >
+                    เพิ่มภาระงาน
+                  </Button>
+                </div>
+              </div>
+
+              <Card
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
+                  marginBottom: theme.spacing.xl,
+                }}
+                bodyStyle={{ padding: theme.spacing.xl }}
+              >
+                <Row gutter={[24, 24]} align="middle">
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Search
+                      placeholder="ค้นหาภาระงาน..."
+                      allowClear
+                      onSearch={setSearchText}
+                      onChange={(e) => setSearchText(e.target.value)}
+                      style={{ width: "100%" }}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Select
+                      mode="multiple"
+                      placeholder="กรองตามสถานะ"
+                      style={{ width: "100%" }}
+                      onChange={setStatusFilter}
+                      options={[
+                        { label: "รอดำเนินการ", value: "pending" },
+                        { label: "กำลังดำเนินการ", value: "in_progress" },
+                        { label: "เสร็จสิ้น", value: "completed" },
+                      ]}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Select
+                      mode="multiple"
+                      placeholder="กรองตามความสำคัญ"
+                      style={{ width: "100%" }}
+                      onChange={setPriorityFilter}
+                      options={[
+                        { label: "สูง", value: "high" },
+                        { label: "ปานกลาง", value: "medium" },
+                        { label: "ต่ำ", value: "low" },
+                      ]}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={12}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <RangePicker
+                      style={{ width: "100%" }}
+                      onChange={(dates) => {
+                        if (dates) {
+                          setDateRange([
+                            dates[0]?.toISOString() || "",
+                            dates[1]?.toISOString() || "",
+                          ]);
+                        } else {
+                          setDateRange(null);
+                        }
+                      }}
+                    />
+                  </Col>
+                </Row>
+              </Card>
+
+              <Card
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
+                }}
+                bodyStyle={{ padding: theme.spacing.xl }}
+              >
+                <div style={{ width: "100%", overflowX: "auto" }}>
+                  <Table
+                    columns={columns}
+                    dataSource={filteredWorkloads}
+                    rowKey="id"
+                    loading={loading}
+                    pagination={{
+                      pageSize: 10,
+                      showSizeChanger: true,
+                      showTotal: (total) => `ทั้งหมด ${total} รายการ`,
+                    }}
+                    scroll={{ x: "max-content" }}
+                  />
+                </div>
+              </Card>
+
+              <Card
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
+                }}
+              ></Card>
+            </Content>
+          </div>
+
+          <div className="md:hidden">
+            <Content style={{ width: "100%", margin: "0 auto" }}>
+              <div
+                style={{
+                  marginBottom: theme.spacing.xl,
+                  background: theme.white,
+                  padding: theme.spacing.xl,
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
                 }}
               >
                 <div>
-                  <Title
-                    level={3}
+                  <div>
+                    <Title
+                      level={3}
+                      style={{
+                        margin: 0,
+                        color: theme.primary,
+                        fontWeight: theme.fontWeight.semibold,
+                      }}
+                    >
+                      จัดการภาระงาน
+                    </Title>
+                    <Text
+                      style={{
+                        color: theme.textLight,
+                        marginTop: theme.spacing.sm,
+                        display: "block",
+                      }}
+                    >
+                      ดูและจัดการภาระงานทั้งหมด
+                    </Text>
+                  </div>
+                  <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => navigate("/user/work/new")}
                     style={{
-                      margin: 0,
-                      color: theme.primary,
-                      fontWeight: theme.fontWeight.semibold,
+                      // background: theme.primary,
+                      // borderColor: theme.primary,
+                      height: "45px",
+                      padding: `0 ${theme.spacing.xl}`,
+                      borderRadius: theme.borderRadius.md,
+                      fontSize: theme.fontSize.md,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: theme.spacing.sm,
+                      marginTop: 15,
                     }}
                   >
-                    จัดการภาระงาน
-                  </Title>
-                  <Text
-                    style={{
-                      color: theme.textLight,
-                      marginTop: theme.spacing.sm,
-                      display: "block",
-                    }}
-                  >
-                    ดูและจัดการภาระงานทั้งหมด
-                  </Text>
+                    เพิ่มภาระงาน
+                  </Button>
                 </div>
-                <Button
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  onClick={() => navigate("/user/work/new")}
-                  style={{
-                    // background: theme.primary,
-                    // borderColor: theme.primary,
-                    height: "45px",
-                    padding: `0 ${theme.spacing.xl}`,
-                    borderRadius: theme.borderRadius.md,
-                    fontSize: theme.fontSize.md,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: theme.spacing.sm,
-                  }}
-                >
-                  เพิ่มภาระงาน
-                </Button>
               </div>
-            </div>
 
-            <Card
-              style={{
-                borderRadius: theme.borderRadius.lg,
-                boxShadow: theme.shadow,
-                background: theme.white,
-                marginBottom: theme.spacing.xl,
-              }}
-              bodyStyle={{ padding: theme.spacing.xl }}
-            >
-              <Row gutter={[24, 24]} align="middle">
-                <Col xs={24} sm={8} style={{ paddingBottom: theme.spacing.md }}>
-                  <Search
-                    placeholder="ค้นหาภาระงาน..."
-                    allowClear
-                    onSearch={setSearchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ width: "100%" }}
-                  />
-                </Col>
-                <Col xs={24} sm={8} style={{ paddingBottom: theme.spacing.md }}>
-                  <Select
-                    mode="multiple"
-                    placeholder="กรองตามสถานะ"
-                    style={{ width: "100%" }}
-                    onChange={setStatusFilter}
-                    options={[
-                      { label: "รอดำเนินการ", value: "pending" },
-                      { label: "กำลังดำเนินการ", value: "in_progress" },
-                      { label: "เสร็จสิ้น", value: "completed" },
-                    ]}
-                  />
-                </Col>
-                <Col xs={24} sm={8} style={{ paddingBottom: theme.spacing.md }}>
-                  <Select
-                    mode="multiple"
-                    placeholder="กรองตามความสำคัญ"
-                    style={{ width: "100%" }}
-                    onChange={setPriorityFilter}
-                    options={[
-                      { label: "สูง", value: "high" },
-                      { label: "ปานกลาง", value: "medium" },
-                      { label: "ต่ำ", value: "low" },
-                    ]}
-                  />
-                </Col>
-                <Col
-                  xs={24}
-                  sm={12}
-                  style={{ paddingBottom: theme.spacing.md }}
-                >
-                  <RangePicker
-                    style={{ width: "100%" }}
-                    onChange={(dates) => {
-                      if (dates) {
-                        setDateRange([
-                          dates[0]?.toISOString() || "",
-                          dates[1]?.toISOString() || "",
-                        ]);
-                      } else {
-                        setDateRange(null);
-                      }
-                    }}
-                  />
-                </Col>
-              </Row>
-            </Card>
-
-            <Card
-              style={{
-                borderRadius: theme.borderRadius.lg,
-                boxShadow: theme.shadow,
-                background: theme.white,
-              }}
-              bodyStyle={{ padding: theme.spacing.xl }}
-            >
-              <Table
-                columns={columns}
-                dataSource={filteredWorkloads}
-                rowKey="id"
-                loading={loading}
-                pagination={{
-                  pageSize: 10,
-                  showSizeChanger: true,
-                  showTotal: (total) => `ทั้งหมด ${total} รายการ`,
+              <Card
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
+                  marginBottom: theme.spacing.xl,
                 }}
-              />
-            </Card>
-          </Content>
+                bodyStyle={{ padding: theme.spacing.xl }}
+              >
+                <Row gutter={[24, 24]} align="middle">
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Search
+                      placeholder="ค้นหาภาระงาน..."
+                      allowClear
+                      onSearch={setSearchText}
+                      onChange={(e) => setSearchText(e.target.value)}
+                      style={{ width: "100%" }}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Select
+                      mode="multiple"
+                      placeholder="กรองตามสถานะ"
+                      style={{ width: "100%" }}
+                      onChange={setStatusFilter}
+                      options={[
+                        { label: "รอดำเนินการ", value: "pending" },
+                        { label: "กำลังดำเนินการ", value: "in_progress" },
+                        { label: "เสร็จสิ้น", value: "completed" },
+                      ]}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Select
+                      mode="multiple"
+                      placeholder="กรองตามความสำคัญ"
+                      style={{ width: "100%" }}
+                      onChange={setPriorityFilter}
+                      options={[
+                        { label: "สูง", value: "high" },
+                        { label: "ปานกลาง", value: "medium" },
+                        { label: "ต่ำ", value: "low" },
+                      ]}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={12}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <RangePicker
+                      style={{ width: "100%" }}
+                      onChange={(dates) => {
+                        if (dates) {
+                          setDateRange([
+                            dates[0]?.toISOString() || "",
+                            dates[1]?.toISOString() || "",
+                          ]);
+                        } else {
+                          setDateRange(null);
+                        }
+                      }}
+                    />
+                  </Col>
+                </Row>
+              </Card>
+
+              <Card
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
+                }}
+                bodyStyle={{ padding: theme.spacing.xl }}
+              >
+                <div style={{ width: "100%", overflowX: "auto" }}>
+                  <Table
+                    columns={columns}
+                    dataSource={filteredWorkloads}
+                    rowKey="id"
+                    loading={loading}
+                    pagination={{
+                      pageSize: 10,
+                      showSizeChanger: true,
+                      showTotal: (total) => `ทั้งหมด ${total} รายการ`,
+                    }}
+                    scroll={{ x: "max-content" }}
+                  />
+                </div>
+              </Card>
+            </Content>
+          </div>
         </Layout>
       </Layout>
     </Layout>

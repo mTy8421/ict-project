@@ -145,7 +145,7 @@ const User: React.FC = () => {
           <DeanNavbar />
         </div>
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
-          <Content style={{ maxWidth: "1200px", margin: "0 15%" }}>
+          <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
             <div
               style={{
                 marginBottom: theme.spacing.xl,
@@ -346,6 +346,10 @@ const User: React.FC = () => {
                   )}
                 />
               </Card>
+            </div>
+
+            <div style={{ marginTop: theme.spacing.xl }}>
+              <Card></Card>
             </div>
 
             {/* <Row gutter={[24, 24]} style={{ marginTop: theme.spacing.xl }}>
