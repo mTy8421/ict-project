@@ -57,6 +57,12 @@ interface Workload {
   created_at: string;
 }
 
+interface User {
+  user_id: number;
+  user_name: string;
+  user_role: string;
+}
+
 const UserWork: React.FC = () => {
   const navigate = useNavigate();
   const [workloads, setWorkloads] = useState<Workload[]>([]);
@@ -68,7 +74,7 @@ const UserWork: React.FC = () => {
 
   const fetchWorkloads = async () => {
     try {
-      const response = await axiosInstance.get("/workload");
+      const response = await axiosInstance.get(`/workload/workloadbyuser`);
       setWorkloads(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);

@@ -189,4 +189,18 @@ export class WorkloadService {
     }
     return workload;
   }
+
+  async findeOneByUser(user_id: number): Promise<Workload[]> {
+    const workload = await this.workloadRepository
+      .createQueryBuilder('workload')
+      .innerJoin('workload.assignedTo', 'user')
+      .where('user.user_id = :user_id', { user_id })
+      .getMany();
+
+    if (!workload) {
+      throw new NotFoundException('Workload not found for user');
+    }
+
+    return workload;
+  }
 }

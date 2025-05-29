@@ -44,7 +44,7 @@ const User: React.FC = () => {
 
   const fetchWorkloads = async () => {
     try {
-      const response = await axiosInstance.get("/workload");
+      const response = await axiosInstance.get("/workload/workloadbyuser");
       setWorkloads(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);
@@ -145,215 +145,99 @@ const User: React.FC = () => {
           <DeanNavbar />
         </div>
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
-          <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
-            <div
-              style={{
-                marginBottom: theme.spacing.xl,
-                background: theme.white,
-                padding: theme.spacing.xl,
-                borderRadius: theme.borderRadius.lg,
-                boxShadow: theme.shadow,
-              }}
-            >
-              <Title
-                level={3}
+          <div className="hidden md:block">
+            <Content style={{ maxWidth: "1200px", margin: "0 15%" }}>
+              <div
                 style={{
-                  margin: 0,
-                  color: theme.primary,
-                  fontWeight: theme.fontWeight.semibold,
-                }}
-              >
-                ภาพรวมภาระงาน
-              </Title>
-              <Text
-                style={{
-                  color: theme.textLight,
-                  marginTop: theme.spacing.sm,
-                  display: "block",
-                }}
-              >
-                สถานะภาระงานทั้งหมดในระบบ
-              </Text>
-            </div>
-
-            <Row gutter={[24, 24]}>
-              <Col xs={24} sm={8}>
-                <Card
-                  style={{
-                    borderRadius: theme.borderRadius.lg,
-                    boxShadow: theme.shadow,
-                    background: theme.white,
-                  }}
-                  bodyStyle={{ padding: theme.spacing.xl }}
-                >
-                  <Statistic
-                    title="ภาระงานทั้งหมด"
-                    value={totalWorkloads}
-                    prefix={
-                      <FileTextOutlined style={{ color: theme.primary }} />
-                    }
-                    valueStyle={{ color: theme.primary }}
-                  />
-                </Card>
-              </Col>
-              <Col xs={24} sm={8}>
-                <Card
-                  style={{
-                    borderRadius: theme.borderRadius.lg,
-                    boxShadow: theme.shadow,
-                    background: theme.white,
-                  }}
-                  bodyStyle={{ padding: theme.spacing.xl }}
-                >
-                  <Statistic
-                    title="กำลังดำเนินการ"
-                    value={inProgressWorkloads}
-                    prefix={
-                      <ClockCircleOutlined style={{ color: theme.primary }} />
-                    }
-                    valueStyle={{ color: theme.primary }}
-                  />
-                </Card>
-              </Col>
-              <Col xs={24} sm={8}>
-                <Card
-                  style={{
-                    borderRadius: theme.borderRadius.lg,
-                    boxShadow: theme.shadow,
-                    background: theme.white,
-                  }}
-                  bodyStyle={{ padding: theme.spacing.xl }}
-                >
-                  <Statistic
-                    title="เสร็จสิ้น"
-                    value={completedWorkloads}
-                    prefix={
-                      <CheckCircleOutlined style={{ color: theme.primary }} />
-                    }
-                    valueStyle={{ color: theme.primary }}
-                  />
-                </Card>
-              </Col>
-            </Row>
-
-            <div style={{ marginTop: theme.spacing.xl }}>
-              <Card
-                title="อัตราการเสร็จสิ้น"
-                style={{
+                  marginBottom: theme.spacing.xl,
+                  background: theme.white,
+                  padding: theme.spacing.xl,
                   borderRadius: theme.borderRadius.lg,
                   boxShadow: theme.shadow,
-                  background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
               >
-                <Progress
-                  type="circle"
-                  percent={completionRate}
-                  format={(percent) => `${percent?.toFixed(1)}%`}
-                  width={200}
-                  strokeColor={theme.primary}
-                />
-                <div style={{ marginTop: theme.spacing.lg }}>
-                  <Text
-                    strong
+                <Title
+                  level={3}
+                  style={{
+                    margin: 0,
+                    color: theme.primary,
+                    fontWeight: theme.fontWeight.semibold,
+                  }}
+                >
+                  ภาพรวมภาระงาน
+                </Title>
+                <Text
+                  style={{
+                    color: theme.textLight,
+                    marginTop: theme.spacing.sm,
+                    display: "block",
+                  }}
+                >
+                  สถานะภาระงานทั้งหมดในระบบ
+                </Text>
+              </div>
+
+              <Row gutter={[24, 24]}>
+                <Col xs={24} sm={8}>
+                  <Card
                     style={{
-                      display: "block",
-                      marginBottom: theme.spacing.sm,
+                      borderRadius: theme.borderRadius.lg,
+                      boxShadow: theme.shadow,
+                      background: theme.white,
                     }}
+                    bodyStyle={{ padding: theme.spacing.xl }}
                   >
-                    สรุปสถานะ
-                  </Text>
-                  <div
+                    <Statistic
+                      title="ภาระงานทั้งหมด"
+                      value={totalWorkloads}
+                      prefix={
+                        <FileTextOutlined style={{ color: theme.primary }} />
+                      }
+                      valueStyle={{ color: theme.primary }}
+                    />
+                  </Card>
+                </Col>
+                <Col xs={24} sm={8}>
+                  <Card
                     style={{
-                      display: "flex",
-                      gap: theme.spacing.lg,
-                      justifyContent: "center",
+                      borderRadius: theme.borderRadius.lg,
+                      boxShadow: theme.shadow,
+                      background: theme.white,
                     }}
+                    bodyStyle={{ padding: theme.spacing.xl }}
                   >
-                    <div>
-                      <Text type="secondary">รอดำเนินการ</Text>
-                      <Text
-                        strong
-                        style={{ display: "block", color: theme.warning }}
-                      >
-                        {pendingWorkloads} รายการ
-                      </Text>
-                    </div>
-                    <div>
-                      <Text type="secondary">กำลังดำเนินการ</Text>
-                      <Text
-                        strong
-                        style={{ display: "block", color: theme.primary }}
-                      >
-                        {inProgressWorkloads} รายการ
-                      </Text>
-                    </div>
-                    <div>
-                      <Text type="secondary">เสร็จสิ้น</Text>
-                      <Text
-                        strong
-                        style={{ display: "block", color: theme.success }}
-                      >
-                        {completedWorkloads} รายการ
-                      </Text>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </div>
+                    <Statistic
+                      title="กำลังดำเนินการ"
+                      value={inProgressWorkloads}
+                      prefix={
+                        <ClockCircleOutlined style={{ color: theme.primary }} />
+                      }
+                      valueStyle={{ color: theme.primary }}
+                    />
+                  </Card>
+                </Col>
+                <Col xs={24} sm={8}>
+                  <Card
+                    style={{
+                      borderRadius: theme.borderRadius.lg,
+                      boxShadow: theme.shadow,
+                      background: theme.white,
+                    }}
+                    bodyStyle={{ padding: theme.spacing.xl }}
+                  >
+                    <Statistic
+                      title="เสร็จสิ้น"
+                      value={completedWorkloads}
+                      prefix={
+                        <CheckCircleOutlined style={{ color: theme.primary }} />
+                      }
+                      valueStyle={{ color: theme.primary }}
+                    />
+                  </Card>
+                </Col>
+              </Row>
 
-            <div style={{ marginTop: theme.spacing.xl }}>
-              <Card
-                title="ภาระงานล่าสุด"
-                style={{
-                  borderRadius: theme.borderRadius.lg,
-                  boxShadow: theme.shadow,
-                  background: theme.white,
-                }}
-                bodyStyle={{ padding: theme.spacing.xl }}
-              >
-                <List
-                  dataSource={recentWorkloads}
-                  renderItem={(item) => (
-                    <List.Item>
-                      <div style={{ width: "100%" }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Text strong>{item.title}</Text>
-                          <Tag color={getStatusColor(item.status)}>
-                            {getStatusText(item.status)}
-                          </Tag>
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginTop: theme.spacing.sm,
-                          }}
-                        >
-                          <Text type="secondary">{item.department}</Text>
-                          <Tag color={getPriorityColor(item.priority)}>
-                            {getPriorityText(item.priority)}
-                          </Tag>
-                        </div>
-                      </div>
-                    </List.Item>
-                  )}
-                />
-              </Card>
-            </div>
-
-            <div style={{ marginTop: theme.spacing.xl }}>
-              <Card></Card>
-            </div>
-
-            {/* <Row gutter={[24, 24]} style={{ marginTop: theme.spacing.xl }}>
-              <Col xs={24} md={12}>
+              <div style={{ marginTop: theme.spacing.xl }}>
                 <Card
                   title="อัตราการเสร็จสิ้น"
                   style={{
@@ -380,7 +264,13 @@ const User: React.FC = () => {
                     >
                       สรุปสถานะ
                     </Text>
-                    <div style={{ display: "flex", gap: theme.spacing.lg }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: theme.spacing.lg,
+                        justifyContent: "center",
+                      }}
+                    >
                       <div>
                         <Text type="secondary">รอดำเนินการ</Text>
                         <Text
@@ -411,8 +301,9 @@ const User: React.FC = () => {
                     </div>
                   </div>
                 </Card>
-              </Col>
-              <Col xs={24} md={12}>
+              </div>
+
+              <div style={{ marginTop: theme.spacing.xl }}>
                 <Card
                   title="ภาระงานล่าสุด"
                   style={{
@@ -456,9 +347,223 @@ const User: React.FC = () => {
                     )}
                   />
                 </Card>
-              </Col>
-            </Row> */}
-          </Content>
+              </div>
+
+              <div style={{ marginTop: theme.spacing.xl }}>
+                <Card></Card>
+              </div>
+            </Content>
+          </div>
+
+          <div className="md:hidden">
+            <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
+              <div
+                style={{
+                  marginBottom: theme.spacing.xl,
+                  background: theme.white,
+                  padding: theme.spacing.xl,
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                }}
+              >
+                <Title
+                  level={3}
+                  style={{
+                    margin: 0,
+                    color: theme.primary,
+                    fontWeight: theme.fontWeight.semibold,
+                  }}
+                >
+                  ภาพรวมภาระงาน
+                </Title>
+                <Text
+                  style={{
+                    color: theme.textLight,
+                    marginTop: theme.spacing.sm,
+                    display: "block",
+                  }}
+                >
+                  สถานะภาระงานทั้งหมดในระบบ
+                </Text>
+              </div>
+
+              <Row gutter={[24, 24]}>
+                <Col xs={24} sm={8}>
+                  <Card
+                    style={{
+                      borderRadius: theme.borderRadius.lg,
+                      boxShadow: theme.shadow,
+                      background: theme.white,
+                    }}
+                    bodyStyle={{ padding: theme.spacing.xl }}
+                  >
+                    <Statistic
+                      title="ภาระงานทั้งหมด"
+                      value={totalWorkloads}
+                      prefix={
+                        <FileTextOutlined style={{ color: theme.primary }} />
+                      }
+                      valueStyle={{ color: theme.primary }}
+                    />
+                  </Card>
+                </Col>
+                <Col xs={24} sm={8}>
+                  <Card
+                    style={{
+                      borderRadius: theme.borderRadius.lg,
+                      boxShadow: theme.shadow,
+                      background: theme.white,
+                    }}
+                    bodyStyle={{ padding: theme.spacing.xl }}
+                  >
+                    <Statistic
+                      title="กำลังดำเนินการ"
+                      value={inProgressWorkloads}
+                      prefix={
+                        <ClockCircleOutlined style={{ color: theme.primary }} />
+                      }
+                      valueStyle={{ color: theme.primary }}
+                    />
+                  </Card>
+                </Col>
+                <Col xs={24} sm={8}>
+                  <Card
+                    style={{
+                      borderRadius: theme.borderRadius.lg,
+                      boxShadow: theme.shadow,
+                      background: theme.white,
+                    }}
+                    bodyStyle={{ padding: theme.spacing.xl }}
+                  >
+                    <Statistic
+                      title="เสร็จสิ้น"
+                      value={completedWorkloads}
+                      prefix={
+                        <CheckCircleOutlined style={{ color: theme.primary }} />
+                      }
+                      valueStyle={{ color: theme.primary }}
+                    />
+                  </Card>
+                </Col>
+              </Row>
+
+              <div style={{ marginTop: theme.spacing.xl }}>
+                <Card
+                  title="อัตราการเสร็จสิ้น"
+                  style={{
+                    borderRadius: theme.borderRadius.lg,
+                    boxShadow: theme.shadow,
+                    background: theme.white,
+                  }}
+                  bodyStyle={{ padding: theme.spacing.xl }}
+                >
+                  <Progress
+                    type="circle"
+                    percent={completionRate}
+                    format={(percent) => `${percent?.toFixed(1)}%`}
+                    width={200}
+                    strokeColor={theme.primary}
+                  />
+                  <div style={{ marginTop: theme.spacing.lg }}>
+                    <Text
+                      strong
+                      style={{
+                        display: "block",
+                        marginBottom: theme.spacing.sm,
+                      }}
+                    >
+                      สรุปสถานะ
+                    </Text>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: theme.spacing.lg,
+                        justifyContent: "center",
+                      }}
+                    >
+                      <div>
+                        <Text type="secondary">รอดำเนินการ</Text>
+                        <Text
+                          strong
+                          style={{ display: "block", color: theme.warning }}
+                        >
+                          {pendingWorkloads} รายการ
+                        </Text>
+                      </div>
+                      <div>
+                        <Text type="secondary">กำลังดำเนินการ</Text>
+                        <Text
+                          strong
+                          style={{ display: "block", color: theme.primary }}
+                        >
+                          {inProgressWorkloads} รายการ
+                        </Text>
+                      </div>
+                      <div>
+                        <Text type="secondary">เสร็จสิ้น</Text>
+                        <Text
+                          strong
+                          style={{ display: "block", color: theme.success }}
+                        >
+                          {completedWorkloads} รายการ
+                        </Text>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
+              <div style={{ marginTop: theme.spacing.xl }}>
+                <Card
+                  title="ภาระงานล่าสุด"
+                  style={{
+                    borderRadius: theme.borderRadius.lg,
+                    boxShadow: theme.shadow,
+                    background: theme.white,
+                  }}
+                  bodyStyle={{ padding: theme.spacing.xl }}
+                >
+                  <List
+                    dataSource={recentWorkloads}
+                    renderItem={(item) => (
+                      <List.Item>
+                        <div style={{ width: "100%" }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text strong>{item.title}</Text>
+                            <Tag color={getStatusColor(item.status)}>
+                              {getStatusText(item.status)}
+                            </Tag>
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              marginTop: theme.spacing.sm,
+                            }}
+                          >
+                            <Text type="secondary">{item.department}</Text>
+                            <Tag color={getPriorityColor(item.priority)}>
+                              {getPriorityText(item.priority)}
+                            </Tag>
+                          </div>
+                        </div>
+                      </List.Item>
+                    )}
+                  />
+                </Card>
+              </div>
+
+              <div style={{ marginTop: theme.spacing.xl }}>
+                <Card></Card>
+              </div>
+            </Content>
+          </div>
         </Layout>
       </Layout>
     </Layout>

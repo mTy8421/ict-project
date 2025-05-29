@@ -14,6 +14,9 @@ import { CreateWorkloadDto } from './dto/create-workload.dto';
 import { Workload, WorkloadStatus } from './entities/workload.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
+
+import { Request } from 'express';
+import { Req } from '@nestjs/common';
 // import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('workload')
@@ -87,5 +90,12 @@ export class WorkloadController {
   @Get('edit/:id')
   findOneById(@Param('id') id: number): Promise<Workload> {
     return this.workloadService.findOneById(id);
+  }
+
+  @Get('workloadbyuser')
+  findOneByUser(@Req() req: Request): Promise<Workload[]> {
+    const user = req.user as { user_id: number; user_name: string };
+    console.table(user);
+    return this.workloadService.findeOneByUser(user.user_id);
   }
 }

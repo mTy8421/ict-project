@@ -22,6 +22,7 @@ import AdminWorkLoad from "./pages/admin/workload";
 import EditUserWorkLoad from "./pages/user/edit";
 import DetailUserWorkLoad from "./pages/user/detail";
 import UserHistoryDetail from "./pages/user/historyDetail";
+import DetailHeadWorkLoad from "./pages/head/detail";
 
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
         />
         <Route path="/head" element={<Head />} />
         <Route path="/head/work" element={<HeadWork />} />
+        <Route path="/head/work/detail/:id" element={<DetailHeadWorkLoad />} />
         <Route path="/head/history" element={<HeadHistory />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/work/new" element={<AdminWorkLoad />} />

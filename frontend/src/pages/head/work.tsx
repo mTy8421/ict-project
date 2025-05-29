@@ -38,6 +38,7 @@ import {
 } from "@ant-design/icons";
 import DeanHeader from "../../components/head/Header";
 import DeanNavbar from "../../components/head/Navbar";
+import ReHeader from "../../components/head/NavbarHeader";
 
 const { Header, Content, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -246,7 +247,7 @@ const HeadWork: React.FC = () => {
             <Button
               type="text"
               icon={<EyeOutlined />}
-              onClick={() => navigate(`/dean/workload/${record.id}`)}
+              onClick={() => navigate(`/head/work/detail/${record.id}`)}
               style={{ color: theme.primary }}
             />
           </Tooltip>
@@ -254,7 +255,7 @@ const HeadWork: React.FC = () => {
             <Button
               type="text"
               icon={<EditOutlined />}
-              onClick={() => navigate(`/dean/workload/${record.id}/edit`)}
+              onClick={() => navigate(`/dean/work/edit/${record.id}`)}
               style={{ color: theme.primary }}
             />
           </Tooltip>
@@ -322,139 +323,309 @@ const HeadWork: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
-      <DeanHeader name="test" />
+      <div className="hidden md:block">
+        <DeanHeader name="test" />
+      </div>
+
+      <div className="md:hidden">
+        <ReHeader />
+      </div>
+
       <Layout style={{ height: "calc(100vh - 70px)" }}>
-        <DeanNavbar />
+        <div className="hidden md:block">
+          <DeanNavbar />
+        </div>
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
-          <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
-            <div
-              style={{
-                marginBottom: theme.spacing.xl,
-                background: theme.white,
-                padding: theme.spacing.xl,
-                borderRadius: theme.borderRadius.lg,
-                boxShadow: theme.shadow,
-              }}
-            >
+          <div className="hidden md:block">
+            <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  marginBottom: theme.spacing.xl,
+                  background: theme.white,
+                  padding: theme.spacing.xl,
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
                 }}
               >
-                <div>
-                  <Title
-                    level={3}
-                    style={{
-                      margin: 0,
-                      color: theme.primary,
-                      fontWeight: theme.fontWeight.semibold,
-                    }}
-                  >
-                    จัดการภาระงาน
-                  </Title>
-                  <Text
-                    style={{
-                      color: theme.textLight,
-                      marginTop: theme.spacing.sm,
-                      display: "block",
-                    }}
-                  >
-                    ดูและจัดการภาระงานทั้งหมด
-                  </Text>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <div>
+                    <Title
+                      level={3}
+                      style={{
+                        margin: 0,
+                        color: theme.primary,
+                        fontWeight: theme.fontWeight.semibold,
+                      }}
+                    >
+                      จัดการภาระงาน
+                    </Title>
+                    <Text
+                      style={{
+                        color: theme.textLight,
+                        marginTop: theme.spacing.sm,
+                        display: "block",
+                      }}
+                    >
+                      ดูและจัดการภาระงานทั้งหมด
+                    </Text>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <Card
-              style={{
-                borderRadius: theme.borderRadius.lg,
-                boxShadow: theme.shadow,
-                background: theme.white,
-                marginBottom: theme.spacing.xl,
-              }}
-              bodyStyle={{ padding: theme.spacing.xl }}
-            >
-              <Row gutter={[24, 24]} align="middle">
-                <Col xs={24} sm={8} style={{ paddingBottom: theme.spacing.md }}>
-                  <Search
-                    placeholder="ค้นหาภาระงาน..."
-                    allowClear
-                    onSearch={setSearchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ width: "100%" }}
-                  />
-                </Col>
-                <Col xs={24} sm={8} style={{ paddingBottom: theme.spacing.md }}>
-                  <Select
-                    mode="multiple"
-                    placeholder="กรองตามสถานะ"
-                    style={{ width: "100%" }}
-                    onChange={setStatusFilter}
-                    options={[
-                      { label: "รอดำเนินการ", value: "pending" },
-                      { label: "กำลังดำเนินการ", value: "in_progress" },
-                      { label: "เสร็จสิ้น", value: "completed" },
-                    ]}
-                  />
-                </Col>
-                <Col xs={24} sm={8} style={{ paddingBottom: theme.spacing.md }}>
-                  <Select
-                    mode="multiple"
-                    placeholder="กรองตามความสำคัญ"
-                    style={{ width: "100%" }}
-                    onChange={setPriorityFilter}
-                    options={[
-                      { label: "สูง", value: "high" },
-                      { label: "ปานกลาง", value: "medium" },
-                      { label: "ต่ำ", value: "low" },
-                    ]}
-                  />
-                </Col>
-                <Col
-                  xs={24}
-                  sm={12}
-                  style={{ paddingBottom: theme.spacing.md }}
-                >
-                  <RangePicker
-                    style={{ width: "100%" }}
-                    onChange={(dates) => {
-                      if (dates) {
-                        setDateRange([
-                          dates[0]?.toISOString() || "",
-                          dates[1]?.toISOString() || "",
-                        ]);
-                      } else {
-                        setDateRange(null);
-                      }
-                    }}
-                  />
-                </Col>
-              </Row>
-            </Card>
-
-            <Card
-              style={{
-                borderRadius: theme.borderRadius.lg,
-                boxShadow: theme.shadow,
-                background: theme.white,
-              }}
-              bodyStyle={{ padding: theme.spacing.xl }}
-            >
-              <Table
-                columns={columns}
-                dataSource={filteredWorkloads}
-                rowKey="id"
-                loading={loading}
-                pagination={{
-                  pageSize: 10,
-                  showSizeChanger: true,
-                  showTotal: (total) => `ทั้งหมด ${total} รายการ`,
+              <Card
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
+                  marginBottom: theme.spacing.xl,
                 }}
-              />
-            </Card>
-          </Content>
+                bodyStyle={{ padding: theme.spacing.xl }}
+              >
+                <Row gutter={[24, 24]} align="middle">
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Search
+                      placeholder="ค้นหาภาระงาน..."
+                      allowClear
+                      onSearch={setSearchText}
+                      onChange={(e) => setSearchText(e.target.value)}
+                      style={{ width: "100%" }}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Select
+                      mode="multiple"
+                      placeholder="กรองตามสถานะ"
+                      style={{ width: "100%" }}
+                      onChange={setStatusFilter}
+                      options={[
+                        { label: "รอดำเนินการ", value: "pending" },
+                        { label: "กำลังดำเนินการ", value: "in_progress" },
+                        { label: "เสร็จสิ้น", value: "completed" },
+                      ]}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Select
+                      mode="multiple"
+                      placeholder="กรองตามความสำคัญ"
+                      style={{ width: "100%" }}
+                      onChange={setPriorityFilter}
+                      options={[
+                        { label: "สูง", value: "high" },
+                        { label: "ปานกลาง", value: "medium" },
+                        { label: "ต่ำ", value: "low" },
+                      ]}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={12}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <RangePicker
+                      style={{ width: "100%" }}
+                      onChange={(dates) => {
+                        if (dates) {
+                          setDateRange([
+                            dates[0]?.toISOString() || "",
+                            dates[1]?.toISOString() || "",
+                          ]);
+                        } else {
+                          setDateRange(null);
+                        }
+                      }}
+                    />
+                  </Col>
+                </Row>
+              </Card>
+
+              <Card
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
+                }}
+                bodyStyle={{ padding: theme.spacing.xl }}
+              >
+                <Table
+                  columns={columns}
+                  dataSource={filteredWorkloads}
+                  rowKey="id"
+                  loading={loading}
+                  pagination={{
+                    pageSize: 10,
+                    showSizeChanger: true,
+                    showTotal: (total) => `ทั้งหมด ${total} รายการ`,
+                  }}
+                />
+              </Card>
+            </Content>
+          </div>
+
+          <div className="md:hidden">
+            <Content style={{ width: "100%", margin: "0 auto" }}>
+              <div
+                style={{
+                  marginBottom: theme.spacing.xl,
+                  background: theme.white,
+                  padding: theme.spacing.xl,
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <div>
+                    <Title
+                      level={3}
+                      style={{
+                        margin: 0,
+                        color: theme.primary,
+                        fontWeight: theme.fontWeight.semibold,
+                      }}
+                    >
+                      จัดการภาระงาน
+                    </Title>
+                    <Text
+                      style={{
+                        color: theme.textLight,
+                        marginTop: theme.spacing.sm,
+                        display: "block",
+                      }}
+                    >
+                      ดูและจัดการภาระงานทั้งหมด
+                    </Text>
+                  </div>
+                </div>
+              </div>
+
+              <Card
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
+                  marginBottom: theme.spacing.xl,
+                }}
+                bodyStyle={{ padding: theme.spacing.xl }}
+              >
+                <Row gutter={[24, 24]} align="middle">
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Search
+                      placeholder="ค้นหาภาระงาน..."
+                      allowClear
+                      onSearch={setSearchText}
+                      onChange={(e) => setSearchText(e.target.value)}
+                      style={{ width: "100%" }}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Select
+                      mode="multiple"
+                      placeholder="กรองตามสถานะ"
+                      style={{ width: "100%" }}
+                      onChange={setStatusFilter}
+                      options={[
+                        { label: "รอดำเนินการ", value: "pending" },
+                        { label: "กำลังดำเนินการ", value: "in_progress" },
+                        { label: "เสร็จสิ้น", value: "completed" },
+                      ]}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Select
+                      mode="multiple"
+                      placeholder="กรองตามความสำคัญ"
+                      style={{ width: "100%" }}
+                      onChange={setPriorityFilter}
+                      options={[
+                        { label: "สูง", value: "high" },
+                        { label: "ปานกลาง", value: "medium" },
+                        { label: "ต่ำ", value: "low" },
+                      ]}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={12}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <RangePicker
+                      style={{ width: "100%" }}
+                      onChange={(dates) => {
+                        if (dates) {
+                          setDateRange([
+                            dates[0]?.toISOString() || "",
+                            dates[1]?.toISOString() || "",
+                          ]);
+                        } else {
+                          setDateRange(null);
+                        }
+                      }}
+                    />
+                  </Col>
+                </Row>
+              </Card>
+
+              <Card
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
+                }}
+                bodyStyle={{ padding: theme.spacing.xl }}
+              >
+                <div style={{ overflowX: "auto", width: "100%" }}>
+                  <Table
+                    columns={columns}
+                    dataSource={filteredWorkloads}
+                    rowKey="id"
+                    loading={loading}
+                    pagination={{
+                      pageSize: 10,
+                      showSizeChanger: true,
+                      showTotal: (total) => `ทั้งหมด ${total} รายการ`,
+                    }}
+                    scroll={{ x: "max-content" }}
+                  />
+                </div>
+              </Card>
+            </Content>
+          </div>
         </Layout>
       </Layout>
     </Layout>
