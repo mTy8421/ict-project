@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Form,
   Input,
@@ -28,6 +28,7 @@ const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 interface WorkloadForm {
+  user_id: number;
   user_name: string;
   user_email: string;
   user_role: string;
@@ -38,34 +39,51 @@ interface User {
   user_id: number;
   user_name: string;
   user_role: string;
+  user_password: string;
 }
 
-const AdminWorkLoad: React.FC = () => {
+const AdminEdit: React.FC = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
 
   const [role, setRole] = useState("admin");
   const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await axiosInstance.get("/user/profile");
-        setUser(response.data);
-      } catch (error: any) {
-        console.error("Error fetching user:", error);
-        if (error.response?.status === 401) {
-          message.error("กรุณาเข้าสู่ระบบใหม่");
-          navigate("/login");
-        } else {
-          message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
-        }
+  const fetchUser = async () => {
+    try {
+      const response = await axiosInstance.get("/user/profile");
+      setUser(response.data);
+    } catch (error: any) {
+      console.error("Error fetching user:", error);
+      if (error.response?.status === 401) {
+        message.error("กรุณาเข้าสู่ระบบใหม่");
+        navigate("/login");
+      } else {
+        message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
       }
-    };
+    }
+  };
 
+  const fetchData = async () => {
+    try {
+      const responst = await axiosInstance.get(`/user/${id}`);
+      const data = responst.data;
+
+      form.setFieldsValue({
+        user_name: data.user_name,
+        user_email: data.user_email,
+        user_password: data.user_password,
+        user_role: data.user_role,
+      });
+      setRole(data.user_role);
+    } catch (error: any) { }
+  };
+
+  useEffect(() => {
     fetchUser();
+    fetchData();
   }, [navigate]);
 
   const onFinish = async (values: WorkloadForm) => {
@@ -80,15 +98,15 @@ const AdminWorkLoad: React.FC = () => {
 
       console.log("Sending data:", workloadData);
 
-      const response = await axiosInstance.post("/user", workloadData);
+      const response = await axiosInstance.patch(`/user/${id}`, workloadData);
       console.log("Response:", response.data);
 
-      message.success("เพิ่มภาระงานสำเร็จ");
+      message.success("แก้ไขผู้งานสำเร็จ");
       navigate("/admin");
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้"
+        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้",
       );
     } finally {
       setLoading(false);
@@ -153,7 +171,7 @@ const AdminWorkLoad: React.FC = () => {
                   letterSpacing: "0.5px",
                 }}
               >
-                เพิ่มผู้ใช้งาน
+                แก้ไขผู้งาน
               </Title>
               <Text
                 style={{
@@ -163,7 +181,7 @@ const AdminWorkLoad: React.FC = () => {
                   fontSize: theme.fontSize.md,
                 }}
               >
-                กรอกข้อมูลผู้ใช้ที่ต้องการเพิ่ม
+                กรอกข้อมูลผู้ใช้ที่ต้องการแก้ไข
               </Text>
             </div>
 
@@ -258,7 +276,6 @@ const AdminWorkLoad: React.FC = () => {
                       style={{ width: "100%" }}
                     >
                       <Select
-                        defaultValue="admin"
                         onChange={(value) => {
                           setRole(value);
                         }}
@@ -370,4 +387,4 @@ const AdminWorkLoad: React.FC = () => {
   );
 };
 
-export default AdminWorkLoad;
+export default AdminEdit;

@@ -1,40 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   Typography,
   Layout,
-  Menu,
   Button,
-  Row,
-  Col,
   Table,
-  Tag,
   Space,
   Input,
-  Select,
-  Avatar,
   Tooltip,
   Modal,
   message,
 } from "antd";
 import {
-  SearchOutlined,
-  UserAddOutlined,
   SyncOutlined,
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
-import { logout } from "../home/home";
 import theme from "../../theme";
-import {
-  UserOutlined,
-  FileTextOutlined,
-  BarChartOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
 import DeanHeader from "../../components/admin/Header";
 import DeanNavbar from "../../components/admin/Navbar";
 import ReHeader from "../../components/admin/NavbarHeader";
@@ -58,14 +43,10 @@ interface Profile {
   // add other fields if needed
 }
 
-const AdminUser: React.FC = () => {
+const AdminConfig: React.FC = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchText, setSearchText] = useState("");
-  const [roleFilter, setRoleFilter] = useState<string[]>([]);
-  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
-  const [statusFilter, setStatusFilter] = useState<string[]>([]);
 
   const [profile, setProfile] = useState<Profile | null>(null);
 
@@ -95,44 +76,12 @@ const AdminUser: React.FC = () => {
     fetchUsers();
   }, []);
 
-  const handleSearch = async (value: string) => {
-    try {
-      setLoading(true);
-      const response = await axiosInstance.get(`/user/search?query=${value}`);
-      setUsers(response.data);
-    } catch (error) {
-      console.error("Error searching users:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDepartmentFilter = async (value: string[]) => {
-    try {
-      setLoading(true);
-      if (value.length === 0) {
-        const response = await axiosInstance.get("/user");
-        setUsers(response.data);
-      } else {
-        const response = await axiosInstance.get(
-          `/user/filter?department=${value[0]}`,
-        );
-        setUsers(response.data);
-      }
-    } catch (error) {
-      console.error("Error filtering users:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleDelete = async (id: number) => {
     Modal.confirm({
       title: "ยืนยันการลบ",
       content: "คุณต้องการลบผู้ใช้นี้ใช่หรือไม่?",
       okText: "ยืนยัน",
       cancelText: "ยกเลิก",
-      centered: true,
       onOk: async () => {
         try {
           await axiosInstance.delete(`/user/${id}`);
@@ -146,61 +95,11 @@ const AdminUser: React.FC = () => {
     });
   };
 
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case "admin":
-        return "red";
-      case "dean":
-        return "blue";
-      case "staff":
-        return "green";
-      default:
-        return "default";
-    }
-  };
-
-  const getRoleText = (role: string) => {
-    switch (role) {
-      case "admin":
-        return "ผู้ดูแลระบบ";
-      case "dean":
-        return "คณบดี";
-      case "staff":
-        return "พนักงาน";
-      default:
-        return role;
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    return status === "active" ? "success" : "default";
-  };
-
-  const getStatusText = (status: string) => {
-    return status === "active" ? "ใช้งาน" : "ไม่ใช้งาน";
-  };
-
   const columns = [
     {
-      title: "ชื่อผู้ใช้",
+      title: "หัวข้อ",
       dataIndex: "user_name",
       key: "user_name",
-      render: (text: string) => <Text strong>{text}</Text>,
-    },
-    {
-      title: "อีเมล",
-      dataIndex: "user_email",
-      key: "user_email",
-    },
-    {
-      title: "รหัสผ่าน",
-      dataIndex: "user_password",
-      key: "user_password",
-    },
-    {
-      title: "ตำแหน่ง",
-      dataIndex: "user_role",
-      key: "user_role",
     },
     {
       title: "จัดการ",
@@ -211,18 +110,8 @@ const AdminUser: React.FC = () => {
             <Button
               type="text"
               icon={<EditOutlined />}
-              onClick={() => navigate(`/admin/user/edit/${record.user_id}`)}
+              onClick={() => navigate(`/admin/user/${record.user_id}/edit`)}
               style={{ color: theme.primary }}
-            />
-          </Tooltip>
-          <Tooltip title="ลบ">
-            <Button
-              type="text"
-              danger
-              icon={<DeleteOutlined />}
-              onClick={() => {
-                handleDelete(record.user_id);
-              }}
             />
           </Tooltip>
         </Space>
@@ -289,7 +178,6 @@ const AdminUser: React.FC = () => {
               >
                 <div
                   style={{
-                    display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
@@ -303,7 +191,7 @@ const AdminUser: React.FC = () => {
                         fontWeight: theme.fontWeight.semibold,
                       }}
                     >
-                      จัดการผู้ใช้
+                      ตั่งค่าระบบ
                     </Title>
                     <Text
                       style={{
@@ -312,27 +200,9 @@ const AdminUser: React.FC = () => {
                         display: "block",
                       }}
                     >
-                      ดูและจัดการผู้ใช้ทั้งหมดในระบบ
+                      ปรับแต่งตั่งค่าระบบ
                     </Text>
                   </div>
-                  <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => navigate("/admin/work/new")}
-                    style={{
-                      background: theme.success,
-                      borderColor: theme.success,
-                      height: "45px",
-                      padding: `0 ${theme.spacing.xl}`,
-                      borderRadius: theme.borderRadius.md,
-                      fontSize: theme.fontSize.md,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: theme.spacing.sm,
-                    }}
-                  >
-                    เพิ่มผู้ใช้
-                  </Button>
                 </div>
               </div>
 
@@ -451,4 +321,4 @@ const AdminUser: React.FC = () => {
   );
 };
 
-export default AdminUser;
+export default AdminConfig;

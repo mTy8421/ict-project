@@ -1,11 +1,7 @@
 import React from "react";
 import { Layout, Menu } from "antd";
 import { Link, useLocation } from "react-router-dom";
-import {
-  FileTextOutlined,
-  BarChartOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { BarChartOutlined, SettingOutlined } from "@ant-design/icons";
 import theme from "../../theme";
 
 const { Sider } = Layout;
@@ -15,7 +11,7 @@ const DeanNavbar: React.FC = () => {
 
   const getSelectedKey = () => {
     if (location.pathname === "/admin") return "1";
-    if (location.pathname.startsWith("/admin/workload")) return "2";
+    if (location.pathname.startsWith("/admin/config")) return "2";
     if (location.pathname.startsWith("/admin/users")) return "3";
     return "1";
   };
@@ -69,7 +65,7 @@ const DeanNavbar: React.FC = () => {
         <Menu.Item
           key="2"
           icon={
-            <FileTextOutlined
+            <SettingOutlined
               style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
             />
           }
@@ -83,10 +79,10 @@ const DeanNavbar: React.FC = () => {
           }}
         >
           <Link
-            to="/admin/workload"
+            to="/admin/config"
             style={{ fontSize: theme.fontSize.md, color: "#fff" }}
           >
-            จัดการภาระงาน
+            ตั่งค่าระบบภาระงาน
           </Link>
         </Menu.Item>
       </Menu>

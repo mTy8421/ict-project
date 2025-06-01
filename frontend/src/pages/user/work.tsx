@@ -94,6 +94,7 @@ const UserWork: React.FC = () => {
       content: "คุณต้องการลบภาระงานนี้ใช่หรือไม่?",
       okText: "ยืนยัน",
       cancelText: "ยกเลิก",
+      centered: true,
       onOk: async () => {
         try {
           await axiosInstance.delete(`/workload/${id}`);
@@ -253,9 +254,15 @@ const UserWork: React.FC = () => {
 
   const filteredWorkloads = workloads.filter((workload) => {
     const matchesSearch =
-      workload.title.toLowerCase().includes(searchText.toLowerCase()) ||
-      workload.department.toLowerCase().includes(searchText.toLowerCase()) ||
-      workload.assignee.toLowerCase().includes(searchText.toLowerCase());
+      (workload.title?.toLowerCase() || "").includes(
+        searchText.toLowerCase()
+      ) ||
+      (workload.department?.toLowerCase() || "").includes(
+        searchText.toLowerCase()
+      ) ||
+      (workload.assignee?.toLowerCase() || "").includes(
+        searchText.toLowerCase()
+      );
 
     const matchesStatus =
       statusFilter.length === 0 || statusFilter.includes(workload.status);

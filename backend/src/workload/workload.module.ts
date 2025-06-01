@@ -6,11 +6,9 @@ import { Workload } from './entities/workload.entity';
 import { User } from '../user/entities/user.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Workload, User])
-  ],
+  imports: [TypeOrmModule.forFeature([Workload, User])],
   controllers: [WorkloadController],
   providers: [WorkloadService],
   exports: [WorkloadService],
 })
-export class WorkloadModule {} 
+export class WorkloadModule {}

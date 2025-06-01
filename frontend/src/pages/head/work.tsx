@@ -55,6 +55,7 @@ interface Workload {
   start_date: string;
   end_date: string;
   created_at: string;
+  username: string;
 }
 
 interface User {
@@ -274,9 +275,18 @@ const HeadWork: React.FC = () => {
 
   const filteredWorkloads = workloads.filter((workload) => {
     const matchesSearch =
-      workload.title.toLowerCase().includes(searchText.toLowerCase()) ||
-      workload.department.toLowerCase().includes(searchText.toLowerCase()) ||
-      workload.assignee.toLowerCase().includes(searchText.toLowerCase());
+      (workload.title?.toLowerCase() || "").includes(
+        searchText.toLowerCase()
+      ) ||
+      (workload.department?.toLowerCase() || "").includes(
+        searchText.toLowerCase()
+      ) ||
+      (workload.assignee?.toLowerCase() || "").includes(
+        searchText.toLowerCase()
+      ) ||
+      (workload.username?.toLowerCase() || "").includes(
+        searchText.toLowerCase()
+      );
 
     const matchesStatus =
       statusFilter.length === 0 || statusFilter.includes(workload.status);
@@ -337,7 +347,7 @@ const HeadWork: React.FC = () => {
         </div>
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
           <div className="hidden md:block">
-            <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
+            <Content style={{ maxWidth: "1200px", margin: "0 6%" }}>
               <div
                 style={{
                   marginBottom: theme.spacing.xl,
