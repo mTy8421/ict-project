@@ -24,8 +24,6 @@ import "./workload-new.override.css";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
-const { TextArea } = Input;
-const { RangePicker } = DatePicker;
 
 interface WorkloadForm {
   user_id: number;
