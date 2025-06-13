@@ -1,4 +1,3 @@
-import React from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import axiosInstance from "../../utils/axios";
 import { useEffect } from "react";

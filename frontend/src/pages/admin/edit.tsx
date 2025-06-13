@@ -114,7 +114,7 @@ const AdminEdit: React.FC = () => {
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
       <div className="hidden md:block">
-        <DeanHeader name={user?.user_name || ""} />
+        <DeanHeader />
       </div>
 
       <div className="md:hidden">

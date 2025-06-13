@@ -255,13 +255,13 @@ const UserWork: React.FC = () => {
   const filteredWorkloads = workloads.filter((workload) => {
     const matchesSearch =
       (workload.title?.toLowerCase() || "").includes(
-        searchText.toLowerCase()
+        searchText.toLowerCase(),
       ) ||
       (workload.department?.toLowerCase() || "").includes(
-        searchText.toLowerCase()
+        searchText.toLowerCase(),
       ) ||
       (workload.assignee?.toLowerCase() || "").includes(
-        searchText.toLowerCase()
+        searchText.toLowerCase(),
       );
 
     const matchesStatus =
@@ -310,7 +310,7 @@ const UserWork: React.FC = () => {
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
       <div className="hidden md:block">
-        <DeanHeader name="test" />
+        <DeanHeader />
       </div>
 
       <div className="md:hidden">

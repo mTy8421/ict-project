@@ -88,7 +88,7 @@ const AdminWorkLoad: React.FC = () => {
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้"
+        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้",
       );
     } finally {
       setLoading(false);
@@ -98,7 +98,7 @@ const AdminWorkLoad: React.FC = () => {
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
       <div className="hidden md:block">
-        <DeanHeader name={user?.user_name || ""} />
+        <DeanHeader />
       </div>
 
       <div className="md:hidden">

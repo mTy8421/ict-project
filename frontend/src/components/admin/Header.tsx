@@ -9,18 +9,13 @@ import axiosInstance from "../../utils/axios";
 const { Header } = Layout;
 const { Title } = Typography;
 
-interface Props {
-  // Define any props if needed
-  name: string;
-}
-
 interface User {
   user_id: number;
   user_name: string;
   user_role: string;
 }
 
-const DeanHeader: React.FC<Props> = ({ name }) => {
+const DeanHeader: React.FC = () => {
   const [profile, setProfile] = useState<User | undefined>();
   const navigate = useNavigate();
 

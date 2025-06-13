@@ -111,13 +111,13 @@ const User: React.FC = () => {
 
   const totalWorkloads = workloads.length;
   const completedWorkloads = workloads.filter(
-    (w) => w.status === "completed"
+    (w) => w.status === "completed",
   ).length;
   const inProgressWorkloads = workloads.filter(
-    (w) => w.status === "in_progress"
+    (w) => w.status === "in_progress",
   ).length;
   const pendingWorkloads = workloads.filter(
-    (w) => w.status === "pending"
+    (w) => w.status === "pending",
   ).length;
 
   const completionRate =
@@ -126,14 +126,14 @@ const User: React.FC = () => {
   const recentWorkloads = workloads
     .sort(
       (a, b) =>
-        new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+        new Date(b.start_date).getTime() - new Date(a.start_date).getTime(),
     )
     .slice(0, 5);
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
       <div className="hidden md:block">
-        <DeanHeader name="test" />
+        <DeanHeader />
       </div>
 
       <div className="md:hidden">

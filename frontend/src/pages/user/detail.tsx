@@ -143,7 +143,7 @@ const DetailUserWorkLoad: React.FC = () => {
 
       const response = await axiosInstance.put(
         `/workload/edit/${id}`,
-        workloadData
+        workloadData,
       );
       console.log("Response:", response.data);
 
@@ -152,7 +152,7 @@ const DetailUserWorkLoad: React.FC = () => {
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้"
+        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้",
       );
     } finally {
       setLoading(false);
@@ -180,7 +180,7 @@ const DetailUserWorkLoad: React.FC = () => {
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
       <div className="hidden md:block">
-        <DeanHeader name="test" />
+        <DeanHeader />
       </div>
 
       <div className="md:hidden">
