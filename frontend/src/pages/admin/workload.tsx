@@ -109,6 +109,7 @@ const AdminWorkLoad: React.FC = () => {
         <div className="hidden md:block">
           <DeanNavbar />
         </div>
+
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
           <Content
             style={{

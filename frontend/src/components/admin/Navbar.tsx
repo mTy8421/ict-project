@@ -1,7 +1,11 @@
 import React from "react";
 import { Layout, Menu } from "antd";
 import { Link, useLocation } from "react-router-dom";
-import { BarChartOutlined, SettingOutlined } from "@ant-design/icons";
+import {
+  BarChartOutlined,
+  FileTextOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 import theme from "../../theme";
 
 const { Sider } = Layout;
@@ -11,8 +15,8 @@ const DeanNavbar: React.FC = () => {
 
   const getSelectedKey = () => {
     if (location.pathname === "/admin") return "1";
-    if (location.pathname.startsWith("/admin/config")) return "2";
-    if (location.pathname.startsWith("/admin/users")) return "3";
+    if (location.pathname.startsWith("/admin/work")) return "2";
+    if (location.pathname.startsWith("/admin/config")) return "3";
     return "1";
   };
 
@@ -65,7 +69,7 @@ const DeanNavbar: React.FC = () => {
         <Menu.Item
           key="2"
           icon={
-            <SettingOutlined
+            <FileTextOutlined
               style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
             />
           }
@@ -76,6 +80,29 @@ const DeanNavbar: React.FC = () => {
             lineHeight: "48px",
             color: theme.primary,
             background: getSelectedKey() === "2" ? "#5746b6" : "",
+          }}
+        >
+          <Link
+            to="/admin/work"
+            style={{ fontSize: theme.fontSize.md, color: "#fff" }}
+          >
+            ตรวจสอบภาระงาน
+          </Link>
+        </Menu.Item>
+        <Menu.Item
+          key="3"
+          icon={
+            <SettingOutlined
+              style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
+            />
+          }
+          style={{
+            margin: `${theme.spacing.sm} ${theme.spacing.md}`,
+            borderRadius: theme.borderRadius.md,
+            height: "48px",
+            lineHeight: "48px",
+            color: theme.primary,
+            background: getSelectedKey() === "3" ? "#5746b6" : "",
           }}
         >
           <Link

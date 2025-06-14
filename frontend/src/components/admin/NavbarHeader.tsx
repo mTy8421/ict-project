@@ -14,6 +14,7 @@ import {
   HomeOutlined,
   LogoutOutlined,
   MenuOutlined,
+  SettingOutlined,
   SnippetsOutlined,
 } from "@ant-design/icons";
 import { logout } from "../../pages/home/home";
@@ -52,9 +53,14 @@ const ReHeader: React.FC = () => {
       key: "Work",
       label: "จัดการภาระงาน",
       icon: <SnippetsOutlined style={{ color: "#000" }} />,
-      onClick: () => navigate("/#"),
+      onClick: () => navigate("/admin/work"),
     },
-
+    {
+      key: "Config",
+      label: "ตั่งค่าระบบภาระงาน",
+      icon: <SettingOutlined style={{ color: "#000" }} />,
+      onClick: () => navigate("/admin/config"),
+    },
     {
       key: "Logout",
       label: "ออกจากระบบ",

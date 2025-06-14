@@ -24,7 +24,8 @@ import UserHistoryDetail from "./pages/user/historyDetail";
 import DetailHeadWorkLoad from "./pages/head/detail";
 import AdminConfig from "./pages/admin/config";
 import AdminEdit from "./pages/admin/edit";
-import AdminUser from "./pages/admin/work";
+import Admin from "./pages/admin/admin";
+import AdminWork from "./pages/admin/work";
 
 export default function App() {
   return (
@@ -45,9 +46,10 @@ export default function App() {
         <Route path="/head/work" element={<HeadWork />} />
         <Route path="/head/work/detail/:id" element={<DetailHeadWorkLoad />} />
         <Route path="/head/history" element={<HeadHistory />} />
-        <Route path="/admin" element={<AdminUser />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="/admin/user/edit/:id" element={<AdminEdit />} />
         <Route path="/admin/config" element={<AdminConfig />} />
+        <Route path="/admin/work" element={<AdminWork />} />
         <Route path="/admin/work/new" element={<AdminWorkLoad />} />
         <Route path="/dean" element={<DeanDashboard />} />
         <Route path="/dean/workload" element={<DeanWorkload />} />

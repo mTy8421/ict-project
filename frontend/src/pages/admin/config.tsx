@@ -95,6 +95,24 @@ const AdminConfig: React.FC = () => {
     });
   };
 
+  const dataSourceTalbe = [
+    {
+      key: "user_name",
+      user_name: "ความสำคัญ",
+      id: "1",
+    },
+    {
+      key: "user_name",
+      user_name: "Mike",
+      id: "2",
+    },
+    {
+      key: "user_name",
+      user_name: "Mike",
+      id: "3",
+    },
+  ];
+
   const columns = [
     {
       title: "หัวข้อ",
@@ -104,13 +122,13 @@ const AdminConfig: React.FC = () => {
     {
       title: "จัดการ",
       key: "action",
-      render: (record: User) => (
+      render: (_: any, record: any) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
             <Button
               type="text"
               icon={<EditOutlined />}
-              onClick={() => navigate(`/admin/user/${record.user_id}/edit`)}
+              onClick={() => navigate(`/admin/config/${record.id}`)}
               style={{ color: theme.primary }}
             />
           </Tooltip>
@@ -216,7 +234,7 @@ const AdminConfig: React.FC = () => {
               >
                 <Table
                   columns={columns}
-                  dataSource={users}
+                  dataSource={dataSourceTalbe}
                   rowKey="id"
                   loading={loading}
                   pagination={{
@@ -240,13 +258,7 @@ const AdminConfig: React.FC = () => {
                   boxShadow: theme.shadow,
                 }}
               >
-                <div
-                // style={{
-                //   display: "flex",
-                //   justifyContent: "space-between",
-                //   alignItems: "center",
-                // }}
-                >
+                <div>
                   <div>
                     <Title
                       level={3}
@@ -256,7 +268,7 @@ const AdminConfig: React.FC = () => {
                         fontWeight: theme.fontWeight.semibold,
                       }}
                     >
-                      จัดการผู้ใช้
+                      ตั่งค่าระบบ
                     </Title>
                     <Text
                       style={{
@@ -265,28 +277,9 @@ const AdminConfig: React.FC = () => {
                         display: "block",
                       }}
                     >
-                      ดูและจัดการผู้ใช้ทั้งหมดในระบบ
+                      ปรับแต่งตั่งค่าระบบ
                     </Text>
                   </div>
-                  <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => navigate("/admin/work/new")}
-                    style={{
-                      background: theme.success,
-                      borderColor: theme.success,
-                      height: "45px",
-                      padding: `0 ${theme.spacing.xl}`,
-                      borderRadius: theme.borderRadius.md,
-                      fontSize: theme.fontSize.md,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: theme.spacing.sm,
-                      marginTop: "1rem",
-                    }}
-                  >
-                    เพิ่มผู้ใช้
-                  </Button>
                 </div>
               </div>
 
@@ -301,7 +294,7 @@ const AdminConfig: React.FC = () => {
                 <div style={{ width: "100%", overflowX: "auto" }}>
                   <Table
                     columns={columns}
-                    dataSource={users}
+                    dataSource={dataSourceTalbe}
                     rowKey="id"
                     loading={loading}
                     pagination={{

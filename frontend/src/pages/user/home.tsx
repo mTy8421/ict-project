@@ -10,6 +10,7 @@ import {
   Progress,
   List,
   Tag,
+  Select,
 } from "antd";
 import {
   FileTextOutlined,
@@ -175,6 +176,41 @@ const User: React.FC = () => {
                 >
                   สถานะภาระงานทั้งหมดในระบบ
                 </Text>
+              </div>
+              <div
+                style={{
+                  // margin: "24px 0"
+                  marginBottom: theme.spacing.xl,
+                  background: theme.white,
+                  padding: theme.spacing.xl,
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                }}
+              >
+                <Title
+                  level={3}
+                  style={{
+                    margin: 0,
+                    color: theme.primary,
+                    fontWeight: theme.fontWeight.semibold,
+                  }}
+                >
+                  วันที่
+                </Title>
+
+                <Select
+                  defaultValue="14/06/2025"
+                  style={{
+                    maxWidth: "16rem",
+                    margin: "auto",
+                    marginTop: theme.spacing.sm,
+                  }}
+                  options={[
+                    { value: "Option 1", label: "14/06/2025" },
+                    { value: "Option 2", label: "06/14/2025" },
+                    { value: "Option 3", label: "14/06/2025" },
+                  ]}
+                />
               </div>
 
               <Row gutter={[24, 24]}>
@@ -385,6 +421,42 @@ const User: React.FC = () => {
                 >
                   สถานะภาระงานทั้งหมดในระบบ
                 </Text>
+              </div>
+
+              <div
+                style={{
+                  // margin: "24px 0"
+                  marginBottom: theme.spacing.xl,
+                  background: theme.white,
+                  padding: theme.spacing.xl,
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                }}
+              >
+                <Title
+                  level={3}
+                  style={{
+                    margin: 0,
+                    color: theme.primary,
+                    fontWeight: theme.fontWeight.semibold,
+                  }}
+                >
+                  วันที่
+                </Title>
+
+                <Select
+                  defaultValue="14/06/2025"
+                  style={{
+                    maxWidth: "16rem",
+                    margin: "auto",
+                    marginTop: theme.spacing.sm,
+                  }}
+                  options={[
+                    { value: "Option 1", label: "14/06/2025" },
+                    { value: "Option 2", label: "06/14/2025" },
+                    { value: "Option 3", label: "14/06/2025" },
+                  ]}
+                />
               </div>
 
               <Row gutter={[24, 24]}>

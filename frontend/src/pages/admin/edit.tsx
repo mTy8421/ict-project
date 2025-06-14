@@ -76,7 +76,7 @@ const AdminEdit: React.FC = () => {
         user_role: data.user_role,
       });
       setRole(data.user_role);
-    } catch (error: any) { }
+    } catch (error: any) {}
   };
 
   useEffect(() => {
@@ -125,6 +125,7 @@ const AdminEdit: React.FC = () => {
         <div className="hidden md:block">
           <DeanNavbar />
         </div>
+
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
           <Content
             style={{

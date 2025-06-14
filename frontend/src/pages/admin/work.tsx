@@ -13,18 +13,19 @@ import {
   Space,
   Input,
   Select,
-  Avatar,
+  DatePicker,
   Tooltip,
   Modal,
   message,
 } from "antd";
 import {
   SearchOutlined,
-  UserAddOutlined,
-  SyncOutlined,
+  FilterOutlined,
   PlusOutlined,
+  SyncOutlined,
   EditOutlined,
   DeleteOutlined,
+  EyeOutlined,
 } from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import { logout } from "../home/home";
@@ -42,39 +43,46 @@ import ReHeader from "../../components/admin/NavbarHeader";
 const { Header, Content, Sider } = Layout;
 const { Title, Text } = Typography;
 const { Search } = Input;
+const { RangePicker } = DatePicker;
+
+interface Workload {
+  id: number;
+  title: string;
+  department: string;
+  assignee: string;
+  status: "pending" | "in_progress" | "completed";
+  priority: "low" | "medium" | "high";
+  start_date: string;
+  end_date: string;
+  created_at: string;
+  username: string;
+}
 
 interface User {
   user_id: number;
   user_name: string;
-  user_email: string;
   user_role: string;
 }
 
-interface Profile {
-  user_id: number;
-  user_name: string;
-  user_email: string;
-  user_role: string;
-  // add other fields if needed
-}
-
-const AdminUser: React.FC = () => {
+const AdminWork: React.FC = () => {
   const navigate = useNavigate();
+  const [workloads, setWorkloads] = useState<Workload[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
-  const [roleFilter, setRoleFilter] = useState<string[]>([]);
-  const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
+  const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
+  const [dateRange, setDateRange] = useState<[string, string] | null>(null);
 
-  const [profile, setProfile] = useState<Profile | null>(null);
-
-  const fetchProfile = async () => {
+  const fetchWorkloads = async () => {
     try {
-      const response = await axiosInstance.get("/user/profile");
-      setProfile(response.data);
+      const response = await axiosInstance.get("/workload");
+      setWorkloads(response.data);
     } catch (error) {
-      console.error("Error fetching profile:", error);
+      console.error("Error fetching workloads:", error);
+      message.error("ไม่สามารถดึงข้อมูลภาระงานได้");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -85,133 +93,170 @@ const AdminUser: React.FC = () => {
     } catch (error) {
       console.error("Error fetching users:", error);
       message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchProfile();
+    fetchWorkloads();
     fetchUsers();
   }, []);
-
-  const handleSearch = async (value: string) => {
-    try {
-      setLoading(true);
-      const response = await axiosInstance.get(`/user/search?query=${value}`);
-      setUsers(response.data);
-    } catch (error) {
-      console.error("Error searching users:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDepartmentFilter = async (value: string[]) => {
-    try {
-      setLoading(true);
-      if (value.length === 0) {
-        const response = await axiosInstance.get("/user");
-        setUsers(response.data);
-      } else {
-        const response = await axiosInstance.get(
-          `/user/filter?department=${value[0]}`,
-        );
-        setUsers(response.data);
-      }
-    } catch (error) {
-      console.error("Error filtering users:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleDelete = async (id: number) => {
     Modal.confirm({
       title: "ยืนยันการลบ",
-      content: "คุณต้องการลบผู้ใช้นี้ใช่หรือไม่?",
+      content: "คุณต้องการลบภาระงานนี้ใช่หรือไม่?",
       okText: "ยืนยัน",
       cancelText: "ยกเลิก",
-      centered: true,
       onOk: async () => {
         try {
-          await axiosInstance.delete(`/user/${id}`);
-          message.success("ลบผู้ใช้สำเร็จ");
-          fetchUsers();
+          await axiosInstance.delete(`/workload/${id}`);
+          message.success("ลบภาระงานสำเร็จ");
+          fetchWorkloads();
         } catch (error) {
-          console.error("Error deleting user:", error);
-          message.error("ไม่สามารถลบผู้ใช้ได้");
+          console.error("Error deleting workload:", error);
+          message.error("ไม่สามารถลบภาระงานได้");
         }
       },
     });
   };
 
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case "admin":
-        return "red";
-      case "dean":
-        return "blue";
-      case "staff":
-        return "green";
-      default:
-        return "default";
-    }
-  };
-
-  const getRoleText = (role: string) => {
-    switch (role) {
-      case "admin":
-        return "ผู้ดูแลระบบ";
-      case "dean":
-        return "คณบดี";
-      case "staff":
-        return "พนักงาน";
-      default:
-        return role;
-    }
-  };
-
   const getStatusColor = (status: string) => {
-    return status === "active" ? "success" : "default";
+    switch (status) {
+      case "pending":
+        return theme.warning;
+      case "in_progress":
+        return theme.accent;
+      case "completed":
+        return theme.success;
+      default:
+        return theme.textLight;
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return theme.danger;
+      case "medium":
+        return theme.warning;
+      case "low":
+        return theme.success;
+      default:
+        return theme.textLight;
+    }
   };
 
   const getStatusText = (status: string) => {
-    return status === "active" ? "ใช้งาน" : "ไม่ใช้งาน";
+    switch (status) {
+      case "pending":
+        return "รอดำเนินการ";
+      case "in_progress":
+        return "กำลังดำเนินการ";
+      case "completed":
+        return "เสร็จสิ้น";
+      default:
+        return status;
+    }
+  };
+
+  const getPriorityText = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return "สูง";
+      case "medium":
+        return "ปานกลาง";
+      case "low":
+        return "ต่ำ";
+      default:
+        return priority;
+    }
   };
 
   const columns = [
     {
-      title: "ชื่อผู้ใช้",
-      dataIndex: "user_name",
-      key: "user_name",
-      render: (text: string) => <Text strong>{text}</Text>,
+      title: "หัวข้อ",
+      dataIndex: "title",
+      key: "title",
+      render: (text: string) => (
+        <Text strong style={{ color: theme.primary }}>
+          {text}
+        </Text>
+      ),
     },
     {
-      title: "อีเมล",
-      dataIndex: "user_email",
-      key: "user_email",
+      title: "แผนก",
+      dataIndex: "department",
+      key: "department",
     },
     {
-      title: "รหัสผ่าน",
-      dataIndex: "user_password",
-      key: "user_password",
+      title: "ผู้รับผิดชอบ",
+      dataIndex: "username",
+      key: "username",
     },
     {
-      title: "ตำแหน่ง",
-      dataIndex: "user_role",
-      key: "user_role",
+      title: "สถานะ",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => (
+        <Tag
+          color={getStatusColor(status)}
+          style={{
+            padding: "4px 8px",
+            borderRadius: theme.borderRadius.sm,
+            fontSize: theme.fontSize.sm,
+          }}
+        >
+          {getStatusText(status)}
+        </Tag>
+      ),
+    },
+    {
+      title: "ความสำคัญ",
+      dataIndex: "priority",
+      key: "priority",
+      render: (priority: string) => (
+        <Tag
+          color={getPriorityColor(priority)}
+          style={{
+            padding: "4px 8px",
+            borderRadius: theme.borderRadius.sm,
+            fontSize: theme.fontSize.sm,
+          }}
+        >
+          {getPriorityText(priority)}
+        </Tag>
+      ),
+    },
+    {
+      title: "วันที่เริ่มต้น",
+      dataIndex: "start_date",
+      key: "start_date",
+      render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
+    },
+    {
+      title: "วันที่สิ้นสุด",
+      dataIndex: "end_date",
+      key: "end_date",
+      render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
     },
     {
       title: "จัดการ",
       key: "action",
-      render: (record: User) => (
+      render: (record: Workload) => (
         <Space size="middle">
+          <Tooltip title="ดูรายละเอียด">
+            <Button
+              type="text"
+              icon={<EyeOutlined />}
+              onClick={() => navigate(`/head/work/detail/${record.id}`)}
+              style={{ color: theme.primary }}
+            />
+          </Tooltip>
           <Tooltip title="แก้ไข">
             <Button
               type="text"
               icon={<EditOutlined />}
-              onClick={() => navigate(`/admin/user/edit/${record.user_id}`)}
+              onClick={() => navigate(`/dean/work/edit/${record.id}`)}
               style={{ color: theme.primary }}
             />
           </Tooltip>
@@ -220,15 +265,41 @@ const AdminUser: React.FC = () => {
               type="text"
               danger
               icon={<DeleteOutlined />}
-              onClick={() => {
-                handleDelete(record.user_id);
-              }}
+              onClick={() => handleDelete(record.id)}
             />
           </Tooltip>
         </Space>
       ),
     },
   ];
+
+  const filteredWorkloads = workloads.filter((workload) => {
+    const matchesSearch =
+      (workload.title?.toLowerCase() || "").includes(
+        searchText.toLowerCase(),
+      ) ||
+      (workload.department?.toLowerCase() || "").includes(
+        searchText.toLowerCase(),
+      ) ||
+      (workload.assignee?.toLowerCase() || "").includes(
+        searchText.toLowerCase(),
+      ) ||
+      (workload.username?.toLowerCase() || "").includes(
+        searchText.toLowerCase(),
+      );
+
+    const matchesStatus =
+      statusFilter.length === 0 || statusFilter.includes(workload.status);
+    const matchesPriority =
+      priorityFilter.length === 0 || priorityFilter.includes(workload.priority);
+
+    const matchesDate =
+      !dateRange ||
+      (new Date(workload.start_date) >= new Date(dateRange[0]) &&
+        new Date(workload.end_date) <= new Date(dateRange[1]));
+
+    return matchesSearch && matchesStatus && matchesPriority && matchesDate;
+  });
 
   if (loading) {
     return (
@@ -263,7 +334,7 @@ const AdminUser: React.FC = () => {
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
       <div className="hidden md:block">
-        <DeanHeader />
+        <DeanHeader name="test" />
       </div>
 
       <div className="md:hidden">
@@ -274,10 +345,9 @@ const AdminUser: React.FC = () => {
         <div className="hidden md:block">
           <DeanNavbar />
         </div>
-
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
           <div className="hidden md:block">
-            <Content style={{ maxWidth: "1200px", margin: "0 15%" }}>
+            <Content style={{ maxWidth: "1200px", margin: "0 6%" }}>
               <div
                 style={{
                   marginBottom: theme.spacing.xl,
@@ -290,7 +360,7 @@ const AdminUser: React.FC = () => {
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
+                    justifyContent: "center",
                     alignItems: "center",
                   }}
                 >
@@ -303,7 +373,7 @@ const AdminUser: React.FC = () => {
                         fontWeight: theme.fontWeight.semibold,
                       }}
                     >
-                      จัดการผู้ใช้
+                      จัดการภาระงาน
                     </Title>
                     <Text
                       style={{
@@ -312,29 +382,90 @@ const AdminUser: React.FC = () => {
                         display: "block",
                       }}
                     >
-                      ดูและจัดการผู้ใช้ทั้งหมดในระบบ
+                      ดูและจัดการภาระงานทั้งหมด
                     </Text>
                   </div>
-                  <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => navigate("/admin/work/new")}
-                    style={{
-                      background: theme.success,
-                      borderColor: theme.success,
-                      height: "45px",
-                      padding: `0 ${theme.spacing.xl}`,
-                      borderRadius: theme.borderRadius.md,
-                      fontSize: theme.fontSize.md,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: theme.spacing.sm,
-                    }}
-                  >
-                    เพิ่มผู้ใช้
-                  </Button>
                 </div>
               </div>
+
+              <Card
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
+                  marginBottom: theme.spacing.xl,
+                }}
+                bodyStyle={{ padding: theme.spacing.xl }}
+              >
+                <Row gutter={[24, 24]} align="middle">
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Search
+                      placeholder="ค้นหาภาระงาน..."
+                      allowClear
+                      onSearch={setSearchText}
+                      onChange={(e) => setSearchText(e.target.value)}
+                      style={{ width: "100%" }}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Select
+                      mode="multiple"
+                      placeholder="กรองตามสถานะ"
+                      style={{ width: "100%" }}
+                      onChange={setStatusFilter}
+                      options={[
+                        { label: "รอดำเนินการ", value: "pending" },
+                        { label: "กำลังดำเนินการ", value: "in_progress" },
+                        { label: "เสร็จสิ้น", value: "completed" },
+                      ]}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Select
+                      mode="multiple"
+                      placeholder="กรองตามความสำคัญ"
+                      style={{ width: "100%" }}
+                      onChange={setPriorityFilter}
+                      options={[
+                        { label: "สูง", value: "high" },
+                        { label: "ปานกลาง", value: "medium" },
+                        { label: "ต่ำ", value: "low" },
+                      ]}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={12}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <RangePicker
+                      style={{ width: "100%" }}
+                      onChange={(dates) => {
+                        if (dates) {
+                          setDateRange([
+                            dates[0]?.toISOString() || "",
+                            dates[1]?.toISOString() || "",
+                          ]);
+                        } else {
+                          setDateRange(null);
+                        }
+                      }}
+                    />
+                  </Col>
+                </Row>
+              </Card>
 
               <Card
                 style={{
@@ -346,7 +477,7 @@ const AdminUser: React.FC = () => {
               >
                 <Table
                   columns={columns}
-                  dataSource={users}
+                  dataSource={filteredWorkloads}
                   rowKey="id"
                   loading={loading}
                   pagination={{
@@ -371,11 +502,11 @@ const AdminUser: React.FC = () => {
                 }}
               >
                 <div
-                // style={{
-                //   display: "flex",
-                //   justifyContent: "space-between",
-                //   alignItems: "center",
-                // }}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                 >
                   <div>
                     <Title
@@ -386,7 +517,7 @@ const AdminUser: React.FC = () => {
                         fontWeight: theme.fontWeight.semibold,
                       }}
                     >
-                      จัดการผู้ใช้
+                      จัดการภาระงาน
                     </Title>
                     <Text
                       style={{
@@ -395,30 +526,90 @@ const AdminUser: React.FC = () => {
                         display: "block",
                       }}
                     >
-                      ดูและจัดการผู้ใช้ทั้งหมดในระบบ
+                      ดูและจัดการภาระงานทั้งหมด
                     </Text>
                   </div>
-                  <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => navigate("/admin/work/new")}
-                    style={{
-                      background: theme.success,
-                      borderColor: theme.success,
-                      height: "45px",
-                      padding: `0 ${theme.spacing.xl}`,
-                      borderRadius: theme.borderRadius.md,
-                      fontSize: theme.fontSize.md,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: theme.spacing.sm,
-                      marginTop: "1rem",
-                    }}
-                  >
-                    เพิ่มผู้ใช้
-                  </Button>
                 </div>
               </div>
+
+              <Card
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
+                  marginBottom: theme.spacing.xl,
+                }}
+                bodyStyle={{ padding: theme.spacing.xl }}
+              >
+                <Row gutter={[24, 24]} align="middle">
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Search
+                      placeholder="ค้นหาภาระงาน..."
+                      allowClear
+                      onSearch={setSearchText}
+                      onChange={(e) => setSearchText(e.target.value)}
+                      style={{ width: "100%" }}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Select
+                      mode="multiple"
+                      placeholder="กรองตามสถานะ"
+                      style={{ width: "100%" }}
+                      onChange={setStatusFilter}
+                      options={[
+                        { label: "รอดำเนินการ", value: "pending" },
+                        { label: "กำลังดำเนินการ", value: "in_progress" },
+                        { label: "เสร็จสิ้น", value: "completed" },
+                      ]}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={8}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <Select
+                      mode="multiple"
+                      placeholder="กรองตามความสำคัญ"
+                      style={{ width: "100%" }}
+                      onChange={setPriorityFilter}
+                      options={[
+                        { label: "สูง", value: "high" },
+                        { label: "ปานกลาง", value: "medium" },
+                        { label: "ต่ำ", value: "low" },
+                      ]}
+                    />
+                  </Col>
+                  <Col
+                    xs={24}
+                    sm={12}
+                    style={{ paddingBottom: theme.spacing.md }}
+                  >
+                    <RangePicker
+                      style={{ width: "100%" }}
+                      onChange={(dates) => {
+                        if (dates) {
+                          setDateRange([
+                            dates[0]?.toISOString() || "",
+                            dates[1]?.toISOString() || "",
+                          ]);
+                        } else {
+                          setDateRange(null);
+                        }
+                      }}
+                    />
+                  </Col>
+                </Row>
+              </Card>
 
               <Card
                 style={{
@@ -428,10 +619,10 @@ const AdminUser: React.FC = () => {
                 }}
                 bodyStyle={{ padding: theme.spacing.xl }}
               >
-                <div style={{ width: "100%", overflowX: "auto" }}>
+                <div style={{ overflowX: "auto", width: "100%" }}>
                   <Table
                     columns={columns}
-                    dataSource={users}
+                    dataSource={filteredWorkloads}
                     rowKey="id"
                     loading={loading}
                     pagination={{
@@ -451,4 +642,4 @@ const AdminUser: React.FC = () => {
   );
 };
 
-export default AdminUser;
+export default AdminWork;
