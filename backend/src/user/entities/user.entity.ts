@@ -5,8 +5,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   OneToMany,
-  AfterLoad,
-  AfterInsert,
 } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
@@ -71,21 +69,4 @@ export class User {
   //     this.user_password = await bcrypt.hash(this.user_password, 10);
   //   }
   // }
-}
-@Entity()
-export class titleWork {
-  @PrimaryGeneratedColumn()
-  title_id: number;
-  @Column()
-  title_topic: string;
-  @Column()
-  title_detail: string;
-  @Column()
-  title_type: string;
-  @Column()
-  title_time: string;
-  @Column()
-  title_date: string;
-  @Column()
-  title_status: number;
 }

@@ -1,99 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  Typography,
-  Layout,
-  Button,
-  Table,
-  Space,
-  Input,
-  Tooltip,
-  Modal,
-  message,
-} from "antd";
-import {
-  SyncOutlined,
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
-import axiosInstance from "../../utils/axios";
+import { Card, Typography, Layout, Button, Table, Space, Tooltip } from "antd";
+import { SyncOutlined, EditOutlined } from "@ant-design/icons";
 import theme from "../../theme";
 import DeanHeader from "../../components/admin/Header";
 import DeanNavbar from "../../components/admin/Navbar";
 import ReHeader from "../../components/admin/NavbarHeader";
 
-const { Header, Content, Sider } = Layout;
+const { Content } = Layout;
 const { Title, Text } = Typography;
-const { Search } = Input;
-
-interface User {
-  user_id: number;
-  user_name: string;
-  user_email: string;
-  user_role: string;
-}
-
-interface Profile {
-  user_id: number;
-  user_name: string;
-  user_email: string;
-  user_role: string;
-  // add other fields if needed
-}
 
 const AdminConfig: React.FC = () => {
   const navigate = useNavigate();
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const [profile, setProfile] = useState<Profile | null>(null);
-
-  const fetchProfile = async () => {
-    try {
-      const response = await axiosInstance.get("/user/profile");
-      setProfile(response.data);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    }
-  };
-
-  const fetchUsers = async () => {
-    try {
-      const response = await axiosInstance.get("/user");
-      setUsers(response.data);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProfile();
-    fetchUsers();
-  }, []);
-
-  const handleDelete = async (id: number) => {
-    Modal.confirm({
-      title: "ยืนยันการลบ",
-      content: "คุณต้องการลบผู้ใช้นี้ใช่หรือไม่?",
-      okText: "ยืนยัน",
-      cancelText: "ยกเลิก",
-      onOk: async () => {
-        try {
-          await axiosInstance.delete(`/user/${id}`);
-          message.success("ลบผู้ใช้สำเร็จ");
-          fetchUsers();
-        } catch (error) {
-          console.error("Error deleting user:", error);
-          message.error("ไม่สามารถลบผู้ใช้ได้");
-        }
-      },
-    });
-  };
 
   const dataSourceTalbe = [
     {
@@ -103,12 +21,12 @@ const AdminConfig: React.FC = () => {
     },
     {
       key: "user_name",
-      user_name: "Mike",
+      user_name: "test1",
       id: "2",
     },
     {
       key: "user_name",
-      user_name: "Mike",
+      user_name: "test2",
       id: "3",
     },
   ];
@@ -136,36 +54,6 @@ const AdminConfig: React.FC = () => {
       ),
     },
   ];
-
-  if (loading) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          background: theme.background,
-        }}
-      >
-        <div style={{ textAlign: "center" }}>
-          <SyncOutlined
-            spin
-            style={{ fontSize: "48px", color: theme.accent }}
-          />
-          <p
-            style={{
-              marginTop: theme.spacing.md,
-              fontSize: theme.fontSize.md,
-              color: theme.textLight,
-            }}
-          >
-            กำลังโหลดข้อมูล...
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
@@ -230,13 +118,12 @@ const AdminConfig: React.FC = () => {
                   boxShadow: theme.shadow,
                   background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                // bodyStyle={{ padding: theme.spacing.xl }}
               >
                 <Table
                   columns={columns}
                   dataSource={dataSourceTalbe}
                   rowKey="id"
-                  loading={loading}
                   pagination={{
                     pageSize: 10,
                     showSizeChanger: true,
@@ -289,14 +176,13 @@ const AdminConfig: React.FC = () => {
                   boxShadow: theme.shadow,
                   background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                // bodyStyle={{ padding: theme.spacing.xl }}
               >
                 <div style={{ width: "100%", overflowX: "auto" }}>
                   <Table
                     columns={columns}
                     dataSource={dataSourceTalbe}
                     rowKey="id"
-                    loading={loading}
                     pagination={{
                       pageSize: 10,
                       showSizeChanger: true,
