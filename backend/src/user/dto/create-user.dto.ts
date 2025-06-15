@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 // type UserRoleType =
 //   | 'admin'
@@ -20,12 +20,14 @@ export class CreateUserDto {
   user_email: string;
 
   @IsNotEmpty()
+  @IsString()
   user_name: string;
 
   @IsNotEmpty()
+  @IsString()
   user_password: string;
 
   @IsNotEmpty()
-  // user_role: UserRoleType;
+  @IsString()
   user_role: string;
 }

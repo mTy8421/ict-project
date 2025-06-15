@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { WorkloadModule } from './workload/workload.module';
 import { UploadTestModule } from './upload-test/upload-test.module';
+import { WorkModule } from './work/work.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UploadTestModule } from './upload-test/upload-test.module';
     UserModule,
     WorkloadModule,
     UploadTestModule,
+    WorkModule,
   ],
 })
 export class AppModule {}

@@ -9,6 +9,7 @@ import {
 
 import * as bcrypt from 'bcrypt';
 import { Workload } from '../../workload/entities/workload.entity';
+import { Work } from '../../work/entities/work.entity';
 
 type UserRoleType =
   | 'admin'
@@ -54,6 +55,9 @@ export class User {
   })
   // user_role: UserRoleType;
   user_role: string;
+
+  @OneToMany(() => Work, (work) => work.user)
+  works: Work[];
 
   @OneToMany(() => Workload, (workload) => workload.assignedTo)
   workloads: Workload[];
