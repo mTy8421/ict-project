@@ -19,6 +19,10 @@ export class CreateWorkDto {
 
   @IsNotEmpty()
   @IsString()
+  department: string;
+
+  @IsNotEmpty()
+  @IsString()
   dateTime: string;
 
   @IsNotEmpty()

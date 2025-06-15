@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { WorkService } from './work.service';
 import { CreateWorkDto } from './dto/create-work.dto';
 import { UpdateWorkDto } from './dto/update-work.dto';
+import { Request } from 'express';
 
 @Controller('work')
 export class WorkController {
@@ -38,5 +40,12 @@ export class WorkController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.workService.remove(+id);
+  }
+
+  @Get('user')
+  findByUser(@Req() req: Request) {
+    const user = req.user as { user_id: number };
+
+    return this.workService.findByUser(user.user_id);
   }
 }
