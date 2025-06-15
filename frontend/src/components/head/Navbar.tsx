@@ -16,7 +16,8 @@ const DeanNavbar: React.FC = () => {
   const getSelectedKey = () => {
     if (location.pathname === "/head") return "1";
     if (location.pathname.startsWith("/head/work")) return "2";
-    if (location.pathname.startsWith("/head/history")) return "3";
+    if (location.pathname.startsWith("/head/_workload")) return "3";
+    if (location.pathname.startsWith("/head/history")) return "4";
     return "1";
   };
 
@@ -86,7 +87,7 @@ const DeanNavbar: React.FC = () => {
             to="/head/work"
             style={{ fontSize: theme.fontSize.md, color: "#fff" }}
           >
-            จัดการภาระงาน
+            อนุมัติภาระงาน
           </Link>
         </Menu.Item>
         <Menu.Item
@@ -103,6 +104,29 @@ const DeanNavbar: React.FC = () => {
             lineHeight: "48px",
             color: theme.primary,
             background: getSelectedKey() === "3" ? "#5746b6" : "",
+          }}
+        >
+          <Link
+            to="/head/_workload"
+            style={{ fontSize: theme.fontSize.md, color: "#fff" }}
+          >
+            จัดการภาระงาน
+          </Link>
+        </Menu.Item>
+        <Menu.Item
+          key="4"
+          icon={
+            <FileTextOutlined
+              style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
+            />
+          }
+          style={{
+            margin: `${theme.spacing.sm} ${theme.spacing.md}`,
+            borderRadius: theme.borderRadius.md,
+            height: "48px",
+            lineHeight: "48px",
+            color: theme.primary,
+            background: getSelectedKey() === "4" ? "#5746b6" : "",
           }}
         >
           <Link

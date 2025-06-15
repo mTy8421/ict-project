@@ -26,6 +26,8 @@ import AdminConfig from "./pages/admin/config";
 import AdminEdit from "./pages/admin/edit";
 import Admin from "./pages/admin/admin";
 import AdminWork from "./pages/admin/work";
+import HeadWorkload from "./pages/head/workload";
+import HeadWorkLoadAdd from "./pages/head/workload.add";
 
 export default function App() {
   return (
@@ -45,6 +47,8 @@ export default function App() {
         <Route path="/head" element={<Head />} />
         <Route path="/head/work" element={<HeadWork />} />
         <Route path="/head/work/detail/:id" element={<DetailHeadWorkLoad />} />
+        <Route path="/head/_workload" element={<HeadWorkload />} />
+        <Route path="/head/_workload/new" element={<HeadWorkLoadAdd />} />
         <Route path="/head/history" element={<HeadHistory />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/user/edit/:id" element={<AdminEdit />} />

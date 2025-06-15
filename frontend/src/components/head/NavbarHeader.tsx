@@ -50,9 +50,15 @@ const ReHeader: React.FC = () => {
     },
     {
       key: "Work",
-      label: "จัดการภาระงาน",
+      label: "อนุมัติภาระงาน",
       icon: <SnippetsOutlined style={{ color: "#000" }} />,
       onClick: () => navigate("/head/work"),
+    },
+    {
+      key: "Workload",
+      label: "จัดการภาระงาน",
+      icon: <SnippetsOutlined style={{ color: "#000" }} />,
+      onClick: () => navigate("/head/workload"),
     },
     {
       key: "History",
