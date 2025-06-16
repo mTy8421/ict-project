@@ -21,9 +21,12 @@ export class CreateWorkDto {
   @IsString()
   department: string;
 
+  @IsString()
+  dateTimeStart?: string;
+
   @IsNotEmpty()
   @IsString()
-  dateTime: string;
+  dateTimeEnd: string;
 
   @IsNotEmpty()
   @IsNumber()

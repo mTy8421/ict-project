@@ -16,5 +16,8 @@ export class UpdateWorkDto extends PartialType(CreateWorkDto) {
   priority: string;
 
   @IsObject()
-  dateTime: string;
+  dateTimeStart: string;
+
+  @IsObject()
+  dateTimeEnd: string;
 }

@@ -34,11 +34,10 @@ export class WorkService {
         status: createWorkDto.status,
         priority: createWorkDto.priority,
         department: createWorkDto.department,
-        dateTime: createWorkDto.dateTime,
+        dateTimeEnd: createWorkDto.dateTimeEnd,
         user: user ?? undefined,
       })
       .execute();
-
     return works;
   }
 
@@ -67,7 +66,7 @@ export class WorkService {
         status: updateWorkDto.status,
         priority: updateWorkDto.priority,
         department: updateWorkDto.department,
-        dateTime: updateWorkDto.dateTime,
+        dateTimeEnd: updateWorkDto.dateTimeEnd,
       })
       .where('id = :id', { id })
       .execute();
@@ -94,7 +93,6 @@ export class WorkService {
     if (!works) {
       throw new NotFoundException(`User ID Not Found`);
     }
-
     return works;
   }
 }

@@ -45,7 +45,6 @@ export class WorkController {
   @Get('user')
   findByUser(@Req() req: Request) {
     const user = req.user as { user_id: number };
-
     return this.workService.findByUser(user.user_id);
   }
 }

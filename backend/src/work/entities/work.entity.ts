@@ -22,7 +22,10 @@ export class Work {
   department: string;
 
   @Column({ type: 'date', nullable: true })
-  dateTime: string;
+  dateTimeStart: string;
+
+  @Column({ type: 'date', nullable: true })
+  dateTimeEnd: string;
 
   @ManyToOne(() => User, (user) => user.works)
   user: User;
