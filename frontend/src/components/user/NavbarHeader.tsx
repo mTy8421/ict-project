@@ -77,7 +77,7 @@ const ReHeader: React.FC = () => {
       console.error("Error fetching users:", error);
       if (error.response?.status === 401) {
         message.error("กรุณาเข้าสู่ระบบใหม่");
-        navigate("/login");
+        navigate("/");
       } else {
         message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
       }
