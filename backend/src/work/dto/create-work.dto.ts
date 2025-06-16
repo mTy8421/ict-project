@@ -7,7 +7,7 @@ export class CreateWorkDto {
 
   @IsNotEmpty()
   @IsString()
-  decription: string;
+  description: string;
 
   @IsNotEmpty()
   @IsString()

@@ -7,7 +7,7 @@ export class UpdateWorkDto extends PartialType(CreateWorkDto) {
   title: string;
 
   @IsObject()
-  decription: string;
+  description: string;
 
   @IsObject()
   status: string;

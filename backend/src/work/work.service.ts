@@ -30,10 +30,11 @@ export class WorkService {
       .into(Work)
       .values({
         title: createWorkDto.title,
-        description: createWorkDto.decription,
+        description: createWorkDto.description,
         status: createWorkDto.status,
         priority: createWorkDto.priority,
         department: createWorkDto.department,
+        dateTimeStart: createWorkDto.dateTimeStart,
         dateTimeEnd: createWorkDto.dateTimeEnd,
         user: user ?? undefined,
       })
@@ -58,6 +59,8 @@ export class WorkService {
   }
 
   async update(id: number, updateWorkDto: UpdateWorkDto) {
+    const setDate = new Date();
+
     const works = await this.workRepository
       .createQueryBuilder('work')
       .update(Work)
@@ -66,6 +69,7 @@ export class WorkService {
         status: updateWorkDto.status,
         priority: updateWorkDto.priority,
         department: updateWorkDto.department,
+        dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
         dateTimeEnd: updateWorkDto.dateTimeEnd,
       })
       .where('id = :id', { id })
@@ -87,7 +91,7 @@ export class WorkService {
     const works = await this.workRepository
       .createQueryBuilder('work')
       .innerJoin('work.user', 'user')
-      .where('user.user_id = :user_id', { userId })
+      .where('user.user_id = :userId', { userId })
       .getMany();
 
     if (!works) {

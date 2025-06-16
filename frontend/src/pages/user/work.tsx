@@ -74,7 +74,7 @@ const UserWork: React.FC = () => {
 
   const fetchWorkloads = async () => {
     try {
-      const response = await axiosInstance.get(`/workload/workloadbyuser`);
+      const response = await axiosInstance.get(`/work/user`);
       setWorkloads(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);
@@ -208,14 +208,18 @@ const UserWork: React.FC = () => {
     },
     {
       title: "วันที่เริ่มต้น",
-      dataIndex: "start_date",
-      key: "start_date",
+      dataIndex: "dateTimeStart",
+      key: "dateTimeStart",
+      // dataIndex: "start_date",
+      // key: "start_date",
       render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
     },
     {
       title: "วันที่สิ้นสุด",
-      dataIndex: "end_date",
-      key: "end_date",
+      dataIndex: "dateTimeEnd",
+      key: "dateTimeEnd",
+      // dataIndex: "end_date",
+      // key: "end_date",
       render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
     },
     {

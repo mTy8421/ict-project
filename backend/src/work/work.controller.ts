@@ -7,15 +7,24 @@ import {
   Param,
   Delete,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { WorkService } from './work.service';
 import { CreateWorkDto } from './dto/create-work.dto';
 import { UpdateWorkDto } from './dto/update-work.dto';
 import { Request } from 'express';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('work')
 export class WorkController {
   constructor(private readonly workService: WorkService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get('user')
+  findByUser(@Req() req: Request) {
+    const user = req.user as { user_id: number };
+    return this.workService.findByUser(user.user_id);
+  }
 
   @Post()
   create(@Body() createWorkDto: CreateWorkDto) {
@@ -40,11 +49,5 @@ export class WorkController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.workService.remove(+id);
-  }
-
-  @Get('user')
-  findByUser(@Req() req: Request) {
-    const user = req.user as { user_id: number };
-    return this.workService.findByUser(user.user_id);
   }
 }

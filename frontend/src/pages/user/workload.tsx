@@ -33,7 +33,8 @@ interface WorkloadForm {
   assignee: string;
   priority: "low" | "medium" | "high";
   description: string;
-  dateRange: [any, any];
+  // dateRange: [any, any];
+  dateRange: any;
 }
 
 interface User {
@@ -86,7 +87,7 @@ const UserWorkLoad: React.FC = () => {
         console.error("Error fetching users:", error);
         if (error.response?.status === 401) {
           message.error("กรุณาเข้าสู่ระบบใหม่");
-          navigate("/login");
+          navigate("/");
         } else {
           message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
         }
@@ -98,23 +99,28 @@ const UserWorkLoad: React.FC = () => {
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
-      const [start_date, end_date] = values.dateRange;
+      // const [start_date, end_date] = values.dateRange;
+      const end_date = values.dateRange;
+
+      const setDate = new Date();
 
       const workloadData = {
         title: values.title,
-        department: profile?.user_role || "unknown",
-        assignedToId: profile?.user_id || 0,
-        priority: values.priority,
         description: values.description,
-        start_date: start_date.format("YYYY-MM-DD"),
-        end_date: end_date.format("YYYY-MM-DD"),
+        department: profile?.user_role || "unknown",
+        // assignedToId: profile?.user_id || 0,
+        user: profile?.user_id || 0,
+        priority: values.priority,
+        // start_date: start_date.format("YYYY-MM-DD"),
+        dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
+        dateTimeEnd: end_date.format("YYYY-MM-DD"),
         status: "pending",
-        username: profile?.user_name || "unknown",
+        // username: profile?.user_name || "unknown",
       };
 
       console.log("Sending data:", workloadData);
 
-      const response = await axiosInstance.post("/workload", workloadData);
+      const response = await axiosInstance.post("/work", workloadData);
       console.log("Response:", response.data);
 
       message.success("เพิ่มภาระงานสำเร็จ");
@@ -324,7 +330,16 @@ const UserWorkLoad: React.FC = () => {
                         { required: true, message: "กรุณาเลือกระยะเวลา" },
                       ]}
                     >
-                      <RangePicker
+                      {/* <RangePicker */}
+                      {/*   style={{ */}
+                      {/*     width: "100%", */}
+                      {/*     height: 48, */}
+                      {/*     borderRadius: theme.borderRadius.md, */}
+                      {/*     fontSize: theme.fontSize.md, */}
+                      {/*   }} */}
+                      {/*   format="YYYY-MM-DD" */}
+                      {/* /> */}
+                      <DatePicker
                         style={{
                           width: "100%",
                           height: 48,
