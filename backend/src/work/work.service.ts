@@ -116,7 +116,7 @@ export class WorkService {
     const works = await this.workRepository
       .createQueryBuilder('work')
       .innerJoin('work.user', 'user')
-      .innerJoin('work', 'option')
+      .innerJoinAndSelect('work.options', 'option')
       .where('user.user_id = :userId', { userId })
       .getMany();
 
