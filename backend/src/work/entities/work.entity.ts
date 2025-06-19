@@ -1,12 +1,6 @@
 import { Option } from 'src/option/entities/option.entity';
 import { User } from '../../user/entities/user.entity';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Work {
@@ -31,6 +25,6 @@ export class Work {
   @ManyToOne(() => User, (user) => user.works)
   user: User;
 
-  @OneToOne(() => Option, (optins) => optins.works)
+  @ManyToOne(() => Option, (optins) => optins.works)
   options: Option;
 }

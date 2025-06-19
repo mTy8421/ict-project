@@ -1,5 +1,5 @@
 import { Work } from 'src/work/entities/work.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class Option {
@@ -12,6 +12,6 @@ export class Option {
   @Column({ default: 'low' })
   priority: string;
 
-  @OneToOne(() => Work, (works) => works.options)
-  works: Work;
+  @OneToMany(() => Work, (works) => works.options)
+  works: Work[];
 }
