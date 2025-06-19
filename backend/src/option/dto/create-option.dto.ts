@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateOptionDto {
   @IsNotEmpty()
@@ -9,7 +9,7 @@ export class CreateOptionDto {
   @IsString()
   priority: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  works: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // works: number;
 }

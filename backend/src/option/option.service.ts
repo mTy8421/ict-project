@@ -1,28 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateOptionDto } from './dto/create-option.dto';
 import { UpdateOptionDto } from './dto/update-option.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Option } from './entities/option.entity';
 import { Repository } from 'typeorm';
-import { Work } from 'src/work/entities/work.entity';
 
 @Injectable()
 export class OptionService {
   constructor(
     @InjectRepository(Option) private optionRepository: Repository<Option>,
-    @InjectRepository(Work) private workRepository: Repository<Work>,
   ) {}
   async create(createOptionDto: CreateOptionDto) {
-    const work = await this.workRepository.findOne({
-      where: { id: createOptionDto.works },
-    });
-
-    if (!work) {
-      throw new NotFoundException(
-        `Work with ID ${createOptionDto.works} not found`,
-      );
-    }
-
     const options = await this.optionRepository
       .createQueryBuilder('option')
       .insert()
@@ -30,7 +18,6 @@ export class OptionService {
       .values({
         title: createOptionDto.title,
         priority: createOptionDto.priority,
-        works: work ?? undefined,
       })
       .execute();
     return options;

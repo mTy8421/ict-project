@@ -54,13 +54,17 @@ export class WorkService {
   }
 
   findAll() {
-    const works = this.workRepository.createQueryBuilder('work').getMany();
+    const works = this.workRepository
+      .createQueryBuilder('work')
+      .innerJoin('work.options', 'option')
+      .getMany();
     return works;
   }
 
   async findOne(id: number) {
     const works = await this.workRepository
       .createQueryBuilder('work')
+      .innerJoin('work.options', 'option')
       .where('work.id = :id', { id })
       .getOne();
     if (!works) {
