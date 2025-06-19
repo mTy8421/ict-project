@@ -75,7 +75,6 @@ const UserWork: React.FC = () => {
   const fetchWorkloads = async () => {
     try {
       const response = await axiosInstance.get(`/work/user`);
-      console.table(response.data);
       setWorkloads(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);
@@ -98,7 +97,7 @@ const UserWork: React.FC = () => {
       centered: true,
       onOk: async () => {
         try {
-          await axiosInstance.delete(`/workload/${id}`);
+          await axiosInstance.delete(`/work/${id}`);
           message.success("ลบภาระงานสำเร็จ");
           fetchWorkloads();
         } catch (error) {
@@ -164,11 +163,11 @@ const UserWork: React.FC = () => {
   const columns = [
     {
       title: "หัวข้อ",
-      dataIndex: "title",
-      key: "title",
-      render: (text: string) => (
+      dataIndex: "options",
+      key: "options",
+      render: (text: any) => (
         <Text strong style={{ color: theme.primary }}>
-          {text}
+          {text.title}
         </Text>
       ),
     },
@@ -192,18 +191,18 @@ const UserWork: React.FC = () => {
     },
     {
       title: "ความสำคัญ",
-      dataIndex: "priority",
-      key: "priority",
-      render: (priority: string) => (
+      dataIndex: "options",
+      key: "options",
+      render: (priority: any) => (
         <Tag
-          color={getPriorityColor(priority)}
+          color={getPriorityColor(priority.priority)}
           style={{
             padding: "4px 8px",
             borderRadius: theme.borderRadius.sm,
             fontSize: theme.fontSize.sm,
           }}
         >
-          {getPriorityText(priority)}
+          {getPriorityText(priority.priority)}
         </Tag>
       ),
     },
