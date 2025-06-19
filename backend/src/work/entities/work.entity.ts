@@ -13,17 +13,11 @@ export class Work {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  title: string;
-
   @Column({ type: 'text' })
   description: string;
 
   @Column({ default: 'pending' })
   status: string;
-
-  @Column({ default: 'low' })
-  priority: string;
 
   @Column()
   department: string;

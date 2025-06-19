@@ -3,19 +3,11 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 export class CreateWorkDto {
   @IsNotEmpty()
   @IsString()
-  title: string;
-
-  @IsNotEmpty()
-  @IsString()
   description: string;
 
   @IsNotEmpty()
   @IsString()
   status: string;
-
-  @IsNotEmpty()
-  @IsString()
-  priority: string;
 
   @IsNotEmpty()
   @IsString()
@@ -31,4 +23,8 @@ export class CreateWorkDto {
   @IsNotEmpty()
   @IsNumber()
   user: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  options: number;
 }

@@ -5,12 +5,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Work } from './entities/work.entity';
 import { User } from 'src/user/entities/user.entity';
+import { Option } from 'src/option/entities/option.entity';
 
 @Injectable()
 export class WorkService {
   constructor(
     @InjectRepository(Work) private workRepository: Repository<Work>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Option) private optionRepsitory: Repository<Option>,
   ) {}
 
   async create(createWorkDto: CreateWorkDto) {
@@ -24,19 +26,28 @@ export class WorkService {
       );
     }
 
+    const option = await this.optionRepsitory.findOne({
+      where: { id: createWorkDto.options },
+    });
+
+    if (!option) {
+      throw new NotFoundException(
+        `Option with ID ${createWorkDto.options} Not found`,
+      );
+    }
+
     const works = await this.workRepository
       .createQueryBuilder('work')
       .insert()
       .into(Work)
       .values({
-        title: createWorkDto.title,
         description: createWorkDto.description,
         status: createWorkDto.status,
-        priority: createWorkDto.priority,
         department: createWorkDto.department,
         dateTimeStart: createWorkDto.dateTimeStart,
         dateTimeEnd: createWorkDto.dateTimeEnd,
         user: user ?? undefined,
+        options: option ?? undefined,
       })
       .execute();
     return works;
@@ -61,16 +72,25 @@ export class WorkService {
   async update(id: number, updateWorkDto: UpdateWorkDto) {
     const setDate = new Date();
 
+    const option = await this.optionRepsitory.findOne({
+      where: { id: updateWorkDto.options },
+    });
+
+    if (!option) {
+      throw new NotFoundException(
+        `Option with ID ${updateWorkDto.options} Not found`,
+      );
+    }
+
     const works = await this.workRepository
       .createQueryBuilder('work')
       .update(Work)
       .set({
-        title: updateWorkDto.title,
         status: updateWorkDto.status,
-        priority: updateWorkDto.priority,
         department: updateWorkDto.department,
         dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
         dateTimeEnd: updateWorkDto.dateTimeEnd,
+        options: option,
       })
       .where('id = :id', { id })
       .execute();
@@ -91,6 +111,7 @@ export class WorkService {
     const works = await this.workRepository
       .createQueryBuilder('work')
       .innerJoin('work.user', 'user')
+      .innerJoin('work.options', 'option')
       .where('user.user_id = :userId', { userId })
       .getMany();
 

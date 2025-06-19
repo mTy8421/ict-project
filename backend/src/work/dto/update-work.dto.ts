@@ -4,20 +4,17 @@ import { IsObject } from 'class-validator';
 
 export class UpdateWorkDto extends PartialType(CreateWorkDto) {
   @IsObject()
-  title: string;
-
-  @IsObject()
   description: string;
 
   @IsObject()
   status: string;
 
   @IsObject()
-  priority: string;
-
-  @IsObject()
   dateTimeStart: string;
 
   @IsObject()
   dateTimeEnd: string;
+
+  @IsObject()
+  options: number;
 }
