@@ -28,12 +28,11 @@ const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 interface WorkloadForm {
-  title: string;
+  title: number;
   department: string;
   assignee: string;
-  priority: "low" | "medium" | "high";
+  // priority: "low" | "medium" | "high";
   description: string;
-  // dateRange: [any, any];
   dateRange: any;
 }
 
@@ -43,6 +42,12 @@ interface User {
   user_role: string;
 }
 
+interface OptionsConfig {
+  id: number;
+  title: number;
+  priority: string;
+}
+
 const UserWorkLoad: React.FC = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
@@ -50,6 +55,7 @@ const UserWorkLoad: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   const [profile, setProfile] = useState<User | undefined>();
+  const [options, setOptions] = useState<OptionsConfig[]>([]);
 
   const getPriorityText = (priority: string) => {
     switch (priority) {
@@ -77,24 +83,34 @@ const UserWorkLoad: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axiosInstance.get("/user/profile");
-        setUsers(response.data);
-        setProfile(response.data);
-      } catch (error: any) {
-        console.error("Error fetching users:", error);
-        if (error.response?.status === 401) {
-          message.error("กรุณาเข้าสู่ระบบใหม่");
-          navigate("/");
-        } else {
-          message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
-        }
+  const fetchUsers = async () => {
+    try {
+      const response = await axiosInstance.get("/user/profile");
+      setUsers(response.data);
+      setProfile(response.data);
+    } catch (error: any) {
+      console.error("Error fetching users:", error);
+      if (error.response?.status === 401) {
+        message.error("กรุณาเข้าสู่ระบบใหม่");
+        navigate("/");
+      } else {
+        message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
       }
-    };
+    }
+  };
 
+  const fetchOptions = async () => {
+    try {
+      const response = await axiosInstance.get("/option");
+      setOptions(response.data);
+    } catch (error: any) {
+      console.error("Error, fetching Options", error);
+    }
+  };
+
+  useEffect(() => {
     fetchUsers();
+    fetchOptions();
   }, [navigate]);
   const onFinish = async (values: WorkloadForm) => {
     try {
@@ -105,12 +121,15 @@ const UserWorkLoad: React.FC = () => {
       const setDate = new Date();
 
       const workloadData = {
-        title: values.title,
+        // don't use now
+        // title: values.title,
         description: values.description,
         department: profile?.user_role || "unknown",
         // assignedToId: profile?.user_id || 0,
         user: profile?.user_id || 0,
-        priority: values.priority,
+        // don't use now
+        // priority: values.priority,
+        options: values.title,
         // start_date: start_date.format("YYYY-MM-DD"),
         dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
         dateTimeEnd: end_date.format("YYYY-MM-DD"),
@@ -236,8 +255,8 @@ const UserWorkLoad: React.FC = () => {
                       ]}
                       style={{ width: "100%" }}
                     >
-                      <Input
-                        placeholder="กรอกหัวข้อภาระงาน"
+                      <Select
+                        placeholder="เลือกหัวข้อภาระงาน"
                         style={{
                           height: 48,
                           borderRadius: theme.borderRadius.md,
@@ -246,7 +265,13 @@ const UserWorkLoad: React.FC = () => {
                           borderColor: theme.textLight,
                           width: "100%",
                         }}
-                      />
+                      >
+                        {options.map((opt) => (
+                          <Select.Option key={opt.id} value={opt.id}>
+                            {opt.title}
+                          </Select.Option>
+                        ))}
+                      </Select>
                     </Form.Item>
                   </Col>
 

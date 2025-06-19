@@ -75,6 +75,7 @@ const UserWork: React.FC = () => {
   const fetchWorkloads = async () => {
     try {
       const response = await axiosInstance.get(`/work/user`);
+      console.table(response.data);
       setWorkloads(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);

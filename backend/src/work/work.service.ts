@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { Work } from './entities/work.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Option } from 'src/option/entities/option.entity';
+import { console } from 'inspector';
 
 @Injectable()
 export class WorkService {
@@ -115,7 +116,7 @@ export class WorkService {
     const works = await this.workRepository
       .createQueryBuilder('work')
       .innerJoin('work.user', 'user')
-      .innerJoin('work.options', 'option')
+      .innerJoin('work', 'option')
       .where('user.user_id = :userId', { userId })
       .getMany();
 
