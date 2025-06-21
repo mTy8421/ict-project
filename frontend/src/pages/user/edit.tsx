@@ -87,7 +87,7 @@ const EditUserWorkLoad: React.FC = () => {
       console.error("Error fetching users:", error);
       if (error.response?.status === 401) {
         message.error("กรุณาเข้าสู่ระบบใหม่");
-        navigate("/login");
+        navigate("/");
       } else {
         message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
       }
@@ -268,55 +268,6 @@ const EditUserWorkLoad: React.FC = () => {
                       />
                     </Form.Item>
                   </Col>
-
-                  {/* <Col xs={24} md={12}>
-                    <Form.Item
-                      name="department"
-                      label="แผนก"
-                      rules={[{ required: true, message: "กรุณาเลือกแผนก" }]}
-                    >
-                      <Select
-                        placeholder="เลือกแผนก"
-                        style={{
-                          height: 48,
-                          borderRadius: theme.borderRadius.md,
-                          fontSize: theme.fontSize.md,
-                        }}
-                      >
-                        <Select.Option value="ict">ICT</Select.Option>
-                        <Select.Option value="finance">การเงิน</Select.Option>
-                        <Select.Option value="hr">ทรัพยากรบุคคล</Select.Option>
-                      </Select>
-                    </Form.Item>
-                  </Col> */}
-
-                  {/* <Col xs={24} md={12}>
-                    <Form.Item
-                      name="assignee"
-                      label="ผู้รับผิดชอบ"
-                      rules={[
-                        { required: true, message: "กรุณาเลือกผู้รับผิดชอบ" },
-                      ]}
-                    >
-                      <Select
-                        placeholder="เลือกผู้รับผิดชอบ"
-                        style={{
-                          height: 48,
-                          borderRadius: theme.borderRadius.md,
-                          fontSize: theme.fontSize.md,
-                        }}
-                      >
-                        {users.map((user) => (
-                          <Select.Option
-                            key={user.user_id}
-                            value={user.user_id}
-                          >
-                            {user.user_name} ({user.user_role})
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  </Col> */}
 
                   <Col xs={24} md={12}>
                     <Form.Item

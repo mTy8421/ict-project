@@ -47,14 +47,14 @@ const { RangePicker } = DatePicker;
 
 interface Workload {
   id: number;
-  title: string;
+  // title: string;
   department: string;
   assignee: string;
   status: "pending" | "in_progress" | "completed";
-  priority: "low" | "medium" | "high";
-  start_date: string;
-  end_date: string;
-  created_at: string;
+  // priority: "low" | "medium" | "high";
+  dateTimeStart: string;
+  dateTimeEnd: string;
+  options: any;
 }
 
 const UserHistory: React.FC = () => {
@@ -64,11 +64,11 @@ const UserHistory: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState<[string, string] | null>(null);
+  const [dateRange, setDateRange] = useState();
 
   const fetchWorkloads = async () => {
     try {
-      const response = await axiosInstance.get("/workload");
+      const response = await axiosInstance.get("/work/user");
       setWorkloads(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);
@@ -90,7 +90,7 @@ const UserHistory: React.FC = () => {
       cancelText: "ยกเลิก",
       onOk: async () => {
         try {
-          await axiosInstance.delete(`/workload/${id}`);
+          await axiosInstance.delete(`/work/${id}`);
           message.success("ลบภาระงานสำเร็จ");
           fetchWorkloads();
         } catch (error) {
@@ -418,16 +418,13 @@ const UserHistory: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
-                    <RangePicker
+                    <DatePicker
                       style={{ width: "100%" }}
                       onChange={(dates) => {
                         if (dates) {
-                          setDateRange([
-                            dates[0]?.toISOString() || "",
-                            dates[1]?.toISOString() || "",
-                          ]);
+                          setDateRange(dates.toString() as any);
                         } else {
-                          setDateRange(null);
+                          setDateRange(undefined);
                         }
                       }}
                     />
@@ -562,16 +559,13 @@ const UserHistory: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
-                    <RangePicker
+                    <DatePicker
                       style={{ width: "100%" }}
                       onChange={(dates) => {
                         if (dates) {
-                          setDateRange([
-                            dates[0]?.toISOString() || "",
-                            dates[1]?.toISOString() || "",
-                          ]);
+                          setDateRange(dates.toString() as any);
                         } else {
-                          setDateRange(null);
+                          setDateRange(undefined);
                         }
                       }}
                     />

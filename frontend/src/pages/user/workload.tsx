@@ -31,7 +31,6 @@ interface WorkloadForm {
   title: number;
   department: string;
   assignee: string;
-  // priority: "low" | "medium" | "high";
   description: string;
   dateRange: any;
 }
@@ -115,26 +114,18 @@ const UserWorkLoad: React.FC = () => {
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
-      // const [start_date, end_date] = values.dateRange;
       const end_date = values.dateRange;
 
       const setDate = new Date();
 
       const workloadData = {
-        // don't use now
-        // title: values.title,
         description: values.description,
         department: profile?.user_role || "unknown",
-        // assignedToId: profile?.user_id || 0,
         user: profile?.user_id || 0,
-        // don't use now
-        // priority: values.priority,
         options: values.title,
-        // start_date: start_date.format("YYYY-MM-DD"),
         dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
         dateTimeEnd: end_date.format("YYYY-MM-DD"),
         status: "pending",
-        // username: profile?.user_name || "unknown",
       };
 
       console.log("Sending data:", workloadData);
@@ -275,79 +266,7 @@ const UserWorkLoad: React.FC = () => {
                     </Form.Item>
                   </Col>
 
-                  {/* <Col xs={24} md={12}>
-                    <Form.Item
-                      name="department"
-                      label="แผนก"
-                      rules={[{ required: true, message: "กรุณาเลือกแผนก" }]}
-                    >
-                      <Select
-                        placeholder="เลือกแผนก"
-                        style={{
-                          height: 48,
-                          borderRadius: theme.borderRadius.md,
-                          fontSize: theme.fontSize.md,
-                        }}
-                      >
-                        <Select.Option value="ict">ICT</Select.Option>
-                        <Select.Option value="finance">การเงิน</Select.Option>
-                        <Select.Option value="hr">ทรัพยากรบุคคล</Select.Option>
-                      </Select>
-                    </Form.Item>
-                  </Col> */}
-
-                  {/* <Col xs={24} md={12}>
-                    <Form.Item
-                      name="assignee"
-                      label="ผู้รับผิดชอบ"
-                      rules={[
-                        { required: true, message: "กรุณาเลือกผู้รับผิดชอบ" },
-                      ]}
-                    >
-                      <Select
-                        placeholder="เลือกผู้รับผิดชอบ"
-                        style={{
-                          height: 48,
-                          borderRadius: theme.borderRadius.md,
-                          fontSize: theme.fontSize.md,
-                        }}
-                      >
-                        {users.map((user) => (
-                          <Select.Option
-                            key={user.user_id}
-                            value={user.user_id}
-                          >
-                            {user.user_name} ({user.user_role})
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  </Col> */}
-
-                  <Col xs={24} md={12}>
-                    <Form.Item
-                      name="priority"
-                      label="ความสำคัญ"
-                      rules={[
-                        { required: true, message: "กรุณาเลือกความสำคัญ" },
-                      ]}
-                    >
-                      <Select
-                        placeholder="เลือกความสำคัญ"
-                        style={{
-                          height: 48,
-                          borderRadius: theme.borderRadius.md,
-                          fontSize: theme.fontSize.md,
-                        }}
-                      >
-                        <Select.Option value="high">สูง</Select.Option>
-                        <Select.Option value="medium">ปานกลาง</Select.Option>
-                        <Select.Option value="low">ต่ำ</Select.Option>
-                      </Select>
-                    </Form.Item>
-                  </Col>
-
-                  <Col xs={24} md={12}>
+                  <Col span={24}>
                     <Form.Item
                       name="dateRange"
                       label="ระยะเวลา"
@@ -355,21 +274,14 @@ const UserWorkLoad: React.FC = () => {
                         { required: true, message: "กรุณาเลือกระยะเวลา" },
                       ]}
                     >
-                      {/* <RangePicker */}
-                      {/*   style={{ */}
-                      {/*     width: "100%", */}
-                      {/*     height: 48, */}
-                      {/*     borderRadius: theme.borderRadius.md, */}
-                      {/*     fontSize: theme.fontSize.md, */}
-                      {/*   }} */}
-                      {/*   format="YYYY-MM-DD" */}
-                      {/* /> */}
                       <DatePicker
                         style={{
-                          width: "100%",
                           height: 48,
                           borderRadius: theme.borderRadius.md,
                           fontSize: theme.fontSize.md,
+                          padding: `0 ${theme.spacing.md}`,
+                          borderColor: theme.textLight,
+                          width: "100%",
                         }}
                         format="YYYY-MM-DD"
                       />

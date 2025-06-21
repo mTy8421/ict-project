@@ -6,7 +6,6 @@ import { Repository } from 'typeorm';
 import { Work } from './entities/work.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Option } from 'src/option/entities/option.entity';
-import { console } from 'inspector';
 
 @Injectable()
 export class WorkService {
