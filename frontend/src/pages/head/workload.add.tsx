@@ -28,18 +28,23 @@ const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 interface WorkloadForm {
-  title: string;
+  title: number;
   department: string;
   assignee: string;
-  priority: "low" | "medium" | "high";
   description: string;
-  dateRange: [any, any];
+  dateRange: any;
 }
 
 interface User {
   user_id: number;
   user_name: string;
   user_role: string;
+}
+
+interface OptionsConfig {
+  id: number;
+  title: number;
+  priority: string;
 }
 
 const HeadWorkLoadAdd: React.FC = () => {
@@ -49,6 +54,7 @@ const HeadWorkLoadAdd: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   const [profile, setProfile] = useState<User | undefined>();
+  const [options, setOptions] = useState<OptionsConfig[]>([]);
 
   const getPriorityText = (priority: string) => {
     switch (priority) {
@@ -76,45 +82,55 @@ const HeadWorkLoadAdd: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axiosInstance.get("/user/profile");
-        setUsers(response.data);
-        setProfile(response.data);
-      } catch (error: any) {
-        console.error("Error fetching users:", error);
-        if (error.response?.status === 401) {
-          message.error("กรุณาเข้าสู่ระบบใหม่");
-          navigate("/login");
-        } else {
-          message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
-        }
+  const fetchUsers = async () => {
+    try {
+      const response = await axiosInstance.get("/user/profile");
+      setUsers(response.data);
+      setProfile(response.data);
+    } catch (error: any) {
+      console.error("Error fetching users:", error);
+      if (error.response?.status === 401) {
+        message.error("กรุณาเข้าสู่ระบบใหม่");
+        navigate("/");
+      } else {
+        message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
       }
-    };
+    }
+  };
 
+  const fetchOptions = async () => {
+    try {
+      const response = await axiosInstance.get("/option");
+      setOptions(response.data);
+    } catch (error) {
+      console.error("Error, fetching Options", error);
+    }
+  };
+
+  useEffect(() => {
     fetchUsers();
+    fetchOptions();
   }, [navigate]);
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
-      const [start_date, end_date] = values.dateRange;
+      const end_date = values.dateRange;
+
+      const setDate = new Date();
 
       const workloadData = {
-        title: values.title,
-        department: profile?.user_role || "unknown",
-        assignedToId: profile?.user_id || 0,
-        priority: values.priority,
         description: values.description,
-        start_date: start_date.format("YYYY-MM-DD"),
-        end_date: end_date.format("YYYY-MM-DD"),
+        department: profile?.user_role || "unknown",
+        user: profile?.user_id || 0,
+        options: values.title,
+        dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
+        dateTimeEnd: end_date.format("YYYY-MM-DD"),
         status: "pending",
-        username: profile?.user_name || "unknown",
       };
 
       console.log("Sending data:", workloadData);
 
-      const response = await axiosInstance.post("/workload", workloadData);
+      const response = await axiosInstance.post("/work", workloadData);
       console.log("Response:", response.data);
 
       message.success("เพิ่มภาระงานสำเร็จ");
@@ -161,7 +177,7 @@ const HeadWorkLoadAdd: React.FC = () => {
               <Button
                 type="link"
                 icon={<ArrowLeftOutlined />}
-                onClick={() => navigate("/head/_workload")}
+                onClick={() => navigate("/head/work")}
                 style={{
                   padding: 0,
                   marginBottom: theme.spacing.md,
@@ -230,8 +246,8 @@ const HeadWorkLoadAdd: React.FC = () => {
                       ]}
                       style={{ width: "100%" }}
                     >
-                      <Input
-                        placeholder="กรอกหัวข้อภาระงาน"
+                      <Select
+                        placeholder="เลือกหัวข้อภาระงาน"
                         style={{
                           height: 48,
                           borderRadius: theme.borderRadius.md,
@@ -240,83 +256,17 @@ const HeadWorkLoadAdd: React.FC = () => {
                           borderColor: theme.textLight,
                           width: "100%",
                         }}
-                      />
-                    </Form.Item>
-                  </Col>
-
-                  {/* <Col xs={24} md={12}>
-                    <Form.Item
-                      name="department"
-                      label="แผนก"
-                      rules={[{ required: true, message: "กรุณาเลือกแผนก" }]}
-                    >
-                      <Select
-                        placeholder="เลือกแผนก"
-                        style={{
-                          height: 48,
-                          borderRadius: theme.borderRadius.md,
-                          fontSize: theme.fontSize.md,
-                        }}
                       >
-                        <Select.Option value="ict">ICT</Select.Option>
-                        <Select.Option value="finance">การเงิน</Select.Option>
-                        <Select.Option value="hr">ทรัพยากรบุคคล</Select.Option>
-                      </Select>
-                    </Form.Item>
-                  </Col> */}
-
-                  {/* <Col xs={24} md={12}>
-                    <Form.Item
-                      name="assignee"
-                      label="ผู้รับผิดชอบ"
-                      rules={[
-                        { required: true, message: "กรุณาเลือกผู้รับผิดชอบ" },
-                      ]}
-                    >
-                      <Select
-                        placeholder="เลือกผู้รับผิดชอบ"
-                        style={{
-                          height: 48,
-                          borderRadius: theme.borderRadius.md,
-                          fontSize: theme.fontSize.md,
-                        }}
-                      >
-                        {users.map((user) => (
-                          <Select.Option
-                            key={user.user_id}
-                            value={user.user_id}
-                          >
-                            {user.user_name} ({user.user_role})
+                        {options.map((opt) => (
+                          <Select.Option key={opt.id} value={opt.id}>
+                            {opt.title}
                           </Select.Option>
                         ))}
                       </Select>
                     </Form.Item>
-                  </Col> */}
-
-                  <Col xs={24} md={12}>
-                    <Form.Item
-                      name="priority"
-                      label="ความสำคัญ"
-                      rules={[
-                        { required: true, message: "กรุณาเลือกความสำคัญ" },
-                      ]}
-                    >
-                      <Select
-                        placeholder="เลือกความสำคัญ"
-                        style={{
-                          height: 48,
-                          borderRadius: theme.borderRadius.md,
-                          fontSize: theme.fontSize.md,
-                        }}
-                      >
-                        <Select.Option value="high">สูง</Select.Option>
-                        <Select.Option value="medium">ปานกลาง</Select.Option>
-                        <Select.Option value="low">ต่ำ</Select.Option>
-                      </Select>
-                    </Form.Item>
                   </Col>
 
-                  <Col xs={24} md={12}>
+                  <Col span={24}>
                     <Form.Item
                       name="dateRange"
                       label="ระยะเวลา"
@@ -324,12 +274,14 @@ const HeadWorkLoadAdd: React.FC = () => {
                         { required: true, message: "กรุณาเลือกระยะเวลา" },
                       ]}
                     >
-                      <RangePicker
+                      <DatePicker
                         style={{
-                          width: "100%",
                           height: 48,
                           borderRadius: theme.borderRadius.md,
                           fontSize: theme.fontSize.md,
+                          padding: `0 ${theme.spacing.md}`,
+                          borderColor: theme.textLight,
+                          width: "100%",
                         }}
                         format="YYYY-MM-DD"
                       />
