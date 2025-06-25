@@ -17,7 +17,7 @@ const AdminConfig: React.FC = () => {
     {
       key: "user_name",
       user_name: "ความสำคัญ",
-      id: "1",
+      id: "priority",
     },
     {
       key: "user_name",

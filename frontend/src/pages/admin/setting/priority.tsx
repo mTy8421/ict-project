@@ -147,7 +147,7 @@ const Priority: React.FC = () => {
                   letterSpacing: "0.5px",
                 }}
               >
-                เพิ่มผู้ใช้งาน
+                ความสำคัญ
               </Title>
               <Text
                 style={{
@@ -157,7 +157,7 @@ const Priority: React.FC = () => {
                   fontSize: theme.fontSize.md,
                 }}
               >
-                กรอกข้อมูลผู้ใช้ที่ต้องการเพิ่ม
+                ตั่งค่าความสำคัญของภาระงาน
               </Text>
             </div>
 
@@ -253,7 +253,7 @@ const Priority: React.FC = () => {
                       gap: theme.spacing.sm,
                     }}
                   >
-                    บันทึกผู้ใช้งาน
+                    บันทึก
                   </Button>
                 </Form.Item>
               </Form>
