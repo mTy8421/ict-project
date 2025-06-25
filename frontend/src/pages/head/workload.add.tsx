@@ -177,7 +177,7 @@ const HeadWorkLoadAdd: React.FC = () => {
               <Button
                 type="link"
                 icon={<ArrowLeftOutlined />}
-                onClick={() => navigate("/head/work")}
+                onClick={() => navigate("/head/_workload")}
                 style={{
                   padding: 0,
                   marginBottom: theme.spacing.md,

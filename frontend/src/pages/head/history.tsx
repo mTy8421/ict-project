@@ -417,7 +417,7 @@ const HeadHistory: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
-                    <RangePicker
+                    <DatePicker
                       style={{ width: "100%" }}
                       onChange={(dates) => {
                         if (dates) {
@@ -558,7 +558,7 @@ const HeadHistory: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
-                    <RangePicker
+                    <DatePicker
                       style={{ width: "100%" }}
                       onChange={(dates) => {
                         if (dates) {

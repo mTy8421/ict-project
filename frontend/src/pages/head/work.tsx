@@ -449,7 +449,7 @@ const HeadWork: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
-                    <RangePicker
+                    <DatePicker
                       style={{ width: "100%" }}
                       onChange={(dates) => {
                         if (dates) {
@@ -590,7 +590,7 @@ const HeadWork: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
-                    <RangePicker
+                    <DatePicker
                       style={{ width: "100%" }}
                       onChange={(dates) => {
                         if (dates) {

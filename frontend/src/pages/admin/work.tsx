@@ -47,15 +47,15 @@ const { RangePicker } = DatePicker;
 
 interface Workload {
   id: number;
-  title: string;
+  // title: string;
   department: string;
   assignee: string;
   status: "pending" | "in_progress" | "completed";
-  priority: "low" | "medium" | "high";
-  start_date: string;
-  end_date: string;
-  created_at: string;
-  username: string;
+  // priority: "low" | "medium" | "high";
+  dateTimeStart: string;
+  dateTimeEnd: string;
+  options: any;
+  users: any;
 }
 
 interface User {
@@ -72,7 +72,7 @@ const AdminWork: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState<[string, string] | null>(null);
+  const [dateRange, setDateRange] = useState();
 
   const fetchWorkloads = async () => {
     try {
@@ -275,7 +275,7 @@ const AdminWork: React.FC = () => {
 
   const filteredWorkloads = workloads.filter((workload) => {
     const matchesSearch =
-      (workload.title?.toLowerCase() || "").includes(
+      (workload.options.title?.toLowerCase() || "").includes(
         searchText.toLowerCase(),
       ) ||
       (workload.department?.toLowerCase() || "").includes(
@@ -284,19 +284,18 @@ const AdminWork: React.FC = () => {
       (workload.assignee?.toLowerCase() || "").includes(
         searchText.toLowerCase(),
       ) ||
-      (workload.username?.toLowerCase() || "").includes(
+      (workload.users.user_name?.toLowerCase() || "").includes(
         searchText.toLowerCase(),
       );
 
     const matchesStatus =
       statusFilter.length === 0 || statusFilter.includes(workload.status);
     const matchesPriority =
-      priorityFilter.length === 0 || priorityFilter.includes(workload.priority);
+      priorityFilter.length === 0 ||
+      priorityFilter.includes(workload.options.priority);
 
     const matchesDate =
-      !dateRange ||
-      (new Date(workload.start_date) >= new Date(dateRange[0]) &&
-        new Date(workload.end_date) <= new Date(dateRange[1]));
+      !dateRange || new Date(workload.dateTimeEnd) == new Date(dateRange);
 
     return matchesSearch && matchesStatus && matchesPriority && matchesDate;
   });
@@ -450,16 +449,13 @@ const AdminWork: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
-                    <RangePicker
+                    <DatePicker
                       style={{ width: "100%" }}
                       onChange={(dates) => {
                         if (dates) {
-                          setDateRange([
-                            dates[0]?.toISOString() || "",
-                            dates[1]?.toISOString() || "",
-                          ]);
+                          setDateRange(dates.toString() as any);
                         } else {
-                          setDateRange(null);
+                          setDateRange(undefined);
                         }
                       }}
                     />
@@ -594,16 +590,13 @@ const AdminWork: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
-                    <RangePicker
+                    <DatePicker
                       style={{ width: "100%" }}
                       onChange={(dates) => {
                         if (dates) {
-                          setDateRange([
-                            dates[0]?.toISOString() || "",
-                            dates[1]?.toISOString() || "",
-                          ]);
+                          setDateRange(dates.toString() as any);
                         } else {
-                          setDateRange(null);
+                          setDateRange(undefined);
                         }
                       }}
                     />
