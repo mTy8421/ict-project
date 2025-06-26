@@ -156,11 +156,11 @@ const UserHistory: React.FC = () => {
   const columns = [
     {
       title: "หัวข้อ",
-      dataIndex: "title",
-      key: "title",
-      render: (text: string) => (
+      dataIndex: "options",
+      key: "options",
+      render: (text: any) => (
         <Text strong style={{ color: theme.primary }}>
-          {text}
+          {text.title}
         </Text>
       ),
     },
@@ -184,31 +184,31 @@ const UserHistory: React.FC = () => {
     },
     {
       title: "ความสำคัญ",
-      dataIndex: "priority",
-      key: "priority",
-      render: (priority: string) => (
+      dataIndex: "options",
+      key: "options",
+      render: (priority: any) => (
         <Tag
-          color={getPriorityColor(priority)}
+          color={getPriorityColor(priority.priority)}
           style={{
             padding: "4px 8px",
             borderRadius: theme.borderRadius.sm,
             fontSize: theme.fontSize.sm,
           }}
         >
-          {getPriorityText(priority)}
+          {getPriorityText(priority.priority)}
         </Tag>
       ),
     },
     {
       title: "วันที่เริ่มต้น",
-      dataIndex: "start_date",
-      key: "start_date",
+      dataIndex: "dateTimeStart",
+      key: "dateTimeStart",
       render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
     },
     {
       title: "วันที่สิ้นสุด",
-      dataIndex: "end_date",
-      key: "end_date",
+      dataIndex: "dateTimeEnd",
+      key: "dateTimeEnd",
       render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
     },
     {

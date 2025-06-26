@@ -29,13 +29,14 @@ const { Title, Text } = Typography;
 
 interface Workload {
   id: number;
-  title: string;
+  // title: string;
   department: string;
   assignee: string;
-  priority: "low" | "medium" | "high";
+  // priority: "low" | "medium" | "high";
   status: "pending" | "in_progress" | "completed";
-  start_date: string;
-  end_date: string;
+  dateTimeStart: string;
+  dateTimeEnd: string;
+  options: any;
 }
 
 const User: React.FC = () => {
@@ -45,7 +46,7 @@ const User: React.FC = () => {
 
   const fetchWorkloads = async () => {
     try {
-      const response = await axiosInstance.get("/workload/workloadbyuser");
+      const response = await axiosInstance.get("/work/user");
       setWorkloads(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);
@@ -127,7 +128,8 @@ const User: React.FC = () => {
   const recentWorkloads = workloads
     .sort(
       (a, b) =>
-        new Date(b.start_date).getTime() - new Date(a.start_date).getTime(),
+        new Date(b.dateTimeStart).getTime() -
+        new Date(a.dateTimeStart).getTime(),
     )
     .slice(0, 5);
 
@@ -361,7 +363,7 @@ const User: React.FC = () => {
                               alignItems: "center",
                             }}
                           >
-                            <Text strong>{item.title}</Text>
+                            <Text strong>{item.options.title}</Text>
                             <Tag color={getStatusColor(item.status)}>
                               {getStatusText(item.status)}
                             </Tag>
@@ -374,8 +376,10 @@ const User: React.FC = () => {
                             }}
                           >
                             <Text type="secondary">{item.department}</Text>
-                            <Tag color={getPriorityColor(item.priority)}>
-                              {getPriorityText(item.priority)}
+                            <Tag
+                              color={getPriorityColor(item.options.priority)}
+                            >
+                              {getPriorityText(item.options.priority)}
                             </Tag>
                           </div>
                         </div>
@@ -607,7 +611,7 @@ const User: React.FC = () => {
                               alignItems: "center",
                             }}
                           >
-                            <Text strong>{item.title}</Text>
+                            <Text strong>{item.options.title}</Text>
                             <Tag color={getStatusColor(item.status)}>
                               {getStatusText(item.status)}
                             </Tag>
@@ -620,8 +624,10 @@ const User: React.FC = () => {
                             }}
                           >
                             <Text type="secondary">{item.department}</Text>
-                            <Tag color={getPriorityColor(item.priority)}>
-                              {getPriorityText(item.priority)}
+                            <Tag
+                              color={getPriorityColor(item.options.priority)}
+                            >
+                              {getPriorityText(item.options.priority)}
                             </Tag>
                           </div>
                         </div>

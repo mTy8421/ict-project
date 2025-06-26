@@ -55,7 +55,7 @@ interface Workload {
   dateTimeStart: string;
   dateTimeEnd: string;
   options: any;
-  users: any;
+  user: any;
 }
 
 interface User {
@@ -284,7 +284,7 @@ const HeadWork: React.FC = () => {
       (workload.assignee?.toLowerCase() || "").includes(
         searchText.toLowerCase(),
       ) ||
-      (workload.users.user_name?.toLowerCase() || "").includes(
+      (workload.user.user_name?.toLowerCase() || "").includes(
         searchText.toLowerCase(),
       );
 

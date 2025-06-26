@@ -13,7 +13,7 @@ export class WorkService {
     @InjectRepository(Work) private workRepository: Repository<Work>,
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Option) private optionRepsitory: Repository<Option>,
-  ) {}
+  ) { }
 
   async create(createWorkDto: CreateWorkDto) {
     const user = await this.userRepository.findOne({
@@ -64,12 +64,13 @@ export class WorkService {
   async findOne(id: number) {
     const works = await this.workRepository
       .createQueryBuilder('work')
-      .innerJoin('work.options', 'option')
+      .innerJoinAndSelect('work.options', 'option')
       .where('work.id = :id', { id })
       .getOne();
     if (!works) {
       throw new NotFoundException(`User ID Note Found`);
     }
+
     return works;
   }
 
@@ -91,7 +92,7 @@ export class WorkService {
       .update(Work)
       .set({
         status: updateWorkDto.status,
-        department: updateWorkDto.department,
+        description: updateWorkDto.description,
         dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
         dateTimeEnd: updateWorkDto.dateTimeEnd,
         options: option,
