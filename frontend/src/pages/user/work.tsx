@@ -227,14 +227,18 @@ const UserWork: React.FC = () => {
       key: "action",
       render: (record: Workload) => (
         <Space size="middle">
-          <Tooltip title="ดูรายละเอียด">
-            <Button
-              type="text"
-              icon={<EyeOutlined />}
-              onClick={() => navigate(`/user/work/detail/${record.id}`)}
-              style={{ color: theme.primary }}
-            />
-          </Tooltip>
+          {record.status == "pending" ? (
+            ""
+          ) : (
+            <Tooltip title="ดูรายละเอียด">
+              <Button
+                type="text"
+                icon={<EyeOutlined />}
+                onClick={() => navigate(`/user/work/detail/${record.id}`)}
+                style={{ color: theme.primary }}
+              />
+            </Tooltip>
+          )}
           <Tooltip title="แก้ไข">
             <Button
               type="text"
@@ -267,6 +271,9 @@ const UserWork: React.FC = () => {
       (workload.assignee?.toLowerCase() || "").includes(
         searchText.toLowerCase(),
       );
+    const matchesDate = (workload.dateTimeEnd?.toString() || "").includes(
+      dateRange,
+    );
 
     const matchesStatus =
       statusFilter.length === 0 || statusFilter.includes(workload.status);
@@ -274,9 +281,8 @@ const UserWork: React.FC = () => {
       priorityFilter.length === 0 ||
       priorityFilter.includes(workload.options.priority);
 
-    const matchesDate =
-      !dateRange || new Date(workload.dateTimeEnd) == new Date(dateRange);
-
+    // const matchesDate =
+    //   !dateRange || new Date(workload.dateTimeEnd) == new Date(dateRange);
     return matchesSearch && matchesStatus && matchesPriority && matchesDate;
   });
 
@@ -309,6 +315,10 @@ const UserWork: React.FC = () => {
       </div>
     );
   }
+
+  const test = (dates: any) => {
+    console.log(dates);
+  };
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
@@ -446,16 +456,26 @@ const UserWork: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
-                    <DatePicker
+                    <Select
                       style={{ width: "100%" }}
-                      onChange={(dates) => {
-                        if (dates) {
-                          setDateRange(dates.toString() as any);
-                        } else {
-                          setDateRange(undefined);
-                        }
-                      }}
-                    />
+                      onChange={(dates) => setDateRange(dates)}
+                    >
+                      {workloads.map((val) => (
+                        <Select.Option value={val.dateTimeEnd}>
+                          {val.dateTimeEnd}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                    {/* <DatePicker */}
+                    {/*   style={{ width: "100%" }} */}
+                    {/*   onChange={(dates) => { */}
+                    {/*     if (dates) { */}
+                    {/*       setDateRange(dates.toString() as any); */}
+                    {/*     } else { */}
+                    {/*       setDateRange(undefined); */}
+                    {/*     } */}
+                    {/*   }} */}
+                    {/* /> */}
                   </Col>
                 </Row>
               </Card>
@@ -611,16 +631,16 @@ const UserWork: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
-                    <DatePicker
-                      style={{ width: "100%" }}
-                      onChange={(dates) => {
-                        if (dates) {
-                          setDateRange(dates.toString() as any);
-                        } else {
-                          setDateRange(undefined);
-                        }
-                      }}
-                    />
+                    {/* <DatePicker */}
+                    {/*   style={{ width: "100%" }} */}
+                    {/*   onChange={(dates) => { */}
+                    {/*     if (dates) { */}
+                    {/*       setDateRange(dates.toString() as any); */}
+                    {/*     } else { */}
+                    {/*       setDateRange(undefined); */}
+                    {/*     } */}
+                    {/*   }} */}
+                    {/* /> */}
                   </Col>
                 </Row>
               </Card>
