@@ -13,8 +13,14 @@ import {
   Col,
   Divider,
   message,
+  Upload,
+  type UploadProps,
 } from "antd";
-import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  SaveOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import theme from "../../theme";
 import DeanHeader from "../../components/user/Header";
@@ -29,18 +35,23 @@ const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 interface WorkloadForm {
-  title: string;
+  title: number;
   department: string;
   assignee: string;
-  priority: "low" | "medium" | "high";
   description: string;
-  dateRange: [any, any];
+  dateRange: any;
 }
 
 interface User {
   user_id: number;
   user_name: string;
   user_role: string;
+}
+
+interface OptionsConfig {
+  id: number;
+  title: number;
+  priority: string;
 }
 
 const UserHistoryDetail: React.FC = () => {
@@ -51,6 +62,7 @@ const UserHistoryDetail: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   const [profile, setProfile] = useState<User | undefined>();
+  const [options, setOptions] = useState<OptionsConfig[]>([]);
 
   const getPriorityText = (priority: string) => {
     switch (priority) {
@@ -87,58 +99,61 @@ const UserHistoryDetail: React.FC = () => {
       console.error("Error fetching users:", error);
       if (error.response?.status === 401) {
         message.error("กรุณาเข้าสู่ระบบใหม่");
-        navigate("/login");
+        navigate("/");
       } else {
         message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
       }
     }
   };
 
+  const fetchOptions = async () => {
+    try {
+      const response = await axiosInstance.get("/option");
+      setOptions(response.data);
+    } catch (error: any) {
+      console.error("Error, fetching Options ", error);
+    }
+  };
+
   const fetchWorkload = async () => {
     try {
-      const response = await axiosInstance.get(`/workload/edit/${id}`);
+      const response = await axiosInstance.get(`/work/${id}`);
       const workload = response.data;
 
       form.setFieldsValue({
-        title: workload.title,
+        title: workload.options.title,
         department: workload.department,
-        assignee: workload.assignedTo.user_id,
-        priority: workload.priority,
         description: workload.description,
-        dateRange: [moment(workload.start_date), moment(workload.end_date)],
+        dateRange: [moment(workload.dateTimeEnd)],
       });
     } catch (error: any) {
       console.error("Error fetching workload:", error);
-      message.error("ไม่สามารถดึงข้อมูลภาระงานได้");
     }
   };
 
   useEffect(() => {
     fetchUsers();
     fetchWorkload();
+    fetchOptions();
   }, [navigate]);
+
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
-      const [start_date, end_date] = values.dateRange;
+      // const end_date = values.dateRange;
+
+      const setDate = new Date();
 
       const workloadData = {
-        title: values.title,
-        department: profile?.user_role || "unknown",
-        assignedToId: profile?.user_id || 0,
-        priority: values.priority,
         description: values.description,
-        start_date: start_date.format("YYYY-MM-DD"),
-        end_date: end_date.format("YYYY-MM-DD"),
+        dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
+        // dateTimeEnd: end_date.format("YYYY-MM-DD"),
         status: "pending",
       };
 
       console.log("Sending data:", workloadData);
 
-      const response = await axiosInstance.put(
-        `/workload/edit/${id}`,
-        workloadData,
-      );
+      const response = await axiosInstance.patch(`/work/${id}`, workloadData);
       console.log("Response:", response.data);
 
       message.success("เพิ่มภาระงานสำเร็จ");
@@ -153,14 +168,34 @@ const UserHistoryDetail: React.FC = () => {
     }
   };
 
+  const props: UploadProps = {
+    name: "file",
+    action: "https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload",
+    headers: {
+      authorization: "authorization-text",
+    },
+    onChange(info) {
+      if (info.file.status !== "uploading") {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === "error") {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+  };
+
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
       <div className="hidden md:block">
         <DeanHeader />
       </div>
+
       <div className="md:hidden">
         <ReHeader />
       </div>
+
       <Layout style={{ height: "calc(100vh - 70px)" }}>
         <div className="hidden md:block">
           <DeanNavbar />
@@ -197,7 +232,7 @@ const UserHistoryDetail: React.FC = () => {
                   gap: theme.spacing.sm,
                 }}
               >
-                กลับไปหน้าประวัติภาระงาน
+                กลับไปหน้ารายการภาระงาน
               </Button>
               <Title
                 level={3}
@@ -209,7 +244,7 @@ const UserHistoryDetail: React.FC = () => {
                   letterSpacing: "0.5px",
                 }}
               >
-                ประวัติภาระงาน
+                รายละเอียดภาระงาน
               </Title>
               <Text
                 style={{
@@ -219,7 +254,7 @@ const UserHistoryDetail: React.FC = () => {
                   fontSize: theme.fontSize.md,
                 }}
               >
-                ดูรายระเอียดประวัติภาระงานภาระงาน
+                ข้อมูลรายละเอียดภาระงานภาระงานที่ต้องทำ
               </Text>
             </div>
 
@@ -255,7 +290,6 @@ const UserHistoryDetail: React.FC = () => {
                       style={{ width: "100%" }}
                     >
                       <Input
-                        disabled
                         placeholder="กรอกหัวข้อภาระงาน"
                         style={{
                           height: 48,
@@ -265,35 +299,12 @@ const UserHistoryDetail: React.FC = () => {
                           borderColor: theme.textLight,
                           width: "100%",
                         }}
+                        disabled
                       />
                     </Form.Item>
                   </Col>
 
-                  <Col xs={24} md={12}>
-                    <Form.Item
-                      name="priority"
-                      label="ความสำคัญ"
-                      rules={[
-                        { required: true, message: "กรุณาเลือกความสำคัญ" },
-                      ]}
-                    >
-                      <Select
-                        disabled
-                        placeholder="เลือกความสำคัญ"
-                        style={{
-                          height: 48,
-                          borderRadius: theme.borderRadius.md,
-                          fontSize: theme.fontSize.md,
-                        }}
-                      >
-                        <Select.Option value="high">สูง</Select.Option>
-                        <Select.Option value="medium">ปานกลาง</Select.Option>
-                        <Select.Option value="low">ต่ำ</Select.Option>
-                      </Select>
-                    </Form.Item>
-                  </Col>
-
-                  <Col xs={24} md={12}>
+                  <Col span={24}>
                     <Form.Item
                       name="dateRange"
                       label="ระยะเวลา"
@@ -301,7 +312,7 @@ const UserHistoryDetail: React.FC = () => {
                         { required: true, message: "กรุณาเลือกระยะเวลา" },
                       ]}
                     >
-                      <RangePicker
+                      <DatePicker
                         disabled
                         style={{
                           width: "100%",
@@ -335,12 +346,20 @@ const UserHistoryDetail: React.FC = () => {
                       />
                     </Form.Item>
                   </Col>
+
+                  <Col span={24}>
+                    <Form.Item name="images" label="อัปโหลดไฟล์แนบ">
+                      <Upload {...props}>
+                        <Button icon={<UploadOutlined />}>แนบไฟล์</Button>
+                      </Upload>
+                    </Form.Item>
+                  </Col>
                 </Row>
 
                 <Divider style={{ margin: `${theme.spacing.xl} 0` }} />
 
                 <Form.Item style={{ textAlign: "right", marginBottom: 0 }}>
-                  {/* <Button
+                  <Button
                     type="primary"
                     htmlType="submit"
                     loading={loading}
@@ -359,7 +378,7 @@ const UserHistoryDetail: React.FC = () => {
                     }}
                   >
                     บันทึกภาระงาน
-                  </Button> */}
+                  </Button>
                 </Form.Item>
               </Form>
             </Card>
