@@ -271,9 +271,10 @@ const UserWork: React.FC = () => {
       (workload.assignee?.toLowerCase() || "").includes(
         searchText.toLowerCase(),
       );
-    const matchesDate = (workload.dateTimeEnd?.toString() || "").includes(
-      dateRange,
-    );
+
+    const matchesDate =
+      !dateRange ||
+      (workload.dateTimeEnd?.toString() || "").includes(dateRange as any);
 
     const matchesStatus =
       statusFilter.length === 0 || statusFilter.includes(workload.status);
@@ -315,10 +316,6 @@ const UserWork: React.FC = () => {
       </div>
     );
   }
-
-  const test = (dates: any) => {
-    console.log(dates);
-  };
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
@@ -458,6 +455,7 @@ const UserWork: React.FC = () => {
                   >
                     <Select
                       style={{ width: "100%" }}
+                      placeholder="กรองตามวันที่"
                       onChange={(dates) => setDateRange(dates)}
                     >
                       {workloads.map((val) => (
@@ -631,6 +629,17 @@ const UserWork: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
+                    <Select
+                      style={{ width: "100%" }}
+                      placeholder="กรองตามวันที่"
+                      onChange={(dates) => setDateRange(dates)}
+                    >
+                      {workloads.map((val) => (
+                        <Select.Option value={val.dateTimeEnd}>
+                          {val.dateTimeEnd}
+                        </Select.Option>
+                      ))}
+                    </Select>
                     {/* <DatePicker */}
                     {/*   style={{ width: "100%" }} */}
                     {/*   onChange={(dates) => { */}
