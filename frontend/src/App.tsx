@@ -45,18 +45,18 @@ export default function App() {
           path="/user/history/detail/:id"
           element={<UserHistoryDetail />}
         />
-        <Route path="/head" element={<Head />} />
-        <Route path="/head/work" element={<HeadWork />} />
-        <Route path="/head/work/detail/:id" element={<DetailHeadWorkLoad />} />
-        <Route path="/head/_workload" element={<HeadWorkload />} />
-        <Route path="/head/_workload/new" element={<HeadWorkLoadAdd />} />
-        <Route path="/head/history" element={<HeadHistory />} />
+        {/* <Route path="/head" element={<Head />} /> */}
+        {/* <Route path="/head/work" element={<HeadWork />} /> */}
+        {/* <Route path="/head/work/detail/:id" element={<DetailHeadWorkLoad />} /> */}
+        {/* <Route path="/head/_workload" element={<HeadWorkload />} /> */}
+        {/* <Route path="/head/_workload/new" element={<HeadWorkLoadAdd />} /> */}
+        {/* <Route path="/head/history" element={<HeadHistory />} /> */}
         <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/user/new" element={<AdminWorkLoad />} />
         <Route path="/admin/user/edit/:id" element={<AdminEdit />} />
         <Route path="/admin/config" element={<AdminConfig />} />
         <Route path="/admin/config/priority" element={<Priority />} />
         <Route path="/admin/work" element={<AdminWork />} />
-        <Route path="/admin/work/new" element={<AdminWorkLoad />} />
         <Route path="/dean" element={<DeanDashboard />} />
         <Route path="/dean/workload" element={<DeanWorkload />} />
         <Route path="/dean/workload/new" element={<DeanWorkloadNew />} />

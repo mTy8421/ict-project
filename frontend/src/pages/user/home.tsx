@@ -446,7 +446,6 @@ const User: React.FC = () => {
                   สถานะภาระงานทั้งหมดในระบบ
                 </Text>
               </div>
-
               <div
                 style={{
                   // margin: "24px 0"
@@ -469,18 +468,20 @@ const User: React.FC = () => {
                 </Title>
 
                 <Select
-                  defaultValue="14/06/2025"
+                  onChange={(dates) => setDateRange(dates)}
                   style={{
                     maxWidth: "16rem",
                     margin: "auto",
                     marginTop: theme.spacing.sm,
+                    width: "100%",
                   }}
-                  options={[
-                    { value: "Option 1", label: "14/06/2025" },
-                    { value: "Option 2", label: "06/14/2025" },
-                    { value: "Option 3", label: "14/06/2025" },
-                  ]}
-                />
+                >
+                  {workloads.map((val) => (
+                    <Select.Option value={val.dateTimeEnd}>
+                      {new Date(val.dateTimeEnd).toLocaleDateString("th-TH")}
+                    </Select.Option>
+                  ))}
+                </Select>
               </div>
 
               <Row gutter={[24, 24]}>

@@ -318,7 +318,7 @@ const Admin: React.FC = () => {
                   <Button
                     type="primary"
                     icon={<PlusOutlined />}
-                    onClick={() => navigate("/admin/work/new")}
+                    onClick={() => navigate("/admin/user/new")}
                     style={{
                       background: theme.success,
                       borderColor: theme.success,
@@ -401,7 +401,7 @@ const Admin: React.FC = () => {
                   <Button
                     type="primary"
                     icon={<PlusOutlined />}
-                    onClick={() => navigate("/admin/work/new")}
+                    onClick={() => navigate("/admin/user/new")}
                     style={{
                       background: theme.success,
                       borderColor: theme.success,
