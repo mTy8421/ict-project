@@ -13,7 +13,7 @@ export class WorkService {
     @InjectRepository(Work) private workRepository: Repository<Work>,
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Option) private optionRepsitory: Repository<Option>,
-  ) { }
+  ) {}
 
   async create(createWorkDto: CreateWorkDto) {
     const user = await this.userRepository.findOne({
@@ -57,6 +57,7 @@ export class WorkService {
     const works = this.workRepository
       .createQueryBuilder('work')
       .innerJoinAndSelect('work.options', 'option')
+      .innerJoinAndSelect('work.user', 'user')
       .getMany();
     return works;
   }

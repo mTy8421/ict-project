@@ -67,7 +67,6 @@ interface User {
 const HeadWork: React.FC = () => {
   const navigate = useNavigate();
   const [workloads, setWorkloads] = useState<Workload[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
@@ -76,7 +75,7 @@ const HeadWork: React.FC = () => {
 
   const fetchWorkloads = async () => {
     try {
-      const response = await axiosInstance.get("/workload");
+      const response = await axiosInstance.get(`/work`);
       setWorkloads(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);
@@ -86,19 +85,8 @@ const HeadWork: React.FC = () => {
     }
   };
 
-  const fetchUsers = async () => {
-    try {
-      const response = await axiosInstance.get("/user");
-      setUsers(response.data);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
-    }
-  };
-
   useEffect(() => {
     fetchWorkloads();
-    fetchUsers();
   }, []);
 
   const handleDelete = async (id: number) => {
@@ -107,9 +95,10 @@ const HeadWork: React.FC = () => {
       content: "คุณต้องการลบภาระงานนี้ใช่หรือไม่?",
       okText: "ยืนยัน",
       cancelText: "ยกเลิก",
+      centered: true,
       onOk: async () => {
         try {
-          await axiosInstance.delete(`/workload/${id}`);
+          await axiosInstance.delete(`/work/${id}`);
           message.success("ลบภาระงานสำเร็จ");
           fetchWorkloads();
         } catch (error) {
@@ -175,23 +164,23 @@ const HeadWork: React.FC = () => {
   const columns = [
     {
       title: "หัวข้อ",
-      dataIndex: "title",
-      key: "title",
-      render: (text: string) => (
+      dataIndex: "options",
+      key: "options",
+      render: (text: any) => (
         <Text strong style={{ color: theme.primary }}>
-          {text}
+          {text.title}
         </Text>
       ),
     },
     {
-      title: "แผนก",
-      dataIndex: "department",
-      key: "department",
-    },
-    {
-      title: "ผู้รับผิดชอบ",
-      dataIndex: "username",
-      key: "username",
+      title: "ชื่อผู้ใช้",
+      dataIndex: "user",
+      key: "user",
+      render: (text: any) => (
+        <Text strong style={{ color: theme.primary }}>
+          {text.user_name}
+        </Text>
+      ),
     },
     {
       title: "สถานะ",
@@ -212,31 +201,27 @@ const HeadWork: React.FC = () => {
     },
     {
       title: "ความสำคัญ",
-      dataIndex: "priority",
-      key: "priority",
-      render: (priority: string) => (
+      dataIndex: "options",
+      key: "options",
+      render: (priority: any) => (
         <Tag
-          color={getPriorityColor(priority)}
+          color={getPriorityColor(priority.priority)}
           style={{
             padding: "4px 8px",
             borderRadius: theme.borderRadius.sm,
             fontSize: theme.fontSize.sm,
           }}
         >
-          {getPriorityText(priority)}
+          {getPriorityText(priority.priority)}
         </Tag>
       ),
     },
     {
-      title: "วันที่เริ่มต้น",
-      dataIndex: "start_date",
-      key: "start_date",
-      render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
-    },
-    {
       title: "วันที่สิ้นสุด",
-      dataIndex: "end_date",
-      key: "end_date",
+      dataIndex: "dateTimeEnd",
+      key: "dateTimeEnd",
+      // dataIndex: "end_date",
+      // key: "end_date",
       render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
     },
     {
@@ -248,24 +233,8 @@ const HeadWork: React.FC = () => {
             <Button
               type="text"
               icon={<EyeOutlined />}
-              onClick={() => navigate(`/head/work/detail/${record.id}`)}
+              onClick={() => navigate(`/user/head/detail/${record.id}`)}
               style={{ color: theme.primary }}
-            />
-          </Tooltip>
-          <Tooltip title="แก้ไข">
-            <Button
-              type="text"
-              icon={<EditOutlined />}
-              onClick={() => navigate(`/dean/work/edit/${record.id}`)}
-              style={{ color: theme.primary }}
-            />
-          </Tooltip>
-          <Tooltip title="ลบ">
-            <Button
-              type="text"
-              danger
-              icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record.id)}
             />
           </Tooltip>
         </Space>
@@ -283,10 +252,11 @@ const HeadWork: React.FC = () => {
       ) ||
       (workload.assignee?.toLowerCase() || "").includes(
         searchText.toLowerCase(),
-      ) ||
-      (workload.user.user_name?.toLowerCase() || "").includes(
-        searchText.toLowerCase(),
       );
+
+    const matchesDate =
+      !dateRange ||
+      (workload.dateTimeEnd?.toString() || "").includes(dateRange as any);
 
     const matchesStatus =
       statusFilter.length === 0 || statusFilter.includes(workload.status);
@@ -294,9 +264,8 @@ const HeadWork: React.FC = () => {
       priorityFilter.length === 0 ||
       priorityFilter.includes(workload.options.priority);
 
-    const matchesDate =
-      !dateRange || new Date(workload.dateTimeEnd) == new Date(dateRange);
-
+    // const matchesDate =
+    //   !dateRange || new Date(workload.dateTimeEnd) == new Date(dateRange);
     return matchesSearch && matchesStatus && matchesPriority && matchesDate;
   });
 
@@ -333,20 +302,19 @@ const HeadWork: React.FC = () => {
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
       <div className="hidden md:block">
-        <DeanHeader name="test" />
+        <DeanHeader />
       </div>
 
       <div className="md:hidden">
         <ReHeader />
       </div>
-
       <Layout style={{ height: "calc(100vh - 70px)" }}>
         <div className="hidden md:block">
           <DeanNavbar />
         </div>
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
-          <div className="hidden md:block">
-            <Content style={{ maxWidth: "1200px", margin: "0 6%" }}>
+          <div className="hidden md:block max-w-[1200px]">
+            <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
               <div
                 style={{
                   marginBottom: theme.spacing.xl,
@@ -356,13 +324,7 @@ const HeadWork: React.FC = () => {
                   boxShadow: theme.shadow,
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
+                <div>
                   <div>
                     <Title
                       level={3}
@@ -449,16 +411,27 @@ const HeadWork: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
-                    <DatePicker
+                    <Select
                       style={{ width: "100%" }}
-                      onChange={(dates) => {
-                        if (dates) {
-                          setDateRange(dates.toString() as any);
-                        } else {
-                          setDateRange(undefined);
-                        }
-                      }}
-                    />
+                      placeholder="กรองตามวันที่"
+                      onChange={(dates) => setDateRange(dates)}
+                    >
+                      {workloads.map((val) => (
+                        <Select.Option value={val.dateTimeEnd}>
+                          {val.dateTimeEnd}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                    {/* <DatePicker */}
+                    {/*   style={{ width: "100%" }} */}
+                    {/*   onChange={(dates) => { */}
+                    {/*     if (dates) { */}
+                    {/*       setDateRange(dates.toString() as any); */}
+                    {/*     } else { */}
+                    {/*       setDateRange(undefined); */}
+                    {/*     } */}
+                    {/*   }} */}
+                    {/* /> */}
                   </Col>
                 </Row>
               </Card>
@@ -471,18 +444,29 @@ const HeadWork: React.FC = () => {
                 }}
                 bodyStyle={{ padding: theme.spacing.xl }}
               >
-                <Table
-                  columns={columns}
-                  dataSource={filteredWorkloads}
-                  rowKey="id"
-                  loading={loading}
-                  pagination={{
-                    pageSize: 10,
-                    showSizeChanger: true,
-                    showTotal: (total) => `ทั้งหมด ${total} รายการ`,
-                  }}
-                />
+                <div style={{ width: "100%", overflowX: "auto" }}>
+                  <Table
+                    columns={columns}
+                    dataSource={filteredWorkloads}
+                    rowKey="id"
+                    loading={loading}
+                    pagination={{
+                      pageSize: 10,
+                      showSizeChanger: true,
+                      showTotal: (total) => `ทั้งหมด ${total} รายการ`,
+                    }}
+                    scroll={{ x: "max-content" }}
+                  />
+                </div>
               </Card>
+
+              <Card
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
+                }}
+              ></Card>
             </Content>
           </div>
 
@@ -497,13 +481,7 @@ const HeadWork: React.FC = () => {
                   boxShadow: theme.shadow,
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
+                <div>
                   <div>
                     <Title
                       level={3}
@@ -590,16 +568,27 @@ const HeadWork: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
-                    <DatePicker
+                    <Select
                       style={{ width: "100%" }}
-                      onChange={(dates) => {
-                        if (dates) {
-                          setDateRange(dates.toString() as any);
-                        } else {
-                          setDateRange(undefined);
-                        }
-                      }}
-                    />
+                      placeholder="กรองตามวันที่"
+                      onChange={(dates) => setDateRange(dates)}
+                    >
+                      {workloads.map((val) => (
+                        <Select.Option value={val.dateTimeEnd}>
+                          {val.dateTimeEnd}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                    {/* <DatePicker */}
+                    {/*   style={{ width: "100%" }} */}
+                    {/*   onChange={(dates) => { */}
+                    {/*     if (dates) { */}
+                    {/*       setDateRange(dates.toString() as any); */}
+                    {/*     } else { */}
+                    {/*       setDateRange(undefined); */}
+                    {/*     } */}
+                    {/*   }} */}
+                    {/* /> */}
                   </Col>
                 </Row>
               </Card>
@@ -612,7 +601,7 @@ const HeadWork: React.FC = () => {
                 }}
                 bodyStyle={{ padding: theme.spacing.xl }}
               >
-                <div style={{ overflowX: "auto", width: "100%" }}>
+                <div style={{ width: "100%", overflowX: "auto" }}>
                   <Table
                     columns={columns}
                     dataSource={filteredWorkloads}
