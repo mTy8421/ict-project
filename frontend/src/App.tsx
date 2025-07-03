@@ -45,7 +45,7 @@ export default function App() {
           path="/user/history/detail/:id"
           element={<UserHistoryDetail />}
         />
-        {/* <Route path="/head" element={<Head />} /> */}
+        <Route path="/head" element={<Head />} />
         {/* <Route path="/head/work" element={<HeadWork />} /> */}
         {/* <Route path="/head/work/detail/:id" element={<DetailHeadWorkLoad />} /> */}
         {/* <Route path="/head/_workload" element={<HeadWorkload />} /> */}

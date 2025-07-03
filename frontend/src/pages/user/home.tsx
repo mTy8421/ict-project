@@ -39,7 +39,7 @@ interface Workload {
   options: any;
 }
 
-const User: React.FC = () => {
+const UserHome: React.FC = () => {
   const navigate = useNavigate();
   const [workloads, setWorkloads] = useState<Workload[]>([]);
   const [loading, setLoading] = useState(true);
@@ -669,4 +669,4 @@ const User: React.FC = () => {
   );
 };
 
-export default User;
+export default UserHome;

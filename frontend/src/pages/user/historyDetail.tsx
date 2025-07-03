@@ -187,7 +187,7 @@ const UserHistoryDetail: React.FC = () => {
             <Content
               style={{
                 maxWidth: "1200px",
-                margin: "0 auto",
+                margin: "0 15%",
                 padding: `0 ${theme.spacing.xl}`,
               }}
             >
@@ -336,6 +336,7 @@ const UserHistoryDetail: React.FC = () => {
               </Card>
             </Content>
           </div>
+
           <div className="md:hidden">
             <Content
               style={{

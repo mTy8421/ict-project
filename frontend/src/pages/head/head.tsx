@@ -29,23 +29,25 @@ const { Title, Text } = Typography;
 
 interface Workload {
   id: number;
-  title: string;
+  // title: string;
+  description: string;
   department: string;
-  assignee: string;
-  priority: "low" | "medium" | "high";
+  // priority: "low" | "medium" | "high";
   status: "pending" | "in_progress" | "completed";
-  start_date: string;
-  end_date: string;
+  dateTimeStart: string;
+  dateTimeEnd: string;
+  options: any;
 }
 
 const Head: React.FC = () => {
   const navigate = useNavigate();
   const [workloads, setWorkloads] = useState<Workload[]>([]);
   const [loading, setLoading] = useState(true);
+  const [dateRange, setDateRange] = useState();
 
   const fetchWorkloads = async () => {
     try {
-      const response = await axiosInstance.get("/workload");
+      const response = await axiosInstance.get("/work/user");
       setWorkloads(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);
@@ -110,7 +112,15 @@ const Head: React.FC = () => {
     }
   };
 
-  const totalWorkloads = workloads.length;
+  // const totalWorkloads = workloads.length;
+  const totalWorkloads = workloads.filter((workloads) => {
+    const recentWorkloads =
+      !dateRange ||
+      (workloads.dateTimeEnd?.toString() || "").includes(dateRange);
+
+    return recentWorkloads;
+  });
+
   const completedWorkloads = workloads.filter(
     (w) => w.status === "completed",
   ).length;
@@ -122,20 +132,31 @@ const Head: React.FC = () => {
   ).length;
 
   const completionRate =
-    totalWorkloads > 0 ? (completedWorkloads / totalWorkloads) * 100 : 0;
+    totalWorkloads.length > 0
+      ? (completedWorkloads / totalWorkloads.length) * 100
+      : 0;
 
-  const recentWorkloads = workloads
-    .sort(
-      (a, b) =>
-        new Date(b.start_date).getTime() - new Date(a.start_date).getTime(),
-    )
-    .slice(0, 5);
+  const filteredWorkloads = workloads.filter((workloads) => {
+    const recentWorkloads =
+      !dateRange ||
+      (workloads.dateTimeEnd?.toString() || "").includes(dateRange);
+
+    return recentWorkloads;
+  });
+  // const recentWorkloads = workloads;
+  // .sort(
+  //   (a, b) =>
+  //     new Date(b.dateTimeStart).getTime() -
+  //     new Date(a.dateTimeStart).getTime(),
+  // )
+  // .slice(0, 5);
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
       <div className="hidden md:block">
-        <DeanHeader name="test" />
+        <DeanHeader />
       </div>
+
       <div className="md:hidden">
         <ReHeader />
       </div>
@@ -176,7 +197,6 @@ const Head: React.FC = () => {
                   สถานะภาระงานทั้งหมดในระบบ
                 </Text>
               </div>
-
               <div
                 style={{
                   // margin: "24px 0"
@@ -199,18 +219,20 @@ const Head: React.FC = () => {
                 </Title>
 
                 <Select
-                  defaultValue="14/06/2025"
+                  onChange={(dates) => setDateRange(dates)}
                   style={{
                     maxWidth: "16rem",
                     margin: "auto",
                     marginTop: theme.spacing.sm,
+                    width: "100%",
                   }}
-                  options={[
-                    { value: "Option 1", label: "14/06/2025" },
-                    { value: "Option 2", label: "06/14/2025" },
-                    { value: "Option 3", label: "14/06/2025" },
-                  ]}
-                />
+                >
+                  {workloads.map((val) => (
+                    <Select.Option value={val.dateTimeEnd}>
+                      {new Date(val.dateTimeEnd).toLocaleDateString("th-TH")}
+                    </Select.Option>
+                  ))}
+                </Select>
               </div>
 
               <Row gutter={[24, 24]}>
@@ -225,7 +247,7 @@ const Head: React.FC = () => {
                   >
                     <Statistic
                       title="ภาระงานทั้งหมด"
-                      value={totalWorkloads}
+                      value={totalWorkloads.length}
                       prefix={
                         <FileTextOutlined style={{ color: theme.primary }} />
                       }
@@ -350,7 +372,7 @@ const Head: React.FC = () => {
                   bodyStyle={{ padding: theme.spacing.xl }}
                 >
                   <List
-                    dataSource={recentWorkloads}
+                    dataSource={filteredWorkloads}
                     renderItem={(item) => (
                       <List.Item>
                         <div style={{ width: "100%" }}>
@@ -361,7 +383,7 @@ const Head: React.FC = () => {
                               alignItems: "center",
                             }}
                           >
-                            <Text strong>{item.title}</Text>
+                            <Text strong>{item.options.title}</Text>
                             <Tag color={getStatusColor(item.status)}>
                               {getStatusText(item.status)}
                             </Tag>
@@ -373,9 +395,11 @@ const Head: React.FC = () => {
                               marginTop: theme.spacing.sm,
                             }}
                           >
-                            <Text type="secondary">{item.department}</Text>
-                            <Tag color={getPriorityColor(item.priority)}>
-                              {getPriorityText(item.priority)}
+                            <Text type="secondary">{item.description}</Text>
+                            <Tag
+                              color={getPriorityColor(item.options.priority)}
+                            >
+                              {getPriorityText(item.options.priority)}
                             </Tag>
                           </div>
                         </div>
@@ -392,7 +416,7 @@ const Head: React.FC = () => {
           </div>
 
           <div className="md:hidden">
-            <Content style={{ width: "100%", margin: "0 auto" }}>
+            <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
               <div
                 style={{
                   marginBottom: theme.spacing.xl,
@@ -422,7 +446,6 @@ const Head: React.FC = () => {
                   สถานะภาระงานทั้งหมดในระบบ
                 </Text>
               </div>
-
               <div
                 style={{
                   // margin: "24px 0"
@@ -445,18 +468,20 @@ const Head: React.FC = () => {
                 </Title>
 
                 <Select
-                  defaultValue="14/06/2025"
+                  onChange={(dates) => setDateRange(dates)}
                   style={{
                     maxWidth: "16rem",
                     margin: "auto",
                     marginTop: theme.spacing.sm,
+                    width: "100%",
                   }}
-                  options={[
-                    { value: "Option 1", label: "14/06/2025" },
-                    { value: "Option 2", label: "06/14/2025" },
-                    { value: "Option 3", label: "14/06/2025" },
-                  ]}
-                />
+                >
+                  {workloads.map((val) => (
+                    <Select.Option value={val.dateTimeEnd}>
+                      {new Date(val.dateTimeEnd).toLocaleDateString("th-TH")}
+                    </Select.Option>
+                  ))}
+                </Select>
               </div>
 
               <Row gutter={[24, 24]}>
@@ -471,7 +496,7 @@ const Head: React.FC = () => {
                   >
                     <Statistic
                       title="ภาระงานทั้งหมด"
-                      value={totalWorkloads}
+                      value={totalWorkloads.length}
                       prefix={
                         <FileTextOutlined style={{ color: theme.primary }} />
                       }
@@ -596,7 +621,7 @@ const Head: React.FC = () => {
                   bodyStyle={{ padding: theme.spacing.xl }}
                 >
                   <List
-                    dataSource={recentWorkloads}
+                    dataSource={filteredWorkloads}
                     renderItem={(item) => (
                       <List.Item>
                         <div style={{ width: "100%" }}>
@@ -607,7 +632,7 @@ const Head: React.FC = () => {
                               alignItems: "center",
                             }}
                           >
-                            <Text strong>{item.title}</Text>
+                            <Text strong>{item.options.title}</Text>
                             <Tag color={getStatusColor(item.status)}>
                               {getStatusText(item.status)}
                             </Tag>
@@ -619,9 +644,11 @@ const Head: React.FC = () => {
                               marginTop: theme.spacing.sm,
                             }}
                           >
-                            <Text type="secondary">{item.department}</Text>
-                            <Tag color={getPriorityColor(item.priority)}>
-                              {getPriorityText(item.priority)}
+                            <Text type="secondary">{item.description}</Text>
+                            <Tag
+                              color={getPriorityColor(item.options.priority)}
+                            >
+                              {getPriorityText(item.options.priority)}
                             </Tag>
                           </div>
                         </div>

@@ -56,7 +56,7 @@ export class WorkService {
   findAll() {
     const works = this.workRepository
       .createQueryBuilder('work')
-      .innerJoin('work.options', 'option')
+      .innerJoinAndSelect('work.options', 'option')
       .getMany();
     return works;
   }
