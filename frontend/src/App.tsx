@@ -47,7 +47,7 @@ export default function App() {
         />
         <Route path="/head" element={<Head />} />
         <Route path="/head/work" element={<HeadWork />} />
-        {/* <Route path="/head/work/detail/:id" element={<DetailHeadWorkLoad />} /> */}
+        <Route path="/head/work/detail/:id" element={<DetailHeadWorkLoad />} />
         {/* <Route path="/head/_workload" element={<HeadWorkload />} /> */}
         {/* <Route path="/head/_workload/new" element={<HeadWorkLoadAdd />} /> */}
         {/* <Route path="/head/history" element={<HeadHistory />} /> */}

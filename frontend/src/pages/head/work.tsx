@@ -233,7 +233,7 @@ const HeadWork: React.FC = () => {
             <Button
               type="text"
               icon={<EyeOutlined />}
-              onClick={() => navigate(`/user/head/detail/${record.id}`)}
+              onClick={() => navigate(`/head/work/detail/${record.id}`)}
               style={{ color: theme.primary }}
             />
           </Tooltip>

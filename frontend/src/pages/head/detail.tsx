@@ -35,18 +35,23 @@ const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 interface WorkloadForm {
-  title: string;
+  title: number;
   department: string;
   assignee: string;
-  priority: "low" | "medium" | "high";
   description: string;
-  dateRange: [any, any];
+  dateRange: any;
 }
 
 interface User {
   user_id: number;
   user_name: string;
   user_role: string;
+}
+
+interface OptionsConfig {
+  id: number;
+  title: number;
+  priority: string;
 }
 
 const DetailHeadWorkLoad: React.FC = () => {
@@ -57,6 +62,7 @@ const DetailHeadWorkLoad: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   const [profile, setProfile] = useState<User | undefined>();
+  const [options, setOptions] = useState<OptionsConfig[]>([]);
 
   const getPriorityText = (priority: string) => {
     switch (priority) {
@@ -93,58 +99,56 @@ const DetailHeadWorkLoad: React.FC = () => {
       console.error("Error fetching users:", error);
       if (error.response?.status === 401) {
         message.error("กรุณาเข้าสู่ระบบใหม่");
-        navigate("/login");
+        navigate("/");
       } else {
         message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
       }
     }
   };
 
+  const fetchOptions = async () => {
+    try {
+      const response = await axiosInstance.get("/option");
+      setOptions(response.data);
+    } catch (error: any) {
+      console.error("Error, fetching Options ", error);
+    }
+  };
+
   const fetchWorkload = async () => {
     try {
-      const response = await axiosInstance.get(`/workload/edit/${id}`);
+      const response = await axiosInstance.get(`/work/${id}`);
       const workload = response.data;
 
       form.setFieldsValue({
-        title: workload.title,
+        title: workload.options.title,
         department: workload.department,
-        assignee: workload.assignedTo.user_id,
-        priority: workload.priority,
         description: workload.description,
-        dateRange: [moment(workload.start_date), moment(workload.end_date)],
+        dateRange: [moment(workload.dateTimeEnd)],
       });
     } catch (error: any) {
       console.error("Error fetching workload:", error);
-      message.error("ไม่สามารถดึงข้อมูลภาระงานได้");
     }
   };
 
   useEffect(() => {
     fetchUsers();
     fetchWorkload();
+    fetchOptions();
   }, [navigate]);
+
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
-      const [start_date, end_date] = values.dateRange;
 
       const workloadData = {
-        title: values.title,
-        department: profile?.user_role || "unknown",
-        assignedToId: profile?.user_id || 0,
-        priority: values.priority,
         description: values.description,
-        start_date: start_date.format("YYYY-MM-DD"),
-        end_date: end_date.format("YYYY-MM-DD"),
-        status: "pending",
+        status: "in_progress",
       };
 
       console.log("Sending data:", workloadData);
 
-      const response = await axiosInstance.put(
-        `/workload/edit/${id}`,
-        workloadData
-      );
+      const response = await axiosInstance.patch(`/work/${id}`, workloadData);
       console.log("Response:", response.data);
 
       message.success("เพิ่มภาระงานสำเร็จ");
@@ -152,35 +156,17 @@ const DetailHeadWorkLoad: React.FC = () => {
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้"
+        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้",
       );
     } finally {
       setLoading(false);
     }
   };
 
-  const props: UploadProps = {
-    name: "file",
-    action: "https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload",
-    headers: {
-      authorization: "authorization-text",
-    },
-    onChange(info) {
-      if (info.file.status !== "uploading") {
-        console.log(info.file, info.fileList);
-      }
-      if (info.file.status === "done") {
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-  };
-
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
       <div className="hidden md:block">
-        <DeanHeader name="test" />
+        <DeanHeader />
       </div>
 
       <div className="md:hidden">
@@ -192,212 +178,362 @@ const DetailHeadWorkLoad: React.FC = () => {
           <DeanNavbar />
         </div>
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
-          <Content
-            style={{
-              maxWidth: "1200px",
-              margin: "0 auto",
-              padding: `0 ${theme.spacing.xl}`,
-            }}
-          >
-            <div
+          <div className="hidden md:block">
+            <Content
               style={{
-                marginBottom: theme.spacing.xl,
-                background: theme.white,
-                padding: theme.spacing.xl,
-                borderRadius: theme.borderRadius.lg,
-                boxShadow: theme.shadow,
+                maxWidth: "1200px",
+                margin: "0 15%",
+                padding: `0 ${theme.spacing.xl}`,
               }}
             >
-              <Button
-                type="link"
-                icon={<ArrowLeftOutlined />}
-                onClick={() => navigate("/head/work")}
+              <div
                 style={{
+                  marginBottom: theme.spacing.xl,
+                  background: theme.white,
+                  padding: theme.spacing.xl,
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                }}
+              >
+                <Button
+                  type="link"
+                  icon={<ArrowLeftOutlined />}
+                  onClick={() => navigate("/head/work")}
+                  style={{
+                    padding: 0,
+                    marginBottom: theme.spacing.md,
+                    color: theme.primary,
+                    fontSize: theme.fontSize.md,
+                    height: "auto",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: theme.spacing.sm,
+                  }}
+                >
+                  กลับไปหน้ารายการอนุมัติภาระงาน
+                </Button>
+                <Title
+                  level={3}
+                  style={{
+                    margin: 0,
+                    color: theme.primary,
+                    fontWeight: theme.fontWeight.semibold,
+                    fontSize: theme.fontSize.xxl,
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  รายละเอียดภาระงาน
+                </Title>
+                <Text
+                  style={{
+                    color: theme.textLight,
+                    marginTop: theme.spacing.sm,
+                    display: "block",
+                    fontSize: theme.fontSize.md,
+                  }}
+                >
+                  ข้อมูลรายละเอียดภาระงานภาระงานที่ต้องทำ
+                </Text>
+              </div>
+
+              <Card
+                style={{
+                  maxWidth: 800,
+                  margin: `${theme.spacing.xl} auto`,
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
                   padding: 0,
-                  marginBottom: theme.spacing.md,
-                  color: theme.primary,
-                  fontSize: theme.fontSize.md,
-                  height: "auto",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: theme.spacing.sm,
+                }}
+                bodyStyle={{
+                  padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
                 }}
               >
-                กลับไปหน้ารายการภาระงาน
-              </Button>
-              <Title
-                level={3}
-                style={{
-                  margin: 0,
-                  color: theme.primary,
-                  fontWeight: theme.fontWeight.semibold,
-                  fontSize: theme.fontSize.xxl,
-                  letterSpacing: "0.5px",
-                }}
-              >
-                รายละเอียดภาระงาน
-              </Title>
-              <Text
-                style={{
-                  color: theme.textLight,
-                  marginTop: theme.spacing.sm,
-                  display: "block",
-                  fontSize: theme.fontSize.md,
-                }}
-              >
-                ข้อมูลรายละเอียดภาระงานภาระงานที่ต้องทำ
-              </Text>
-            </div>
+                <Form
+                  form={form}
+                  layout="vertical"
+                  onFinish={onFinish}
+                  requiredMark={false}
+                  size="large"
+                  style={{ width: "100%" }}
+                >
+                  <Row gutter={[32, 24]}>
+                    <Col span={24}>
+                      <Form.Item
+                        name="title"
+                        label="หัวข้อภาระงาน"
+                        rules={[
+                          { required: true, message: "กรุณากรอกหัวข้อภาระงาน" },
+                        ]}
+                        style={{ width: "100%" }}
+                      >
+                        <Input
+                          placeholder="กรอกหัวข้อภาระงาน"
+                          style={{
+                            height: 48,
+                            borderRadius: theme.borderRadius.md,
+                            fontSize: theme.fontSize.md,
+                            padding: `0 ${theme.spacing.md}`,
+                            borderColor: theme.textLight,
+                            width: "100%",
+                          }}
+                          disabled
+                        />
+                      </Form.Item>
+                    </Col>
 
-            <Card
+                    <Col span={24}>
+                      <Form.Item
+                        name="dateRange"
+                        label="ระยะเวลา"
+                        rules={[
+                          { required: true, message: "กรุณาเลือกระยะเวลา" },
+                        ]}
+                      >
+                        <DatePicker
+                          disabled
+                          style={{
+                            width: "100%",
+                            height: 48,
+                            borderRadius: theme.borderRadius.md,
+                            fontSize: theme.fontSize.md,
+                          }}
+                          // format="YYYY-MM-DD"
+                          format="DD-MM-YYYY"
+                        />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item
+                        name="description"
+                        label="รายละเอียด"
+                        rules={[
+                          { required: true, message: "กรุณากรอกรายละเอียด" },
+                        ]}
+                      >
+                        <TextArea
+                          disabled
+                          placeholder="กรอกรายละเอียดภาระงาน"
+                          rows={4}
+                          style={{
+                            borderRadius: theme.borderRadius.md,
+                            fontSize: theme.fontSize.md,
+                            padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+                            resize: "none",
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+
+                  <Divider style={{ margin: `${theme.spacing.xl} 0` }} />
+
+                  <Form.Item style={{ textAlign: "right", marginBottom: 0 }}>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      loading={loading}
+                      icon={<SaveOutlined />}
+                      style={{
+                        height: 48,
+                        minWidth: 180,
+                        fontSize: theme.fontSize.md,
+                        borderRadius: theme.borderRadius.md,
+                        fontWeight: theme.fontWeight.semibold,
+                        boxShadow: theme.shadow,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: theme.spacing.sm,
+                        background: theme.success,
+                      }}
+                    >
+                      อนุมัติภาระงาน
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Card>
+            </Content>
+          </div>
+
+          <div className="md:hidden">
+            <Content
               style={{
-                maxWidth: 800,
-                margin: `${theme.spacing.xl} auto`,
-                borderRadius: theme.borderRadius.lg,
-                boxShadow: theme.shadow,
-                background: theme.white,
-                padding: 0,
-              }}
-              bodyStyle={{
-                padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
+                width: "100%",
+                margin: "0 auto",
+                // padding: `0 ${theme.spacing.xl}`,
               }}
             >
-              <Form
-                form={form}
-                layout="vertical"
-                onFinish={onFinish}
-                requiredMark={false}
-                size="large"
-                style={{ width: "100%" }}
+              <div
+                style={{
+                  marginBottom: theme.spacing.xl,
+                  background: theme.white,
+                  padding: theme.spacing.xl,
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                }}
               >
-                <Row gutter={[32, 24]}>
-                  <Col span={24}>
-                    <Form.Item
-                      name="title"
-                      label="หัวข้อภาระงาน"
-                      rules={[
-                        { required: true, message: "กรุณากรอกหัวข้อภาระงาน" },
-                      ]}
-                      style={{ width: "100%" }}
-                    >
-                      <Input
-                        placeholder="กรอกหัวข้อภาระงาน"
-                        style={{
-                          height: 48,
-                          borderRadius: theme.borderRadius.md,
-                          fontSize: theme.fontSize.md,
-                          padding: `0 ${theme.spacing.md}`,
-                          borderColor: theme.textLight,
-                          width: "100%",
-                        }}
-                        disabled
-                      />
-                    </Form.Item>
-                  </Col>
+                <Button
+                  type="link"
+                  icon={<ArrowLeftOutlined />}
+                  onClick={() => navigate("/head/work")}
+                  style={{
+                    padding: 0,
+                    marginBottom: theme.spacing.md,
+                    color: theme.primary,
+                    fontSize: theme.fontSize.md,
+                    height: "auto",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: theme.spacing.sm,
+                  }}
+                >
+                  กลับไปหน้ารายการอนุมัติภาระงาน
+                </Button>
+                <Title
+                  level={3}
+                  style={{
+                    margin: 0,
+                    color: theme.primary,
+                    fontWeight: theme.fontWeight.semibold,
+                    fontSize: theme.fontSize.xxl,
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  รายละเอียดภาระงาน
+                </Title>
+                <Text
+                  style={{
+                    color: theme.textLight,
+                    marginTop: theme.spacing.sm,
+                    display: "block",
+                    fontSize: theme.fontSize.md,
+                  }}
+                >
+                  ข้อมูลรายละเอียดภาระงานภาระงานที่ต้องทำ
+                </Text>
+              </div>
 
-                  <Col xs={24} md={12}>
-                    <Form.Item
-                      name="priority"
-                      label="ความสำคัญ"
-                      rules={[
-                        { required: true, message: "กรุณาเลือกความสำคัญ" },
-                      ]}
-                    >
-                      <Select
-                        placeholder="เลือกความสำคัญ"
-                        style={{
-                          height: 48,
-                          borderRadius: theme.borderRadius.md,
-                          fontSize: theme.fontSize.md,
-                        }}
-                        disabled
+              <Card
+                style={{
+                  maxWidth: 800,
+                  margin: `${theme.spacing.xl} auto`,
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
+                  padding: 0,
+                }}
+                bodyStyle={{
+                  padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
+                }}
+              >
+                <Form
+                  form={form}
+                  layout="vertical"
+                  onFinish={onFinish}
+                  requiredMark={false}
+                  size="large"
+                  style={{ width: "100%" }}
+                >
+                  <Row gutter={[32, 24]}>
+                    <Col span={24}>
+                      <Form.Item
+                        name="title"
+                        label="หัวข้อภาระงาน"
+                        rules={[
+                          { required: true, message: "กรุณากรอกหัวข้อภาระงาน" },
+                        ]}
+                        style={{ width: "100%" }}
                       >
-                        <Select.Option value="high">สูง</Select.Option>
-                        <Select.Option value="medium">ปานกลาง</Select.Option>
-                        <Select.Option value="low">ต่ำ</Select.Option>
-                      </Select>
-                    </Form.Item>
-                  </Col>
+                        <Input
+                          placeholder="กรอกหัวข้อภาระงาน"
+                          style={{
+                            height: 48,
+                            borderRadius: theme.borderRadius.md,
+                            fontSize: theme.fontSize.md,
+                            padding: `0 ${theme.spacing.md}`,
+                            borderColor: theme.textLight,
+                            width: "100%",
+                          }}
+                          disabled
+                        />
+                      </Form.Item>
+                    </Col>
 
-                  <Col xs={24} md={12}>
-                    <Form.Item
-                      name="dateRange"
-                      label="ระยะเวลา"
-                      rules={[
-                        { required: true, message: "กรุณาเลือกระยะเวลา" },
-                      ]}
+                    <Col span={24}>
+                      <Form.Item
+                        name="dateRange"
+                        label="ระยะเวลา"
+                        rules={[
+                          { required: true, message: "กรุณาเลือกระยะเวลา" },
+                        ]}
+                      >
+                        <DatePicker
+                          disabled
+                          style={{
+                            width: "100%",
+                            height: 48,
+                            borderRadius: theme.borderRadius.md,
+                            fontSize: theme.fontSize.md,
+                          }}
+                          format="YYYY-MM-DD"
+                        />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item
+                        name="description"
+                        label="รายละเอียด"
+                        rules={[
+                          { required: true, message: "กรุณากรอกรายละเอียด" },
+                        ]}
+                      >
+                        <TextArea
+                          disabled
+                          placeholder="กรอกรายละเอียดภาระงาน"
+                          rows={4}
+                          style={{
+                            borderRadius: theme.borderRadius.md,
+                            fontSize: theme.fontSize.md,
+                            padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+                            resize: "none",
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+
+                  <Divider style={{ margin: `${theme.spacing.xl} 0` }} />
+
+                  <Form.Item style={{ textAlign: "right", marginBottom: 0 }}>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      loading={loading}
+                      icon={<SaveOutlined />}
+                      style={{
+                        height: 48,
+                        minWidth: 180,
+                        fontSize: theme.fontSize.md,
+                        borderRadius: theme.borderRadius.md,
+                        fontWeight: theme.fontWeight.semibold,
+                        boxShadow: theme.shadow,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: theme.spacing.sm,
+                        background: theme.success,
+                      }}
                     >
-                      <RangePicker
-                        disabled
-                        style={{
-                          width: "100%",
-                          height: 48,
-                          borderRadius: theme.borderRadius.md,
-                          fontSize: theme.fontSize.md,
-                        }}
-                        format="YYYY-MM-DD"
-                      />
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={24}>
-                    <Form.Item
-                      name="description"
-                      label="รายละเอียด"
-                      rules={[
-                        { required: true, message: "กรุณากรอกรายละเอียด" },
-                      ]}
-                    >
-                      <TextArea
-                        disabled
-                        placeholder="กรอกรายละเอียดภาระงาน"
-                        rows={4}
-                        style={{
-                          borderRadius: theme.borderRadius.md,
-                          fontSize: theme.fontSize.md,
-                          padding: `${theme.spacing.sm} ${theme.spacing.md}`,
-                          resize: "none",
-                        }}
-                      />
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={24}>
-                    <Form.Item name="images" label="อัปโหลดไฟล์แนบ">
-                      <Upload {...props}>
-                        <Button icon={<UploadOutlined />}>แนบไฟล์</Button>
-                      </Upload>
-                    </Form.Item>
-                  </Col>
-                </Row>
-
-                <Divider style={{ margin: `${theme.spacing.xl} 0` }} />
-
-                <Form.Item style={{ textAlign: "right", marginBottom: 0 }}>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={loading}
-                    icon={<SaveOutlined />}
-                    style={{
-                      height: 48,
-                      minWidth: 180,
-                      fontSize: theme.fontSize.md,
-                      borderRadius: theme.borderRadius.md,
-                      fontWeight: theme.fontWeight.semibold,
-                      boxShadow: theme.shadow,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: theme.spacing.sm,
-                    }}
-                  >
-                    บันทึกภาระงาน
-                  </Button>
-                </Form.Item>
-              </Form>
-            </Card>
-          </Content>
+                      อนุมัติภาระงาน
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Card>
+            </Content>
+          </div>
         </Layout>
       </Layout>
     </Layout>
