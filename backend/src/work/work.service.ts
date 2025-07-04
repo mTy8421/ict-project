@@ -13,7 +13,7 @@ export class WorkService {
     @InjectRepository(Work) private workRepository: Repository<Work>,
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Option) private optionRepsitory: Repository<Option>,
-  ) {}
+  ) { }
 
   async create(createWorkDto: CreateWorkDto) {
     const user = await this.userRepository.findOne({
@@ -124,6 +124,16 @@ export class WorkService {
     if (!works) {
       throw new NotFoundException(`User ID Not Found`);
     }
+    return works;
+  }
+
+  findAllUser() {
+    const works = this.workRepository
+      .createQueryBuilder('work')
+      .innerJoinAndSelect('work.options', 'option')
+      .innerJoinAndSelect('work.user', 'user')
+      .where('user.user_role != :user_role', { user_role: 'หัวหน้าสำนักงาน' })
+      .getMany();
     return works;
   }
 }

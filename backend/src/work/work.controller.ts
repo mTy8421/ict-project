@@ -17,13 +17,18 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('work')
 export class WorkController {
-  constructor(private readonly workService: WorkService) {}
+  constructor(private readonly workService: WorkService) { }
 
   @UseGuards(JwtAuthGuard)
   @Get('user')
   findByUser(@Req() req: Request) {
     const user = req.user as { user_id: number };
     return this.workService.findByUser(user.user_id);
+  }
+
+  @Get('head')
+  findAllUser() {
+    return this.workService.findAllUser();
   }
 
   @Post()
