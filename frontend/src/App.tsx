@@ -31,6 +31,8 @@ import HeadWorkLoadAdd from "./pages/head/workload.add";
 import Priority from "./pages/admin/setting/priority";
 import HeadWorkLoadEdit from "./pages/head/workload.edit";
 import HeadWorkLoadDetail from "./pages/head/workload.detail";
+import HeadHistoryDetail from "./pages/head/history.detail";
+import HeadWorkUser from "./pages/head/work.user";
 
 export default function App() {
   return (
@@ -49,7 +51,7 @@ export default function App() {
         />
         <Route path="/head" element={<Head />} />
         <Route path="/head/work" element={<HeadWork />} />
-        <Route path="/head/work/user/:id" element={<div>head user id</div>} />
+        <Route path="/head/work/user/:id" element={<HeadWorkUser />} />
         <Route path="/head/work/detail/:id" element={<DetailHeadWorkLoad />} />
         <Route path="/head/_workload" element={<HeadWorkload />} />
         <Route path="/head/_workload/new" element={<HeadWorkLoadAdd />} />
@@ -58,7 +60,11 @@ export default function App() {
           path="/head/_workload/detail/:id"
           element={<HeadWorkLoadDetail />}
         />
-        {/* <Route path="/head/history" element={<HeadHistory />} /> */}
+        <Route path="/head/history" element={<HeadHistory />} />
+        <Route
+          path="/head/history/detail/:id"
+          element={<HeadHistoryDetail />}
+        />
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/user/new" element={<AdminWorkLoad />} />
         <Route path="/admin/user/edit/:id" element={<AdminEdit />} />

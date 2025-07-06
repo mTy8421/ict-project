@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Card,
   Typography,
@@ -55,9 +55,17 @@ interface Workload {
   dateTimeStart: string;
   dateTimeEnd: string;
   options: any;
+  user: any;
 }
 
-const HeadHistory: React.FC = () => {
+interface User {
+  user_id: number;
+  user_name: string;
+  user_role: string;
+}
+
+const HeadWorkUser: React.FC = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [workloads, setWorkloads] = useState<Workload[]>([]);
   const [loading, setLoading] = useState(true);
@@ -68,7 +76,7 @@ const HeadHistory: React.FC = () => {
 
   const fetchWorkloads = async () => {
     try {
-      const response = await axiosInstance.get("/work/user");
+      const response = await axiosInstance.get(`/work/head`);
       setWorkloads(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);
@@ -88,6 +96,7 @@ const HeadHistory: React.FC = () => {
       content: "คุณต้องการลบภาระงานนี้ใช่หรือไม่?",
       okText: "ยืนยัน",
       cancelText: "ยกเลิก",
+      centered: true,
       onOk: async () => {
         try {
           await axiosInstance.delete(`/work/${id}`);
@@ -164,7 +173,16 @@ const HeadHistory: React.FC = () => {
         </Text>
       ),
     },
-
+    {
+      title: "ชื่อผู้ใช้",
+      dataIndex: "user",
+      key: "user",
+      render: (text: any) => (
+        <Text strong style={{ color: theme.primary }}>
+          {text.user_name}
+        </Text>
+      ),
+    },
     {
       title: "สถานะ",
       dataIndex: "status",
@@ -200,15 +218,11 @@ const HeadHistory: React.FC = () => {
       ),
     },
     {
-      title: "วันที่เริ่มต้น",
-      dataIndex: "dateTimeStart",
-      key: "dateTimeStart",
-      render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
-    },
-    {
       title: "วันที่สิ้นสุด",
       dataIndex: "dateTimeEnd",
       key: "dateTimeEnd",
+      // dataIndex: "end_date",
+      // key: "end_date",
       render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
     },
     {
@@ -220,26 +234,10 @@ const HeadHistory: React.FC = () => {
             <Button
               type="text"
               icon={<EyeOutlined />}
-              onClick={() => navigate(`/head/history/detail/${record.id}`)}
+              onClick={() => navigate(`/head/work/detail/${record.id}`)}
               style={{ color: theme.primary }}
             />
           </Tooltip>
-          {/* <Tooltip title="แก้ไข">
-            <Button
-              type="text"
-              icon={<EditOutlined />}
-              onClick={() => navigate(`/dean/workload/${record.id}/edit`)}
-              style={{ color: theme.primary }}
-            />
-          </Tooltip>
-          <Tooltip title="ลบ">
-            <Button
-              type="text"
-              danger
-              icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record.id)}
-            />
-          </Tooltip> */}
         </Space>
       ),
     },
@@ -257,16 +255,18 @@ const HeadHistory: React.FC = () => {
         searchText.toLowerCase(),
       );
 
+    const matchesDate =
+      !dateRange ||
+      (workload.dateTimeEnd?.toString() || "").includes(dateRange as any);
+
     const matchesStatus =
       statusFilter.length === 0 || statusFilter.includes(workload.status);
     const matchesPriority =
       priorityFilter.length === 0 ||
       priorityFilter.includes(workload.options.priority);
 
-    const matchesDate =
-      !dateRange ||
-      (workload.dateTimeEnd?.toString() || "").includes(dateRange);
-
+    // const matchesDate =
+    //   !dateRange || new Date(workload.dateTimeEnd) == new Date(dateRange);
     return matchesSearch && matchesStatus && matchesPriority && matchesDate;
   });
 
@@ -305,10 +305,10 @@ const HeadHistory: React.FC = () => {
       <div className="hidden md:block">
         <DeanHeader />
       </div>
+
       <div className="md:hidden">
         <ReHeader />
       </div>
-
       <Layout style={{ height: "calc(100vh - 70px)" }}>
         <div className="hidden md:block">
           <DeanNavbar />
@@ -325,13 +325,7 @@ const HeadHistory: React.FC = () => {
                   boxShadow: theme.shadow,
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
+                <div>
                   <div>
                     <Title
                       level={3}
@@ -341,7 +335,7 @@ const HeadHistory: React.FC = () => {
                         fontWeight: theme.fontWeight.semibold,
                       }}
                     >
-                      ประวัติภาระงาน
+                      จัดการภาระงาน
                     </Title>
                     <Text
                       style={{
@@ -350,7 +344,7 @@ const HeadHistory: React.FC = () => {
                         display: "block",
                       }}
                     >
-                      ดูประวัติภาระงานภาระงานทั้งหมด
+                      ดูและจัดการภาระงานทั้งหมด
                     </Text>
                   </div>
                 </div>
@@ -425,9 +419,7 @@ const HeadHistory: React.FC = () => {
                     >
                       {workloads.map((val) => (
                         <Select.Option value={val.dateTimeEnd}>
-                          {new Date(val.dateTimeEnd).toLocaleDateString(
-                            "th-TH",
-                          )}
+                          {val.dateTimeEnd}
                         </Select.Option>
                       ))}
                     </Select>
@@ -453,18 +445,29 @@ const HeadHistory: React.FC = () => {
                 }}
                 bodyStyle={{ padding: theme.spacing.xl }}
               >
-                <Table
-                  columns={columns}
-                  dataSource={filteredWorkloads}
-                  rowKey="id"
-                  loading={loading}
-                  pagination={{
-                    pageSize: 10,
-                    showSizeChanger: true,
-                    showTotal: (total) => `ทั้งหมด ${total} รายการ`,
-                  }}
-                />
+                <div style={{ width: "100%", overflowX: "auto" }}>
+                  <Table
+                    columns={columns}
+                    dataSource={filteredWorkloads}
+                    rowKey="id"
+                    loading={loading}
+                    pagination={{
+                      pageSize: 10,
+                      showSizeChanger: true,
+                      showTotal: (total) => `ทั้งหมด ${total} รายการ`,
+                    }}
+                    scroll={{ x: "max-content" }}
+                  />
+                </div>
               </Card>
+
+              <Card
+                style={{
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                  background: theme.white,
+                }}
+              ></Card>
             </Content>
           </div>
 
@@ -479,13 +482,7 @@ const HeadHistory: React.FC = () => {
                   boxShadow: theme.shadow,
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
+                <div>
                   <div>
                     <Title
                       level={3}
@@ -495,7 +492,7 @@ const HeadHistory: React.FC = () => {
                         fontWeight: theme.fontWeight.semibold,
                       }}
                     >
-                      ประวัติภาระงาน
+                      จัดการภาระงาน
                     </Title>
                     <Text
                       style={{
@@ -504,7 +501,7 @@ const HeadHistory: React.FC = () => {
                         display: "block",
                       }}
                     >
-                      ดูประวัติภาระงานภาระงานทั้งหมด
+                      ดูและจัดการภาระงานทั้งหมด
                     </Text>
                   </div>
                 </div>
@@ -579,9 +576,7 @@ const HeadHistory: React.FC = () => {
                     >
                       {workloads.map((val) => (
                         <Select.Option value={val.dateTimeEnd}>
-                          {new Date(val.dateTimeEnd).toLocaleDateString(
-                            "th-TH",
-                          )}
+                          {val.dateTimeEnd}
                         </Select.Option>
                       ))}
                     </Select>
@@ -607,7 +602,7 @@ const HeadHistory: React.FC = () => {
                 }}
                 bodyStyle={{ padding: theme.spacing.xl }}
               >
-                <div style={{ overflowX: "auto", width: "100%" }}>
+                <div style={{ width: "100%", overflowX: "auto" }}>
                   <Table
                     columns={columns}
                     dataSource={filteredWorkloads}
@@ -630,4 +625,4 @@ const HeadHistory: React.FC = () => {
   );
 };
 
-export default HeadHistory;
+export default HeadWorkUser;
