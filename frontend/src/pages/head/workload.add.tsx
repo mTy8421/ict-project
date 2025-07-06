@@ -17,9 +17,9 @@ import {
 import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import theme from "../../theme";
-import DeanHeader from "../../components/user/Header";
-import DeanNavbar from "../../components/user/Navbar";
-import ReHeader from "../../components/user/NavbarHeader";
+import DeanHeader from "../../components/head/Header";
+import DeanNavbar from "../../components/head/Navbar";
+import ReHeader from "../../components/head/NavbarHeader";
 import "./workload-new.override.css";
 
 const { Content } = Layout;

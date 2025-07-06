@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Form,
   Input,
@@ -13,13 +13,21 @@ import {
   Col,
   Divider,
   message,
+  Upload,
+  type UploadProps,
 } from "antd";
-import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
-import axiosInstance from "../../../utils/axios";
-import theme from "../../../theme";
-import DeanHeader from "../../../components/admin/Header";
-import DeanNavbar from "../../../components/admin/Navbar";
-import ReHeader from "../../../components/admin/NavbarHeader";
+import {
+  ArrowLeftOutlined,
+  SaveOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
+import axiosInstance from "../../utils/axios";
+import theme from "../../theme";
+import DeanHeader from "../../components/user/Header";
+import DeanNavbar from "../../components/user/Navbar";
+import ReHeader from "../../components/user/NavbarHeader";
+import "./workload-new.override.css";
+import moment from "moment";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -27,8 +35,11 @@ const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 interface WorkloadForm {
-  title: string;
-  priority: string;
+  title: number;
+  department: string;
+  assignee: string;
+  description: string;
+  dateRange: any;
 }
 
 interface User {
@@ -37,19 +48,55 @@ interface User {
   user_role: string;
 }
 
-const Priority: React.FC = () => {
+interface OptionsConfig {
+  id: number;
+  title: number;
+  priority: string;
+}
+
+const HeadWorkLoadDetail: React.FC = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
 
-  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<User | undefined>();
+  const [options, setOptions] = useState<OptionsConfig[]>([]);
 
-  const fetchUser = async () => {
+  const getPriorityText = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return "สูง";
+      case "medium":
+        return "ปานกลาง";
+      case "low":
+        return "ต่ำ";
+      default:
+        return priority;
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return theme.danger;
+      case "medium":
+        return theme.warning;
+      case "low":
+        return theme.success;
+      default:
+        return theme.textLight;
+    }
+  };
+
+  const fetchUsers = async () => {
     try {
       const response = await axiosInstance.get("/user/profile");
-      setUser(response.data);
+      setUsers(response.data);
+      setProfile(response.data);
     } catch (error: any) {
-      console.error("Error fetching user:", error);
+      console.error("Error fetching users:", error);
       if (error.response?.status === 401) {
         message.error("กรุณาเข้าสู่ระบบใหม่");
         navigate("/");
@@ -59,33 +106,84 @@ const Priority: React.FC = () => {
     }
   };
 
+  const fetchOptions = async () => {
+    try {
+      const response = await axiosInstance.get("/option");
+      setOptions(response.data);
+    } catch (error: any) {
+      console.error("Error, fetching Options ", error);
+    }
+  };
+
+  const fetchWorkload = async () => {
+    try {
+      const response = await axiosInstance.get(`/work/${id}`);
+      const workload = response.data;
+
+      form.setFieldsValue({
+        title: workload.options.title,
+        department: workload.department,
+        description: workload.description,
+        dateRange: [moment(workload.dateTimeEnd)],
+      });
+    } catch (error: any) {
+      console.error("Error fetching workload:", error);
+    }
+  };
+
   useEffect(() => {
-    fetchUser();
+    fetchUsers();
+    fetchWorkload();
+    fetchOptions();
   }, [navigate]);
 
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
+      // const end_date = values.dateRange;
+
+      const setDate = new Date();
+
       const workloadData = {
-        title: values.title,
-        priority: values.priority,
+        description: values.description,
+        dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
+        // dateTimeEnd: end_date.format("YYYY-MM-DD"),
+        status: "pending",
       };
 
       console.log("Sending data:", workloadData);
 
-      const response = await axiosInstance.post("/option", workloadData);
+      const response = await axiosInstance.patch(`/work/${id}`, workloadData);
       console.log("Response:", response.data);
 
       message.success("เพิ่มภาระงานสำเร็จ");
-      navigate("/admin/config");
+      navigate("/user/work");
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้",
+        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้",
       );
     } finally {
       setLoading(false);
     }
+  };
+
+  const props: UploadProps = {
+    name: "file",
+    action: "https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload",
+    headers: {
+      authorization: "authorization-text",
+    },
+    onChange(info) {
+      if (info.file.status !== "uploading") {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === "error") {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
   };
 
   return (
@@ -102,7 +200,6 @@ const Priority: React.FC = () => {
         <div className="hidden md:block">
           <DeanNavbar />
         </div>
-
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
           <div className="hidden md:block">
             <Content
@@ -124,7 +221,7 @@ const Priority: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/admin/config")}
+                  onClick={() => navigate("/user/work")}
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,
@@ -136,7 +233,7 @@ const Priority: React.FC = () => {
                     gap: theme.spacing.sm,
                   }}
                 >
-                  กลับไปหน้ารายงานความสำคัญ
+                  กลับไปหน้ารายการภาระงาน
                 </Button>
                 <Title
                   level={3}
@@ -148,7 +245,7 @@ const Priority: React.FC = () => {
                     letterSpacing: "0.5px",
                   }}
                 >
-                  ความสำคัญ
+                  รายละเอียดภาระงาน
                 </Title>
                 <Text
                   style={{
@@ -158,7 +255,7 @@ const Priority: React.FC = () => {
                     fontSize: theme.fontSize.md,
                   }}
                 >
-                  ตั่งค่าความสำคัญของภาระงาน
+                  ข้อมูลรายละเอียดภาระงานภาระงานที่ต้องทำ
                 </Text>
               </div>
 
@@ -189,7 +286,7 @@ const Priority: React.FC = () => {
                         name="title"
                         label="หัวข้อภาระงาน"
                         rules={[
-                          { required: true, message: "กรุณากรอกชื่อผู้ใช้" },
+                          { required: true, message: "กรุณากรอกหัวข้อภาระงาน" },
                         ]}
                         style={{ width: "100%" }}
                       >
@@ -203,32 +300,59 @@ const Priority: React.FC = () => {
                             borderColor: theme.textLight,
                             width: "100%",
                           }}
+                          disabled
                         />
                       </Form.Item>
                     </Col>
+
                     <Col span={24}>
                       <Form.Item
-                        name="priority"
-                        label="ความสำคัญ"
+                        name="dateRange"
+                        label="ระยะเวลา"
                         rules={[
-                          { required: true, message: "กรุณาเลือกความสำคัญ" },
+                          { required: true, message: "กรุณาเลือกระยะเวลา" },
                         ]}
                       >
-                        <Select
-                          placeholder="เลือกความสำคัญ"
+                        <DatePicker
+                          disabled
                           style={{
+                            width: "100%",
                             height: 48,
                             borderRadius: theme.borderRadius.md,
                             fontSize: theme.fontSize.md,
-                            padding: `0 ${theme.spacing.md}`,
-                            borderColor: theme.textLight,
-                            width: "100%",
                           }}
-                        >
-                          <Select.Option value="high">สูง</Select.Option>
-                          <Select.Option value="medium">ปานกลาง</Select.Option>
-                          <Select.Option value="low">ต่ำ</Select.Option>
-                        </Select>
+                          format="YYYY-MM-DD"
+                        />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item
+                        name="description"
+                        label="รายละเอียด"
+                        rules={[
+                          { required: true, message: "กรุณากรอกรายละเอียด" },
+                        ]}
+                      >
+                        <TextArea
+                          disabled
+                          placeholder="กรอกรายละเอียดภาระงาน"
+                          rows={4}
+                          style={{
+                            borderRadius: theme.borderRadius.md,
+                            fontSize: theme.fontSize.md,
+                            padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+                            resize: "none",
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item name="images" label="อัปโหลดไฟล์แนบ">
+                        <Upload {...props}>
+                          <Button icon={<UploadOutlined />}>แนบไฟล์</Button>
+                        </Upload>
                       </Form.Item>
                     </Col>
                   </Row>
@@ -254,7 +378,7 @@ const Priority: React.FC = () => {
                         gap: theme.spacing.sm,
                       }}
                     >
-                      บันทึก
+                      บันทึกภาระงาน
                     </Button>
                   </Form.Item>
                 </Form>
@@ -282,7 +406,7 @@ const Priority: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/admin/config")}
+                  onClick={() => navigate("/user/work")}
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,
@@ -294,7 +418,7 @@ const Priority: React.FC = () => {
                     gap: theme.spacing.sm,
                   }}
                 >
-                  กลับไปหน้ารายงานความสำคัญ
+                  กลับไปหน้ารายการภาระงาน
                 </Button>
                 <Title
                   level={3}
@@ -306,7 +430,7 @@ const Priority: React.FC = () => {
                     letterSpacing: "0.5px",
                   }}
                 >
-                  ความสำคัญ
+                  รายละเอียดภาระงาน
                 </Title>
                 <Text
                   style={{
@@ -316,7 +440,7 @@ const Priority: React.FC = () => {
                     fontSize: theme.fontSize.md,
                   }}
                 >
-                  ตั่งค่าความสำคัญของภาระงาน
+                  ข้อมูลรายละเอียดภาระงานภาระงานที่ต้องทำ
                 </Text>
               </div>
 
@@ -347,7 +471,7 @@ const Priority: React.FC = () => {
                         name="title"
                         label="หัวข้อภาระงาน"
                         rules={[
-                          { required: true, message: "กรุณากรอกชื่อผู้ใช้" },
+                          { required: true, message: "กรุณากรอกหัวข้อภาระงาน" },
                         ]}
                         style={{ width: "100%" }}
                       >
@@ -361,32 +485,59 @@ const Priority: React.FC = () => {
                             borderColor: theme.textLight,
                             width: "100%",
                           }}
+                          disabled
                         />
                       </Form.Item>
                     </Col>
+
                     <Col span={24}>
                       <Form.Item
-                        name="priority"
-                        label="ความสำคัญ"
+                        name="dateRange"
+                        label="ระยะเวลา"
                         rules={[
-                          { required: true, message: "กรุณาเลือกความสำคัญ" },
+                          { required: true, message: "กรุณาเลือกระยะเวลา" },
                         ]}
                       >
-                        <Select
-                          placeholder="เลือกความสำคัญ"
+                        <DatePicker
+                          disabled
                           style={{
+                            width: "100%",
                             height: 48,
                             borderRadius: theme.borderRadius.md,
                             fontSize: theme.fontSize.md,
-                            padding: `0 ${theme.spacing.md}`,
-                            borderColor: theme.textLight,
-                            width: "100%",
                           }}
-                        >
-                          <Select.Option value="high">สูง</Select.Option>
-                          <Select.Option value="medium">ปานกลาง</Select.Option>
-                          <Select.Option value="low">ต่ำ</Select.Option>
-                        </Select>
+                          format="YYYY-MM-DD"
+                        />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item
+                        name="description"
+                        label="รายละเอียด"
+                        rules={[
+                          { required: true, message: "กรุณากรอกรายละเอียด" },
+                        ]}
+                      >
+                        <TextArea
+                          disabled
+                          placeholder="กรอกรายละเอียดภาระงาน"
+                          rows={4}
+                          style={{
+                            borderRadius: theme.borderRadius.md,
+                            fontSize: theme.fontSize.md,
+                            padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+                            resize: "none",
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item name="images" label="อัปโหลดไฟล์แนบ">
+                        <Upload {...props}>
+                          <Button icon={<UploadOutlined />}>แนบไฟล์</Button>
+                        </Upload>
                       </Form.Item>
                     </Col>
                   </Row>
@@ -412,7 +563,7 @@ const Priority: React.FC = () => {
                         gap: theme.spacing.sm,
                       }}
                     >
-                      บันทึก
+                      บันทึกภาระงาน
                     </Button>
                   </Form.Item>
                 </Form>
@@ -425,4 +576,4 @@ const Priority: React.FC = () => {
   );
 };
 
-export default Priority;
+export default HeadWorkLoadDetail;

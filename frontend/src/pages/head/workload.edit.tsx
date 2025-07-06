@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Form,
   Input,
@@ -15,11 +15,14 @@ import {
   message,
 } from "antd";
 import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
-import axiosInstance from "../../../utils/axios";
-import theme from "../../../theme";
-import DeanHeader from "../../../components/admin/Header";
-import DeanNavbar from "../../../components/admin/Navbar";
-import ReHeader from "../../../components/admin/NavbarHeader";
+import axiosInstance from "../../utils/axios";
+import theme from "../../theme";
+import DeanHeader from "../../components/head/Header";
+import DeanNavbar from "../../components/head/Navbar";
+import ReHeader from "../../components/head/NavbarHeader";
+import "./workload-new.override.css";
+
+import moment from "moment";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -27,8 +30,11 @@ const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 interface WorkloadForm {
-  title: string;
-  priority: string;
+  title: number;
+  department: string;
+  assignee: string;
+  description: string;
+  dateRange: any;
 }
 
 interface User {
@@ -37,19 +43,56 @@ interface User {
   user_role: string;
 }
 
-const Priority: React.FC = () => {
+interface OptionsConfig {
+  id: number;
+  title: number;
+  priority: string;
+}
+
+const HeadWorkLoadEdit: React.FC = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
 
-  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<User | undefined>();
+  const [options, setOptions] = useState<OptionsConfig[]>([]);
 
-  const fetchUser = async () => {
+  const { id } = useParams();
+
+  const getPriorityText = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return "สูง";
+      case "medium":
+        return "ปานกลาง";
+      case "low":
+        return "ต่ำ";
+      default:
+        return priority;
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return theme.danger;
+      case "medium":
+        return theme.warning;
+      case "low":
+        return theme.success;
+      default:
+        return theme.textLight;
+    }
+  };
+
+  const fetchUsers = async () => {
     try {
       const response = await axiosInstance.get("/user/profile");
-      setUser(response.data);
+      setUsers(response.data);
+      setProfile(response.data);
     } catch (error: any) {
-      console.error("Error fetching user:", error);
+      console.error("Error fetching users:", error);
       if (error.response?.status === 401) {
         message.error("กรุณาเข้าสู่ระบบใหม่");
         navigate("/");
@@ -59,29 +102,63 @@ const Priority: React.FC = () => {
     }
   };
 
+  const fetchOptions = async () => {
+    try {
+      const response = await axiosInstance.get("/option");
+      setOptions(response.data);
+    } catch (error: any) {
+      console.error("Error, fetching Options ", error);
+    }
+  };
+
+  const fetchWorkload = async () => {
+    try {
+      const response = await axiosInstance.get(`work/${id}`);
+      const workload = response.data;
+
+      form.setFieldsValue({
+        title: workload.options.id,
+        department: workload.department,
+        description: workload.description,
+        dateRange: "",
+      });
+    } catch (error: any) {
+      console.error("Error, fetching workload ", error);
+    }
+  };
+
   useEffect(() => {
-    fetchUser();
+    fetchUsers();
+    fetchWorkload();
+    fetchOptions();
   }, [navigate]);
 
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
+      const end_date = values.dateRange;
+
+      const setDate = new Date();
+
       const workloadData = {
-        title: values.title,
-        priority: values.priority,
+        description: values.description,
+        options: values.title,
+        dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
+        dateTimeEnd: end_date.format("YYYY-MM-DD"),
+        // status: "pending",
       };
 
       console.log("Sending data:", workloadData);
 
-      const response = await axiosInstance.post("/option", workloadData);
+      const response = await axiosInstance.patch(`/work/${id}`, workloadData);
       console.log("Response:", response.data);
 
       message.success("เพิ่มภาระงานสำเร็จ");
-      navigate("/admin/config");
+      navigate("/head/_workload");
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้",
+        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้",
       );
     } finally {
       setLoading(false);
@@ -93,16 +170,13 @@ const Priority: React.FC = () => {
       <div className="hidden md:block">
         <DeanHeader />
       </div>
-
       <div className="md:hidden">
         <ReHeader />
       </div>
-
       <Layout style={{ height: "calc(100vh - 70px)" }}>
         <div className="hidden md:block">
           <DeanNavbar />
         </div>
-
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
           <div className="hidden md:block">
             <Content
@@ -124,7 +198,7 @@ const Priority: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/admin/config")}
+                  onClick={() => navigate("/head/_workload")}
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,
@@ -136,7 +210,7 @@ const Priority: React.FC = () => {
                     gap: theme.spacing.sm,
                   }}
                 >
-                  กลับไปหน้ารายงานความสำคัญ
+                  กลับไปหน้ารายการภาระงาน
                 </Button>
                 <Title
                   level={3}
@@ -148,7 +222,7 @@ const Priority: React.FC = () => {
                     letterSpacing: "0.5px",
                   }}
                 >
-                  ความสำคัญ
+                  เพิ่มภาระงานใหม่
                 </Title>
                 <Text
                   style={{
@@ -158,7 +232,7 @@ const Priority: React.FC = () => {
                     fontSize: theme.fontSize.md,
                   }}
                 >
-                  ตั่งค่าความสำคัญของภาระงาน
+                  กรอกข้อมูลภาระงานที่ต้องการเพิ่ม
                 </Text>
               </div>
 
@@ -189,33 +263,12 @@ const Priority: React.FC = () => {
                         name="title"
                         label="หัวข้อภาระงาน"
                         rules={[
-                          { required: true, message: "กรุณากรอกชื่อผู้ใช้" },
+                          { required: true, message: "กรุณากรอกหัวข้อภาระงาน" },
                         ]}
                         style={{ width: "100%" }}
                       >
-                        <Input
-                          placeholder="กรอกหัวข้อภาระงาน"
-                          style={{
-                            height: 48,
-                            borderRadius: theme.borderRadius.md,
-                            fontSize: theme.fontSize.md,
-                            padding: `0 ${theme.spacing.md}`,
-                            borderColor: theme.textLight,
-                            width: "100%",
-                          }}
-                        />
-                      </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                      <Form.Item
-                        name="priority"
-                        label="ความสำคัญ"
-                        rules={[
-                          { required: true, message: "กรุณาเลือกความสำคัญ" },
-                        ]}
-                      >
                         <Select
-                          placeholder="เลือกความสำคัญ"
+                          placeholder="เลือกหัวข้อภาระงาน"
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,
@@ -225,10 +278,55 @@ const Priority: React.FC = () => {
                             width: "100%",
                           }}
                         >
-                          <Select.Option value="high">สูง</Select.Option>
-                          <Select.Option value="medium">ปานกลาง</Select.Option>
-                          <Select.Option value="low">ต่ำ</Select.Option>
+                          {options.map((opt) => (
+                            <Select.Option key={opt.id} value={opt.id}>
+                              {opt.title}
+                            </Select.Option>
+                          ))}
                         </Select>
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item
+                        name="dateRange"
+                        label="ระยะเวลา"
+                        rules={[
+                          { required: true, message: "กรุณาเลือกระยะเวลา" },
+                        ]}
+                      >
+                        <DatePicker
+                          style={{
+                            height: 48,
+                            borderRadius: theme.borderRadius.md,
+                            fontSize: theme.fontSize.md,
+                            padding: `0 ${theme.spacing.md}`,
+                            borderColor: theme.textLight,
+                            width: "100%",
+                          }}
+                          format="YYYY-MM-DD"
+                        />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item
+                        name="description"
+                        label="รายละเอียด"
+                        rules={[
+                          { required: true, message: "กรุณากรอกรายละเอียด" },
+                        ]}
+                      >
+                        <TextArea
+                          placeholder="กรอกรายละเอียดภาระงาน"
+                          rows={4}
+                          style={{
+                            borderRadius: theme.borderRadius.md,
+                            fontSize: theme.fontSize.md,
+                            padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+                            resize: "none",
+                          }}
+                        />
                       </Form.Item>
                     </Col>
                   </Row>
@@ -254,7 +352,7 @@ const Priority: React.FC = () => {
                         gap: theme.spacing.sm,
                       }}
                     >
-                      บันทึก
+                      บันทึกภาระงาน
                     </Button>
                   </Form.Item>
                 </Form>
@@ -265,7 +363,7 @@ const Priority: React.FC = () => {
           <div className="md:hidden">
             <Content
               style={{
-                width: "100%",
+                maxWidth: "1200px",
                 margin: "0 auto",
                 // padding: `0 ${theme.spacing.xl}`,
               }}
@@ -282,7 +380,7 @@ const Priority: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/admin/config")}
+                  onClick={() => navigate("/head/_workload")}
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,
@@ -294,7 +392,7 @@ const Priority: React.FC = () => {
                     gap: theme.spacing.sm,
                   }}
                 >
-                  กลับไปหน้ารายงานความสำคัญ
+                  กลับไปหน้ารายการภาระงาน
                 </Button>
                 <Title
                   level={3}
@@ -306,7 +404,7 @@ const Priority: React.FC = () => {
                     letterSpacing: "0.5px",
                   }}
                 >
-                  ความสำคัญ
+                  เพิ่มภาระงานใหม่
                 </Title>
                 <Text
                   style={{
@@ -316,7 +414,7 @@ const Priority: React.FC = () => {
                     fontSize: theme.fontSize.md,
                   }}
                 >
-                  ตั่งค่าความสำคัญของภาระงาน
+                  กรอกข้อมูลภาระงานที่ต้องการเพิ่ม
                 </Text>
               </div>
 
@@ -347,33 +445,12 @@ const Priority: React.FC = () => {
                         name="title"
                         label="หัวข้อภาระงาน"
                         rules={[
-                          { required: true, message: "กรุณากรอกชื่อผู้ใช้" },
+                          { required: true, message: "กรุณากรอกหัวข้อภาระงาน" },
                         ]}
                         style={{ width: "100%" }}
                       >
-                        <Input
-                          placeholder="กรอกหัวข้อภาระงาน"
-                          style={{
-                            height: 48,
-                            borderRadius: theme.borderRadius.md,
-                            fontSize: theme.fontSize.md,
-                            padding: `0 ${theme.spacing.md}`,
-                            borderColor: theme.textLight,
-                            width: "100%",
-                          }}
-                        />
-                      </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                      <Form.Item
-                        name="priority"
-                        label="ความสำคัญ"
-                        rules={[
-                          { required: true, message: "กรุณาเลือกความสำคัญ" },
-                        ]}
-                      >
                         <Select
-                          placeholder="เลือกความสำคัญ"
+                          placeholder="เลือกหัวข้อภาระงาน"
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,
@@ -383,10 +460,55 @@ const Priority: React.FC = () => {
                             width: "100%",
                           }}
                         >
-                          <Select.Option value="high">สูง</Select.Option>
-                          <Select.Option value="medium">ปานกลาง</Select.Option>
-                          <Select.Option value="low">ต่ำ</Select.Option>
+                          {options.map((opt) => (
+                            <Select.Option key={opt.id} value={opt.id}>
+                              {opt.title}
+                            </Select.Option>
+                          ))}
                         </Select>
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item
+                        name="dateRange"
+                        label="ระยะเวลา"
+                        rules={[
+                          { required: true, message: "กรุณาเลือกระยะเวลา" },
+                        ]}
+                      >
+                        <DatePicker
+                          style={{
+                            height: 48,
+                            borderRadius: theme.borderRadius.md,
+                            fontSize: theme.fontSize.md,
+                            padding: `0 ${theme.spacing.md}`,
+                            borderColor: theme.textLight,
+                            width: "100%",
+                          }}
+                          format="YYYY-MM-DD"
+                        />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item
+                        name="description"
+                        label="รายละเอียด"
+                        rules={[
+                          { required: true, message: "กรุณากรอกรายละเอียด" },
+                        ]}
+                      >
+                        <TextArea
+                          placeholder="กรอกรายละเอียดภาระงาน"
+                          rows={4}
+                          style={{
+                            borderRadius: theme.borderRadius.md,
+                            fontSize: theme.fontSize.md,
+                            padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+                            resize: "none",
+                          }}
+                        />
                       </Form.Item>
                     </Col>
                   </Row>
@@ -412,7 +534,7 @@ const Priority: React.FC = () => {
                         gap: theme.spacing.sm,
                       }}
                     >
-                      บันทึก
+                      บันทึกภาระงาน
                     </Button>
                   </Form.Item>
                 </Form>
@@ -425,4 +547,4 @@ const Priority: React.FC = () => {
   );
 };
 
-export default Priority;
+export default HeadWorkLoadEdit;
