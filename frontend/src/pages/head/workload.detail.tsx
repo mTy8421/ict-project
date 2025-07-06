@@ -23,9 +23,9 @@ import {
 } from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import theme from "../../theme";
-import DeanHeader from "../../components/user/Header";
-import DeanNavbar from "../../components/user/Navbar";
-import ReHeader from "../../components/user/NavbarHeader";
+import DeanHeader from "../../components/head/Header";
+import DeanNavbar from "../../components/head/Navbar";
+import ReHeader from "../../components/head/NavbarHeader";
 import "./workload-new.override.css";
 import moment from "moment";
 
@@ -157,7 +157,7 @@ const HeadWorkLoadDetail: React.FC = () => {
       console.log("Response:", response.data);
 
       message.success("เพิ่มภาระงานสำเร็จ");
-      navigate("/user/work");
+      navigate("/head/_workload");
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
@@ -221,7 +221,7 @@ const HeadWorkLoadDetail: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/user/work")}
+                  onClick={() => navigate("/head/_workload")}
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,
@@ -406,7 +406,7 @@ const HeadWorkLoadDetail: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/user/work")}
+                  onClick={() => navigate("/head/_workload")}
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,
