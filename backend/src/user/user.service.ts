@@ -25,6 +25,17 @@ export class UserService {
     return this.userRepository.find();
   }
 
+  async findAllUser(): Promise<User[]> {
+    const users = this.userRepository
+      .createQueryBuilder('user')
+      .where('user.user_role != :user_role AND user.user_role != :user_role2', {
+        user_role: 'หัวหน้าสำนักงาน',
+        user_role2: 'admin',
+      })
+      .getMany();
+    return users;
+  }
+
   async findOne(id: number): Promise<User | null> {
     return this.userRepository.findOne({ where: { user_id: id } });
   }

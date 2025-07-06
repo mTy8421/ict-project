@@ -40,6 +40,11 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @Get('user')
+  findAllUser() {
+    return this.userService.findAllUser();
+  }
+
   @Get('search')
   // @Roles('admin', 'คณบดี')
   search(@Query('query') query: string) {

@@ -17,7 +17,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('work')
 export class WorkController {
-  constructor(private readonly workService: WorkService) { }
+  constructor(private readonly workService: WorkService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('user')
@@ -29,6 +29,11 @@ export class WorkController {
   @Get('head')
   findAllUser() {
     return this.workService.findAllUser();
+  }
+
+  @Get('head/:id')
+  findByUserHead(@Param('id') id: string) {
+    return this.workService.findByUser(+id);
   }
 
   @Post()
