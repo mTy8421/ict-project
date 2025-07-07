@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   Form,
   Input,
@@ -56,6 +56,7 @@ interface OptionsConfig {
 
 const DetailHeadWorkLoad: React.FC = () => {
   const { id } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -152,7 +153,7 @@ const DetailHeadWorkLoad: React.FC = () => {
       console.log("Response:", response.data);
 
       message.success("เพิ่มภาระงานสำเร็จ");
-      navigate("/user/work");
+      navigate(`/head/work/user/${searchParams.get("uid")}`);
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
@@ -198,7 +199,9 @@ const DetailHeadWorkLoad: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/head/work")}
+                  onClick={() =>
+                    navigate(`/head/work/user/${searchParams.get("uid")}`)
+                  }
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,
@@ -377,7 +380,9 @@ const DetailHeadWorkLoad: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/head/work")}
+                  onClick={() =>
+                    navigate(`/head/work/user/${searchParams.get("uid")}`)
+                  }
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,

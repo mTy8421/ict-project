@@ -323,14 +323,6 @@ const HeadWork: React.FC = () => {
                   />
                 </div>
               </Card>
-
-              <Card
-                style={{
-                  borderRadius: theme.borderRadius.lg,
-                  boxShadow: theme.shadow,
-                  background: theme.white,
-                }}
-              ></Card>
             </Content>
           </div>
 

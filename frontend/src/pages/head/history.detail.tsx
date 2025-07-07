@@ -157,7 +157,7 @@ const HeadHistoryDetail: React.FC = () => {
       console.log("Response:", response.data);
 
       message.success("เพิ่มภาระงานสำเร็จ");
-      navigate("/user/work");
+      navigate(`/head/history`);
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(

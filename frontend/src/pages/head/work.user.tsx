@@ -234,7 +234,9 @@ const HeadWorkUser: React.FC = () => {
             <Button
               type="text"
               icon={<EyeOutlined />}
-              onClick={() => navigate(`/head/work/detail/${record.id}`)}
+              onClick={() =>
+                navigate(`/head/work/detail/${record.id}?uid=${id}`)
+              }
               style={{ color: theme.primary }}
             />
           </Tooltip>
@@ -460,14 +462,6 @@ const HeadWorkUser: React.FC = () => {
                   />
                 </div>
               </Card>
-
-              <Card
-                style={{
-                  borderRadius: theme.borderRadius.lg,
-                  boxShadow: theme.shadow,
-                  background: theme.white,
-                }}
-              ></Card>
             </Content>
           </div>
 
