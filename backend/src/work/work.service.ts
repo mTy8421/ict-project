@@ -94,7 +94,8 @@ export class WorkService {
       .set({
         status: updateWorkDto.status,
         description: updateWorkDto.description,
-        dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
+        // dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
+        dateTimeStart: updateWorkDto.dateTimeStart,
         dateTimeEnd: updateWorkDto.dateTimeEnd,
         options: option,
       })
