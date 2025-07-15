@@ -32,7 +32,7 @@ interface WorkloadForm {
   department: string;
   assignee: string;
   description: string;
-  dateRange: any;
+  dateRange: [any, any];
 }
 
 interface User {
@@ -114,17 +114,19 @@ const HeadWorkLoadAdd: React.FC = () => {
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
-      const end_date = values.dateRange;
+      const [dateStart, dateEnd] = values.dateRange;
 
-      const setDate = new Date();
+      // const setDate = new Date();
 
       const workloadData = {
         description: values.description,
         department: profile?.user_role || "unknown",
         user: profile?.user_id || 0,
         options: values.title,
-        dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
-        dateTimeEnd: end_date.format("YYYY-MM-DD"),
+        dateTimeStart: dateStart.format("YYYY-MM-DD"),
+        dateTimeEnd: dateEnd.format("YYYY-MM-DD"),
+        // dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
+        // dateTimeEnd: end_date.format("YYYY-MM-DD"),
         status: "pending",
       };
 
@@ -274,7 +276,7 @@ const HeadWorkLoadAdd: React.FC = () => {
                         { required: true, message: "กรุณาเลือกระยะเวลา" },
                       ]}
                     >
-                      <DatePicker
+                      <RangePicker
                         style={{
                           height: 48,
                           borderRadius: theme.borderRadius.md,
