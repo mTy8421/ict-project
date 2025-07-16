@@ -466,6 +466,8 @@ const UserWorkLoad: React.FC = () => {
                             padding: `0 ${theme.spacing.md}`,
                             borderColor: theme.textLight,
                             width: "100%",
+                            minWidth: 160,
+                            maxWidth: "100%",
                           }}
                           format="YYYY-MM-DD"
                         />

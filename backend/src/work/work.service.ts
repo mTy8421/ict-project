@@ -13,7 +13,7 @@ export class WorkService {
     @InjectRepository(Work) private workRepository: Repository<Work>,
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Option) private optionRepsitory: Repository<Option>,
-  ) {}
+  ) { }
 
   async create(createWorkDto: CreateWorkDto) {
     const user = await this.userRepository.findOne({
@@ -76,7 +76,7 @@ export class WorkService {
   }
 
   async update(id: number, updateWorkDto: UpdateWorkDto) {
-    const setDate = new Date();
+    // const setDate = new Date();
 
     const option = await this.optionRepsitory.findOne({
       where: { id: updateWorkDto.options },

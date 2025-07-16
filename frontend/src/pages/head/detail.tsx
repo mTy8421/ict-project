@@ -147,7 +147,7 @@ const DetailHeadWorkLoad: React.FC = () => {
 
       const workloadData = {
         description: values.description,
-        status: "in_progress",
+        status: "completed",
       };
 
       console.log("Sending data:", workloadData);
