@@ -71,6 +71,7 @@ export default function App() {
         <Route path="/admin/config" element={<AdminConfig />} />
         <Route path="/admin/config/priority" element={<Priority />} />
         <Route path="/admin/work" element={<AdminWork />} />
+
         <Route path="/dean" element={<DeanDashboard />} />
         <Route path="/dean/workload" element={<DeanWorkload />} />
         <Route path="/dean/workload/new" element={<DeanWorkloadNew />} />

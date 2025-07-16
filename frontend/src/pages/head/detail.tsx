@@ -39,7 +39,7 @@ interface WorkloadForm {
   department: string;
   assignee: string;
   description: string;
-  dateRange: any;
+  dateRange: [any, any];
 }
 
 interface User {
@@ -125,7 +125,10 @@ const DetailHeadWorkLoad: React.FC = () => {
         title: workload.options.title,
         department: workload.department,
         description: workload.description,
-        dateRange: [moment(workload.dateTimeEnd)],
+        dateRange: [
+          moment(workload.dateTimeStart),
+          moment(workload.dateTimeEnd),
+        ],
       });
     } catch (error: any) {
       console.error("Error fetching workload:", error);
@@ -293,7 +296,7 @@ const DetailHeadWorkLoad: React.FC = () => {
                           { required: true, message: "กรุณาเลือกระยะเวลา" },
                         ]}
                       >
-                        <DatePicker
+                        <RangePicker
                           disabled
                           style={{
                             width: "100%",
@@ -474,7 +477,7 @@ const DetailHeadWorkLoad: React.FC = () => {
                           { required: true, message: "กรุณาเลือกระยะเวลา" },
                         ]}
                       >
-                        <DatePicker
+                        <RangePicker
                           disabled
                           style={{
                             width: "100%",

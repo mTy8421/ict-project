@@ -39,7 +39,7 @@ interface WorkloadForm {
   department: string;
   assignee: string;
   description: string;
-  dateRange: any;
+  dateRange: [any, any];
 }
 
 interface User {
@@ -124,7 +124,10 @@ const HeadHistoryDetail: React.FC = () => {
         title: workload.options.title,
         department: workload.department,
         description: workload.description,
-        dateRange: [moment(workload.dateTimeEnd)],
+        dateRange: [
+          moment(workload.dateTimeStart),
+          moment(workload.dateTimeEnd),
+        ],
       });
     } catch (error: any) {
       console.error("Error fetching workload:", error);
@@ -142,11 +145,11 @@ const HeadHistoryDetail: React.FC = () => {
       setLoading(true);
       // const end_date = values.dateRange;
 
-      const setDate = new Date();
+      // const setDate = new Date();
 
       const workloadData = {
         description: values.description,
-        dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
+        // dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
         // dateTimeEnd: end_date.format("YYYY-MM-DD"),
         status: "pending",
       };
@@ -295,7 +298,7 @@ const HeadHistoryDetail: React.FC = () => {
                           { required: true, message: "กรุณาเลือกระยะเวลา" },
                         ]}
                       >
-                        <DatePicker
+                        <RangePicker
                           disabled
                           style={{
                             width: "100%",
@@ -449,7 +452,7 @@ const HeadHistoryDetail: React.FC = () => {
                           { required: true, message: "กรุณาเลือกระยะเวลา" },
                         ]}
                       >
-                        <DatePicker
+                        <RangePicker
                           disabled
                           style={{
                             width: "100%",

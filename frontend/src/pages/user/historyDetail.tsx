@@ -39,7 +39,7 @@ interface WorkloadForm {
   department: string;
   assignee: string;
   description: string;
-  dateRange: any;
+  dateRange: [any, any];
 }
 
 interface User {
@@ -124,7 +124,10 @@ const UserHistoryDetail: React.FC = () => {
         title: workload.options.title,
         department: workload.department,
         description: workload.description,
-        dateRange: [moment(workload.dateTimeEnd)],
+        dateRange: [
+          moment(workload.dateTimeStart),
+          moment(workload.dateTimeEnd),
+        ],
       });
     } catch (error: any) {
       console.error("Error fetching workload:", error);
@@ -140,14 +143,14 @@ const UserHistoryDetail: React.FC = () => {
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
-      // const end_date = values.dateRange;
+      const [dateStart, dateEnd] = values.dateRange;
 
-      const setDate = new Date();
+      // const setDate = new Date();
 
       const workloadData = {
         description: values.description,
-        dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
-        // dateTimeEnd: end_date.format("YYYY-MM-DD"),
+        dateTimeStart: dateStart.format("YYYY-MM-DD"),
+        dateTimeEnd: dateEnd.format("YYYY-MM-DD"),
         status: "pending",
       };
 
