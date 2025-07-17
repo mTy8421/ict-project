@@ -290,7 +290,7 @@ const HeadWork: React.FC = () => {
                 <Row gutter={[24, 24]} align="middle">
                   <Col span={24} style={{ paddingBottom: theme.spacing.md }}>
                     <Search
-                      placeholder="ค้นหาภาระงาน..."
+                      placeholder="ค้นหาผู้ใช้งาน..."
                       allowClear
                       onSearch={setSearchText}
                       onChange={(e) => setSearchText(e.target.value)}
@@ -372,79 +372,14 @@ const HeadWork: React.FC = () => {
                 bodyStyle={{ padding: theme.spacing.xl }}
               >
                 <Row gutter={[24, 24]} align="middle">
-                  <Col
-                    xs={24}
-                    sm={8}
-                    style={{ paddingBottom: theme.spacing.md }}
-                  >
+                  <Col span={24} style={{ paddingBottom: theme.spacing.md }}>
                     <Search
-                      placeholder="ค้นหาภาระงาน..."
+                      placeholder="ค้นหาผู้ใช้งาน..."
                       allowClear
                       onSearch={setSearchText}
                       onChange={(e) => setSearchText(e.target.value)}
                       style={{ width: "100%" }}
                     />
-                  </Col>
-                  <Col
-                    xs={24}
-                    sm={8}
-                    style={{ paddingBottom: theme.spacing.md }}
-                  >
-                    <Select
-                      mode="multiple"
-                      placeholder="กรองตามสถานะ"
-                      style={{ width: "100%" }}
-                      onChange={setStatusFilter}
-                      options={[
-                        { label: "รอดำเนินการ", value: "pending" },
-                        { label: "กำลังดำเนินการ", value: "in_progress" },
-                        { label: "เสร็จสิ้น", value: "completed" },
-                      ]}
-                    />
-                  </Col>
-                  <Col
-                    xs={24}
-                    sm={8}
-                    style={{ paddingBottom: theme.spacing.md }}
-                  >
-                    <Select
-                      mode="multiple"
-                      placeholder="กรองตามความสำคัญ"
-                      style={{ width: "100%" }}
-                      onChange={setPriorityFilter}
-                      options={[
-                        { label: "สูง", value: "high" },
-                        { label: "ปานกลาง", value: "medium" },
-                        { label: "ต่ำ", value: "low" },
-                      ]}
-                    />
-                  </Col>
-                  <Col
-                    xs={24}
-                    sm={12}
-                    style={{ paddingBottom: theme.spacing.md }}
-                  >
-                    <Select
-                      style={{ width: "100%" }}
-                      placeholder="กรองตามวันที่"
-                      onChange={(dates) => setDateRange(dates)}
-                    >
-                      {workloads.map((val) => (
-                        <Select.Option value={val.dateTimeEnd}>
-                          {val.dateTimeEnd}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                    {/* <DatePicker */}
-                    {/*   style={{ width: "100%" }} */}
-                    {/*   onChange={(dates) => { */}
-                    {/*     if (dates) { */}
-                    {/*       setDateRange(dates.toString() as any); */}
-                    {/*     } else { */}
-                    {/*       setDateRange(undefined); */}
-                    {/*     } */}
-                    {/*   }} */}
-                    {/* /> */}
                   </Col>
                 </Row>
               </Card>

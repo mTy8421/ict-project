@@ -414,27 +414,29 @@ const HeadWorkUser: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
-                    <Select
-                      style={{ width: "100%" }}
-                      placeholder="กรองตามวันที่"
-                      onChange={(dates) => setDateRange(dates)}
-                    >
-                      {workloads.map((val) => (
-                        <Select.Option value={val.dateTimeEnd}>
-                          {val.dateTimeEnd}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                    {/* <DatePicker */}
+                    {/* <Select */}
                     {/*   style={{ width: "100%" }} */}
-                    {/*   onChange={(dates) => { */}
-                    {/*     if (dates) { */}
-                    {/*       setDateRange(dates.toString() as any); */}
-                    {/*     } else { */}
-                    {/*       setDateRange(undefined); */}
-                    {/*     } */}
-                    {/*   }} */}
-                    {/* /> */}
+                    {/*   placeholder="กรองตามวันที่" */}
+                    {/*   onChange={(dates) => setDateRange(dates)} */}
+                    {/* > */}
+                    {/*   {workloads.map((val) => ( */}
+                    {/*     <Select.Option value={val.dateTimeEnd}> */}
+                    {/*       {val.dateTimeEnd} */}
+                    {/*     </Select.Option> */}
+                    {/*   ))} */}
+                    {/* </Select> */}
+                    <DatePicker
+                      style={{
+                        width: "100%",
+                        marginTop: theme.spacing.sm,
+                        borderRadius: theme.borderRadius.md,
+                      }}
+                      onChange={(_date, dateString) =>
+                        setDateRange(dateString.toString() as any)
+                      }
+                      format="YYYY-MM-DD"
+                      placeholder="กรองตามวันที่สิ้นสุด"
+                    />
                   </Col>
                 </Row>
               </Card>
@@ -563,27 +565,29 @@ const HeadWorkUser: React.FC = () => {
                     sm={12}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
-                    <Select
-                      style={{ width: "100%" }}
-                      placeholder="กรองตามวันที่"
-                      onChange={(dates) => setDateRange(dates)}
-                    >
-                      {workloads.map((val) => (
-                        <Select.Option value={val.dateTimeEnd}>
-                          {val.dateTimeEnd}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                    {/* <DatePicker */}
+                    {/* <Select */}
                     {/*   style={{ width: "100%" }} */}
-                    {/*   onChange={(dates) => { */}
-                    {/*     if (dates) { */}
-                    {/*       setDateRange(dates.toString() as any); */}
-                    {/*     } else { */}
-                    {/*       setDateRange(undefined); */}
-                    {/*     } */}
-                    {/*   }} */}
-                    {/* /> */}
+                    {/*   placeholder="กรองตามวันที่" */}
+                    {/*   onChange={(dates) => setDateRange(dates)} */}
+                    {/* > */}
+                    {/*   {workloads.map((val) => ( */}
+                    {/*     <Select.Option value={val.dateTimeEnd}> */}
+                    {/*       {val.dateTimeEnd} */}
+                    {/*     </Select.Option> */}
+                    {/*   ))} */}
+                    {/* </Select> */}
+                    <DatePicker
+                      style={{
+                        width: "100%",
+                        marginTop: theme.spacing.sm,
+                        borderRadius: theme.borderRadius.md,
+                      }}
+                      onChange={(_date, dateString) =>
+                        setDateRange(dateString.toString() as any)
+                      }
+                      format="YYYY-MM-DD"
+                      placeholder="กรองตามวันที่สิ้นสุด"
+                    />
                   </Col>
                 </Row>
               </Card>

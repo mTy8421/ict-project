@@ -58,7 +58,7 @@ const ReHeader: React.FC = () => {
       key: "Workload",
       label: "จัดการภาระงาน",
       icon: <SnippetsOutlined style={{ color: "#000" }} />,
-      onClick: () => navigate("/head/workload"),
+      onClick: () => navigate("/head/_workload"),
     },
     {
       key: "History",

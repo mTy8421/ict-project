@@ -218,22 +218,35 @@ const UserHome: React.FC = () => {
                 >
                   วันที่
                 </Title>
-
-                <Select
-                  onChange={(dates) => setDateRange(dates)}
+                <DatePicker
                   style={{
-                    maxWidth: "16rem",
-                    margin: "auto",
-                    marginTop: theme.spacing.sm,
                     width: "100%",
+                    marginTop: theme.spacing.sm,
+                    borderRadius: theme.borderRadius.md,
                   }}
-                >
-                  {workloads.map((val) => (
-                    <Select.Option value={val.dateTimeEnd}>
-                      {new Date(val.dateTimeEnd).toLocaleDateString("th-TH")}
-                    </Select.Option>
-                  ))}
-                </Select>
+                  onChange={(_date, dateString) =>
+                    setDateRange(dateString as any)
+                  }
+                  // format="DD-MM-YYYY"
+                  format="YYYY-MM-DD"
+                  placeholder="เลือกวันที่"
+                />
+
+                {/* <Select */}
+                {/*   onChange={(dates) => setDateRange(dates)} */}
+                {/*   style={{ */}
+                {/*     maxWidth: "16rem", */}
+                {/*     margin: "auto", */}
+                {/*     marginTop: theme.spacing.sm, */}
+                {/*     width: "100%", */}
+                {/*   }} */}
+                {/* > */}
+                {/*   {workloads.map((val) => ( */}
+                {/*     <Select.Option value={val.dateTimeEnd}> */}
+                {/*       {new Date(val.dateTimeEnd).toLocaleDateString("th-TH")} */}
+                {/*     </Select.Option> */}
+                {/*   ))} */}
+                {/* </Select> */}
               </div>
 
               <Row gutter={[24, 24]}>
@@ -408,10 +421,6 @@ const UserHome: React.FC = () => {
                     )}
                   />
                 </Card>
-              </div>
-
-              <div style={{ marginTop: theme.spacing.xl }}>
-                <Card></Card>
               </div>
             </Content>
           </div>

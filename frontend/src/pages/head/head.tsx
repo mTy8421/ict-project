@@ -11,6 +11,7 @@ import {
   List,
   Tag,
   Select,
+  DatePicker,
 } from "antd";
 import {
   FileTextOutlined,
@@ -218,21 +219,33 @@ const Head: React.FC = () => {
                   วันที่
                 </Title>
 
-                <Select
-                  onChange={(dates) => setDateRange(dates)}
+                {/* <Select */}
+                {/*   onChange={(dates) => setDateRange(dates)} */}
+                {/*   style={{ */}
+                {/*     maxWidth: "16rem", */}
+                {/*     margin: "auto", */}
+                {/*     marginTop: theme.spacing.sm, */}
+                {/*     width: "100%", */}
+                {/*   }} */}
+                {/* > */}
+                {/*   {workloads.map((val) => ( */}
+                {/*     <Select.Option value={val.dateTimeEnd}> */}
+                {/*       {new Date(val.dateTimeEnd).toLocaleDateString("th-TH")} */}
+                {/*     </Select.Option> */}
+                {/*   ))} */}
+                {/* </Select> */}
+                <DatePicker
                   style={{
-                    maxWidth: "16rem",
-                    margin: "auto",
-                    marginTop: theme.spacing.sm,
                     width: "100%",
+                    marginTop: theme.spacing.sm,
+                    borderRadius: theme.borderRadius.md,
                   }}
-                >
-                  {workloads.map((val) => (
-                    <Select.Option value={val.dateTimeEnd}>
-                      {new Date(val.dateTimeEnd).toLocaleDateString("th-TH")}
-                    </Select.Option>
-                  ))}
-                </Select>
+                  onChange={(_date, dateString) =>
+                    setDateRange(dateString.toString() as any)
+                  }
+                  format="YYYY-MM-DD"
+                  placeholder="เลือกวันที่"
+                />
               </div>
 
               <Row gutter={[24, 24]}>
@@ -408,10 +421,6 @@ const Head: React.FC = () => {
                   />
                 </Card>
               </div>
-
-              <div style={{ marginTop: theme.spacing.xl }}>
-                <Card></Card>
-              </div>
             </Content>
           </div>
 
@@ -467,21 +476,33 @@ const Head: React.FC = () => {
                   วันที่
                 </Title>
 
-                <Select
-                  onChange={(dates) => setDateRange(dates)}
+                {/* <Select */}
+                {/*   onChange={(dates) => setDateRange(dates)} */}
+                {/*   style={{ */}
+                {/*     maxWidth: "16rem", */}
+                {/*     margin: "auto", */}
+                {/*     marginTop: theme.spacing.sm, */}
+                {/*     width: "100%", */}
+                {/*   }} */}
+                {/* > */}
+                {/*   {workloads.map((val) => ( */}
+                {/*     <Select.Option value={val.dateTimeEnd}> */}
+                {/*       {new Date(val.dateTimeEnd).toLocaleDateString("th-TH")} */}
+                {/*     </Select.Option> */}
+                {/*   ))} */}
+                {/* </Select> */}
+                <DatePicker
                   style={{
-                    maxWidth: "16rem",
-                    margin: "auto",
-                    marginTop: theme.spacing.sm,
                     width: "100%",
+                    marginTop: theme.spacing.sm,
+                    borderRadius: theme.borderRadius.md,
                   }}
-                >
-                  {workloads.map((val) => (
-                    <Select.Option value={val.dateTimeEnd}>
-                      {new Date(val.dateTimeEnd).toLocaleDateString("th-TH")}
-                    </Select.Option>
-                  ))}
-                </Select>
+                  onChange={(_date, dateString) =>
+                    setDateRange(dateString.toString() as any)
+                  }
+                  format="YYYY-MM-DD"
+                  placeholder="เลือกวันที่"
+                />
               </div>
 
               <Row gutter={[24, 24]}>
