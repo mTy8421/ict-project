@@ -238,7 +238,7 @@ const DetailHeadWorkLoad: React.FC = () => {
                     fontSize: theme.fontSize.md,
                   }}
                 >
-                  ข้อมูลรายละเอียดภาระงานภาระงานที่ต้องทำ
+                  ข้อมูลรายละเอียดภาระงานภาระงาน
                 </Text>
               </div>
 
@@ -416,10 +416,10 @@ const DetailHeadWorkLoad: React.FC = () => {
                     color: theme.textLight,
                     marginTop: theme.spacing.sm,
                     display: "block",
-                    fontSize: theme.fontSize.md,
+                    fontSize: theme.fontSize.sm,
                   }}
                 >
-                  ข้อมูลรายละเอียดภาระงานภาระงานที่ต้องทำ
+                  ข้อมูลรายละเอียดภาระงานภาระงาน
                 </Text>
               </div>
 

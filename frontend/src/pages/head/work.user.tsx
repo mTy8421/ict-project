@@ -174,16 +174,6 @@ const HeadWorkUser: React.FC = () => {
       ),
     },
     {
-      title: "ชื่อผู้ใช้",
-      dataIndex: "user",
-      key: "user",
-      render: (text: any) => (
-        <Text strong style={{ color: theme.primary }}>
-          {text.user_name}
-        </Text>
-      ),
-    },
-    {
       title: "สถานะ",
       dataIndex: "status",
       key: "status",
@@ -526,11 +516,7 @@ const HeadWorkUser: React.FC = () => {
                       style={{ width: "100%" }}
                     />
                   </Col>
-                  <Col
-                    xs={24}
-                    sm={8}
-                    style={{ paddingBottom: theme.spacing.md }}
-                  >
+                  <Col span={24} style={{ paddingBottom: theme.spacing.md }}>
                     <Select
                       mode="multiple"
                       placeholder="กรองตามสถานะ"
@@ -543,11 +529,7 @@ const HeadWorkUser: React.FC = () => {
                       ]}
                     />
                   </Col>
-                  <Col
-                    xs={24}
-                    sm={8}
-                    style={{ paddingBottom: theme.spacing.md }}
-                  >
+                  <Col span={24} style={{ paddingBottom: theme.spacing.md }}>
                     <Select
                       mode="multiple"
                       placeholder="กรองตามความสำคัญ"
