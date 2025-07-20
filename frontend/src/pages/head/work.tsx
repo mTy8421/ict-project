@@ -26,6 +26,7 @@ import {
   EditOutlined,
   DeleteOutlined,
   EyeOutlined,
+  AreaChartOutlined,
 } from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import { logout } from "../home/home";
@@ -185,6 +186,16 @@ const HeadWork: React.FC = () => {
               style={{ color: theme.primary }}
             />
           </Tooltip>
+          <Tooltip title="ภาพรวม">
+            <Button
+              type="text"
+              icon={<AreaChartOutlined />}
+              onClick={() =>
+                navigate(`/head/work/user/status/${record.user_id}`)
+              }
+              style={{ color: theme.primary }}
+            />
+          </Tooltip>
         </Space>
       ),
     },
@@ -263,7 +274,7 @@ const HeadWork: React.FC = () => {
                         fontWeight: theme.fontWeight.semibold,
                       }}
                     >
-                      จัดการภาระงาน
+                      อนุมัติภาระงาน
                     </Title>
                     <Text
                       style={{
@@ -347,7 +358,7 @@ const HeadWork: React.FC = () => {
                         fontWeight: theme.fontWeight.semibold,
                       }}
                     >
-                      จัดการภาระงาน
+                      อนุมัติภาระงาน
                     </Title>
                     <Text
                       style={{

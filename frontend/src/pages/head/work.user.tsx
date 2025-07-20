@@ -26,6 +26,7 @@ import {
   EditOutlined,
   DeleteOutlined,
   EyeOutlined,
+  ArrowLeftOutlined,
 } from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import { logout } from "../home/home";
@@ -317,29 +318,45 @@ const HeadWorkUser: React.FC = () => {
                   boxShadow: theme.shadow,
                 }}
               >
-                <div>
-                  <div>
-                    <Title
-                      level={3}
-                      style={{
-                        margin: 0,
-                        color: theme.primary,
-                        fontWeight: theme.fontWeight.semibold,
-                      }}
-                    >
-                      จัดการภาระงาน
-                    </Title>
-                    <Text
-                      style={{
-                        color: theme.textLight,
-                        marginTop: theme.spacing.sm,
-                        display: "block",
-                      }}
-                    >
-                      ดูและจัดการภาระงานทั้งหมด
-                    </Text>
-                  </div>
-                </div>
+                <Button
+                  type="link"
+                  icon={<ArrowLeftOutlined />}
+                  onClick={() => navigate(`/head/work/`)}
+                  style={{
+                    padding: 0,
+                    marginBottom: theme.spacing.md,
+                    color: theme.primary,
+                    fontSize: theme.fontSize.md,
+                    height: "auto",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: theme.spacing.sm,
+                  }}
+                >
+                  กลับไปหน้ารายการ
+                </Button>
+                <Title
+                  level={3}
+                  style={{
+                    margin: 0,
+                    color: theme.primary,
+                    fontWeight: theme.fontWeight.semibold,
+                    fontSize: theme.fontSize.xxl,
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  อนุมัติภาระงาน
+                </Title>
+                <Text
+                  style={{
+                    color: theme.textLight,
+                    marginTop: theme.spacing.sm,
+                    display: "block",
+                    fontSize: theme.fontSize.md,
+                  }}
+                >
+                  ข้อมูลรายละเอียดภาระงานภาระงาน
+                </Text>
               </div>
 
               <Card
@@ -478,7 +495,7 @@ const HeadWorkUser: React.FC = () => {
                         fontWeight: theme.fontWeight.semibold,
                       }}
                     >
-                      จัดการภาระงาน
+                      อนุมัติภาระงาน
                     </Title>
                     <Text
                       style={{
