@@ -13,8 +13,14 @@ import {
   Col,
   Divider,
   message,
+  Upload,
+  type UploadProps,
 } from "antd";
-import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  SaveOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import theme from "../../theme";
 import DeanHeader from "../../components/user/Header";
@@ -33,6 +39,7 @@ interface WorkloadForm {
   assignee: string;
   description: string;
   dateRange: [any, any];
+  fileUpload: any;
 }
 
 interface User {
@@ -132,7 +139,9 @@ const UserWorkLoad: React.FC = () => {
 
       console.log("Sending data:", workloadData);
 
-      const response = await axiosInstance.post("/work", workloadData);
+      const response = await axiosInstance.post("/work", workloadData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       console.log("Response:", response.data);
 
       message.success("เพิ่มภาระงานสำเร็จ");
@@ -145,6 +154,21 @@ const UserWorkLoad: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const props: UploadProps = {
+    action: "/upload-file",
+    listType: "picture",
+    async previewFile(file) {
+      console.log("Your upload file:", file);
+      // Your process logic. Here we just mock to the same file
+      const res = await fetch("/upload-file", {
+        method: "POST",
+        body: file,
+      });
+      const { thumbnail } = await res.json();
+      return thumbnail;
+    },
   };
 
   return (
@@ -247,7 +271,6 @@ const UserWorkLoad: React.FC = () => {
                         rules={[
                           { required: true, message: "กรุณากรอกหัวข้อภาระงาน" },
                         ]}
-                        style={{ width: "100%" }}
                       >
                         <Select
                           placeholder="เลือกหัวข้อภาระงาน"
@@ -311,6 +334,20 @@ const UserWorkLoad: React.FC = () => {
                         />
                       </Form.Item>
                     </Col>
+
+                    <Col span={24}>
+                      <Form.Item
+                        name="fileUpload"
+                        label="Upload File"
+                        rules={[
+                          { required: true, message: "กรุณากรอกรายละเอียด" },
+                        ]}
+                      >
+                        <Upload {...props}>
+                          <Button icon={<UploadOutlined />}>Upload</Button>
+                        </Upload>
+                      </Form.Item>
+                    </Col>
                   </Row>
 
                   <Divider style={{ margin: `${theme.spacing.xl} 0` }} />
@@ -341,6 +378,7 @@ const UserWorkLoad: React.FC = () => {
               </Card>
             </Content>
           </div>
+
           <div className="md:hidden">
             <Content
               style={{

@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUploadTestDto } from './dto/create-upload-test.dto';
 import { UpdateUploadTestDto } from './dto/update-upload-test.dto';
-import { File as MulterFile } from 'multer';
+
+// import { File as MulterFile } from 'multer';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as sharp from 'sharp';
@@ -28,7 +29,17 @@ export class UploadTestService {
     return `This action removes a #${id} uploadTest`;
   }
 
-  async uploadFile(file: MulterFile): Promise<string> {
+  async uploadFile(file: Express.Multer.File): Promise<string> {
+    if (
+      !file ||
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      typeof (file as Express.Multer.File).originalname !== 'string' ||
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      !Buffer.isBuffer(typeof (file as Express.Multer.File).buffer)
+    ) {
+      throw new Error('Invalid file upload');
+    }
+
     // Here you can implement your file handling logic, e.g., save file info to DB
     // For demonstration, just return the original filename
     await Promise.resolve(); // Dummy await to satisfy async

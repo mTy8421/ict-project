@@ -7,6 +7,7 @@ import { WorkloadModule } from './workload/workload.module';
 import { UploadTestModule } from './upload-test/upload-test.module';
 import { WorkModule } from './work/work.module';
 import { OptionModule } from './option/option.module';
+import { UploadFileModule } from './upload-file/upload-file.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { OptionModule } from './option/option.module';
     UploadTestModule,
     WorkModule,
     OptionModule,
+    UploadFileModule,
   ],
 })
 export class AppModule {}

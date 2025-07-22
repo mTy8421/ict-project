@@ -12,7 +12,7 @@ import { CreateUploadTestDto } from './dto/create-upload-test.dto';
 import { UpdateUploadTestDto } from './dto/update-upload-test.dto';
 import { UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { File as MulterFile } from 'multer';
+// import { File as MulterFile } from 'multer';
 
 @Controller('upload-test')
 export class UploadTestController {
@@ -48,7 +48,7 @@ export class UploadTestController {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  uploadMapFile(@UploadedFile() file: MulterFile) {
+  uploadMapFile(@UploadedFile() file: Express.Multer.File) {
     return this.uploadTestService.uploadFile(file);
   }
 }

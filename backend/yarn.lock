@@ -1598,6 +1598,13 @@
   resolved "https://registry.npmjs.org/@types/ms/-/ms-2.1.0.tgz"
   integrity sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==
 
+"@types/multer@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/multer/-/multer-2.0.0.tgz#db5f82136b619f5ce4d923b00034eb466c13acf4"
+  integrity sha512-C3Z9v9Evij2yST3RSBktxP9STm6OdMc5uR1xF1SGr98uv8dUlAL2hqwrZ3GVB3uyMyiegnscEK6PGtYvNrjTjw==
+  dependencies:
+    "@types/express" "*"
+
 "@types/node@*", "@types/node@^22.10.7":
   version "22.13.17"
   resolved "https://registry.npmjs.org/@types/node/-/node-22.13.17.tgz"
@@ -2438,7 +2445,7 @@ buffer@^6.0.3:
     base64-js "^1.3.1"
     ieee754 "^1.2.1"
 
-busboy@^1.0.0:
+busboy@^1.0.0, busboy@^1.6.0:
   version "1.6.0"
   resolved "https://registry.npmjs.org/busboy/-/busboy-1.6.0.tgz"
   integrity sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==
@@ -2717,6 +2724,16 @@ concat-stream@^1.5.2:
     buffer-from "^1.0.0"
     inherits "^2.0.3"
     readable-stream "^2.2.2"
+    typedarray "^0.0.6"
+
+concat-stream@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/concat-stream/-/concat-stream-2.0.0.tgz#414cf5af790a48c60ab9be4527d56d5e41133cb1"
+  integrity sha512-MWufYdFw53ccGjCA+Ol7XJYpAlW6/prSMzuPOTRnJGcGzuhLn4Scrz7qf6o8bROZ514ltazcIFJZevcfbo0x7A==
+  dependencies:
+    buffer-from "^1.0.0"
+    inherits "^2.0.3"
+    readable-stream "^3.0.2"
     typedarray "^0.0.6"
 
 consola@^3.2.3:
@@ -4859,7 +4876,7 @@ minizlib@^2.1.1:
     minipass "^3.0.0"
     yallist "^4.0.0"
 
-mkdirp@^0.5.4:
+mkdirp@^0.5.4, mkdirp@^0.5.6:
   version "0.5.6"
   resolved "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.6.tgz"
   integrity sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
@@ -4894,18 +4911,18 @@ multer@1.4.5-lts.1:
     type-is "^1.6.4"
     xtend "^4.0.0"
 
-multer@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/multer/-/multer-2.0.0.tgz#47076aa0f7c2c2fd273715e767c6962bf7f94326"
-  integrity sha512-bS8rPZurbAuHGAnApbM9d4h1wSoYqrOqkE+6a64KLMK9yWU7gJXBDDVklKQ3TPi9DRb85cRs6yXaC0+cjxRtRg==
+multer@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/multer/-/multer-2.0.2.tgz#08a8aa8255865388c387aaf041426b0c87bf58dd"
+  integrity sha512-u7f2xaZ/UG8oLXHvtF/oWTRvT44p9ecwBBqTwgJVq0+4BW1g8OW01TyMEGWBHbyMOYVHXslaut7qEQ1meATXgw==
   dependencies:
     append-field "^1.0.0"
-    busboy "^1.0.0"
-    concat-stream "^1.5.2"
-    mkdirp "^0.5.4"
+    busboy "^1.6.0"
+    concat-stream "^2.0.0"
+    mkdirp "^0.5.6"
     object-assign "^4.1.1"
-    type-is "^1.6.4"
-    xtend "^4.0.0"
+    type-is "^1.6.18"
+    xtend "^4.0.2"
 
 mute-stream@^2.0.0:
   version "2.0.0"
@@ -5395,7 +5412,7 @@ readable-stream@^2.2.2:
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
-readable-stream@^3.4.0, readable-stream@^3.6.0:
+readable-stream@^3.0.2, readable-stream@^3.4.0, readable-stream@^3.6.0:
   version "3.6.2"
   resolved "https://registry.npmjs.org/readable-stream/-/readable-stream-3.6.2.tgz"
   integrity sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==
@@ -6216,7 +6233,7 @@ type-fest@^4.38.0:
   resolved "https://registry.npmjs.org/type-fest/-/type-fest-4.39.0.tgz"
   integrity sha512-w2IGJU1tIgcrepg9ZJ82d8UmItNQtOFJG0HCUE3SzMokKkTsruVDALl2fAdiEzJlfduoU+VyXJWIIUZ+6jV+nw==
 
-type-is@^1.6.4:
+type-is@^1.6.18, type-is@^1.6.4:
   version "1.6.18"
   resolved "https://registry.npmjs.org/type-is/-/type-is-1.6.18.tgz"
   integrity sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==
@@ -6507,7 +6524,7 @@ write-file-atomic@^4.0.2:
     imurmurhash "^0.1.4"
     signal-exit "^3.0.7"
 
-xtend@^4.0.0:
+xtend@^4.0.0, xtend@^4.0.2:
   version "4.0.2"
   resolved "https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
