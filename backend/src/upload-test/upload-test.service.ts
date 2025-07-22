@@ -32,10 +32,8 @@ export class UploadTestService {
   async uploadFile(file: Express.Multer.File): Promise<string> {
     if (
       !file ||
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      typeof (file as Express.Multer.File).originalname !== 'string' ||
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      !Buffer.isBuffer(typeof (file as Express.Multer.File).buffer)
+      typeof file.originalname !== 'string' ||
+      !Buffer.isBuffer(file.buffer)
     ) {
       throw new Error('Invalid file upload');
     }

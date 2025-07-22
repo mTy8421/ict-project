@@ -13,7 +13,7 @@ export default defineConfig({
     },
     host: true,
     port: 5173,
-    allowedHosts: ["67a0-202-80-249-200.ngrok-free.app"],
+    allowedHosts: ["02dd64411f0b.ngrok-free.app"],
   },
   css: {
     postcss: "./postcss.config.cjs",
