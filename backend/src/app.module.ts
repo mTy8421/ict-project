@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { WorkloadModule } from './workload/workload.module';
-import { UploadTestModule } from './upload-test/upload-test.module';
 import { WorkModule } from './work/work.module';
 import { OptionModule } from './option/option.module';
 import { UploadFileModule } from './upload-file/upload-file.module';
@@ -27,7 +26,6 @@ import { UploadFileModule } from './upload-file/upload-file.module';
     AuthModule,
     UserModule,
     WorkloadModule,
-    UploadTestModule,
     WorkModule,
     OptionModule,
     UploadFileModule,
