@@ -58,6 +58,7 @@ export class UploadFileService {
     await sharp(file.buffer)
       .resize(800) // Resize width to 800px, auto height
       .jpeg({ quality: 70 }) // Compress to 70% quality JPEG
+      .png({ quality: 70 }) // Compress to 70% quality PNG
       .toFile(resizedFilePath);
 
     // Remove the original uploaded file after resizing
