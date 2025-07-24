@@ -14,7 +14,6 @@ import {
   Divider,
   message,
   Upload,
-  type UploadProps,
 } from "antd";
 import {
   ArrowLeftOutlined,
@@ -54,45 +53,23 @@ interface OptionsConfig {
   priority: string;
 }
 
+const normFile = (e: any) => {
+  if (Array.isArray(e)) {
+    return e;
+  }
+  return e?.fileList;
+};
+
 const UserWorkLoad: React.FC = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
-
   const [profile, setProfile] = useState<User | undefined>();
   const [options, setOptions] = useState<OptionsConfig[]>([]);
-
-  const getPriorityText = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "สูง";
-      case "medium":
-        return "ปานกลาง";
-      case "low":
-        return "ต่ำ";
-      default:
-        return priority;
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return theme.danger;
-      case "medium":
-        return theme.warning;
-      case "low":
-        return theme.success;
-      default:
-        return theme.textLight;
-    }
-  };
 
   const fetchUsers = async () => {
     try {
       const response = await axiosInstance.get("/user/profile");
-      setUsers(response.data);
       setProfile(response.data);
     } catch (error: any) {
       console.error("Error fetching users:", error);
@@ -118,30 +95,33 @@ const UserWorkLoad: React.FC = () => {
     fetchUsers();
     fetchOptions();
   }, [navigate]);
+
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
       const [dateStart, dateEnd] = values.dateRange;
 
-      // const setDate = new Date();
+      const formData = new FormData();
+      formData.append("description", values.description);
+      formData.append("department", profile?.user_role || "unknown");
+      formData.append("user", String(profile?.user_id || 0));
+      formData.append("options", String(values.title));
+      formData.append("dateTimeStart", dateStart.format("YYYY-MM-DD"));
+      formData.append("dateTimeEnd", dateEnd.format("YYYY-MM-DD"));
+      formData.append("status", "pending");
 
-      const workloadData = {
-        description: values.description,
-        department: profile?.user_role || "unknown",
-        user: profile?.user_id || 0,
-        options: values.title,
-        dateTimeStart: dateStart.format("YYYY-MM-DD"),
-        dateTimeEnd: dateEnd.format("YYYY-MM-DD"),
-        // dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
-        // dateTimeEnd: end_date.format("YYYY-MM-DD"),
-        status: "pending",
-      };
+      if (values.fileUpload && values.fileUpload.length > 0) {
+        for (const file of values.fileUpload) {
+          formData.append("fileUpload", file.originFileObj);
+        }
+      }
 
-      console.log("Sending data:", workloadData);
-
-      const response = await axiosInstance.post("/work", workloadData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const response = await axiosInstance.post("/work", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
+
       console.log("Response:", response.data);
 
       message.success("เพิ่มภาระงานสำเร็จ");
@@ -154,21 +134,6 @@ const UserWorkLoad: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const props: UploadProps = {
-    action: "/upload-file",
-    listType: "picture",
-    async previewFile(file) {
-      console.log("Your upload file:", file);
-      // Your process logic. Here we just mock to the same file
-      const res = await fetch("/upload-file", {
-        method: "POST",
-        body: file,
-      });
-      const { thumbnail } = await res.json();
-      return thumbnail;
-    },
   };
 
   return (
@@ -339,12 +304,21 @@ const UserWorkLoad: React.FC = () => {
                       <Form.Item
                         name="fileUpload"
                         label="Upload File"
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
                         rules={[
-                          { required: true, message: "กรุณากรอกรายละเอียด" },
+                          { required: true, message: "กรุณาอัปโหลดไฟล์" },
                         ]}
                       >
-                        <Upload {...props}>
-                          <Button icon={<UploadOutlined />}>Upload</Button>
+                        <Upload
+                          name="files"
+                          beforeUpload={() => false}
+                          listType="picture"
+                          multiple
+                        >
+                          <Button icon={<UploadOutlined />}>
+                            Click to upload
+                          </Button>
                         </Upload>
                       </Form.Item>
                     </Col>
@@ -530,6 +504,28 @@ const UserWorkLoad: React.FC = () => {
                             resize: "none",
                           }}
                         />
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item
+                        name="fileUpload"
+                        label="Upload File"
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+                        rules={[
+                          { required: true, message: "กรุณาอัปโหลดไฟล์" },
+                        ]}
+                      >
+                        <Upload
+                          name="files"
+                          beforeUpload={() => false}
+                          listType="picture"
+                          multiple
+                        >
+                          <Button icon={<UploadOutlined />}>
+                            Click to upload
+                          </Button>
+                        </Upload>
                       </Form.Item>
                     </Col>
                   </Row>

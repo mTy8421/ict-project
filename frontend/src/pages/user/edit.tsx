@@ -141,21 +141,15 @@ const EditUserWorkLoad: React.FC = () => {
       setLoading(true);
       const [dateStart, dateEnd] = values.dateRange;
 
-      // const setDate = new Date();
+      const formData = new FormData();
+      formData.append("description", values.description);
+      formData.append("options", values.description);
+      formData.append("dateTimeStart", dateStart.format("YYYY-MM-DD"));
+      formData.append("dataTimeEnd", dateEnd.format("YYYY-MM-DD"));
 
-      const workloadData = {
-        description: values.description,
-        options: values.title,
-        dateTimeStart: dateStart.format("YYYY-MM-DD"),
-        dataTimeEnd: dateEnd.format("YYYY-MM-DD"),
-        // dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
-        // dateTimeEnd: end_date.format("YYYY-MM-DD"),
-        // status: "pending",
-      };
+      console.log("Sending data:", formData);
 
-      console.log("Sending data:", workloadData);
-
-      const response = await axiosInstance.patch(`/work/${id}`, workloadData);
+      const response = await axiosInstance.patch(`/work/${id}`, formData);
       console.log("Response:", response.data);
 
       message.success("เพิ่มภาระงานสำเร็จ");
