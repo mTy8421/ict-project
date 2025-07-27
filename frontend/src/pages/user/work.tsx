@@ -227,18 +227,14 @@ const UserWork: React.FC = () => {
       key: "action",
       render: (record: Workload) => (
         <Space size="middle">
-          {record.status == "pending" ? (
-            ""
-          ) : (
-            <Tooltip title="ดูรายละเอียด">
-              <Button
-                type="text"
-                icon={<EyeOutlined />}
-                onClick={() => navigate(`/user/work/detail/${record.id}`)}
-                style={{ color: theme.primary }}
-              />
-            </Tooltip>
-          )}
+          <Tooltip title="ดูรายละเอียด">
+            <Button
+              type="text"
+              icon={<EyeOutlined />}
+              onClick={() => navigate(`/user/work/detail/${record.id}`)}
+              style={{ color: theme.primary }}
+            />
+          </Tooltip>
           <Tooltip title="แก้ไข">
             <Button
               type="text"

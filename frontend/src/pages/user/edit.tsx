@@ -13,8 +13,13 @@ import {
   Col,
   Divider,
   message,
+  Upload,
 } from "antd";
-import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  SaveOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import theme from "../../theme";
 import DeanHeader from "../../components/user/Header";
@@ -35,6 +40,7 @@ interface WorkloadForm {
   assignee: string;
   description: string;
   dateRange: [any, any];
+  fileUpload: any;
 }
 
 interface User {
@@ -49,47 +55,24 @@ interface OptionsConfig {
   priority: string;
 }
 
+const normFile = (e: any) => {
+  if (Array.isArray(e)) {
+    return e;
+  }
+  return e?.fileList;
+};
+
 const EditUserWorkLoad: React.FC = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
-
   const [profile, setProfile] = useState<User | undefined>();
   const [options, setOptions] = useState<OptionsConfig[]>([]);
-
   const { id } = useParams();
-
-  const getPriorityText = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "สูง";
-      case "medium":
-        return "ปานกลาง";
-      case "low":
-        return "ต่ำ";
-      default:
-        return priority;
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return theme.danger;
-      case "medium":
-        return theme.warning;
-      case "low":
-        return theme.success;
-      default:
-        return theme.textLight;
-    }
-  };
 
   const fetchUsers = async () => {
     try {
       const response = await axiosInstance.get("/user/profile");
-      setUsers(response.data);
       setProfile(response.data);
     } catch (error: any) {
       console.error("Error fetching users:", error);
@@ -116,14 +99,26 @@ const EditUserWorkLoad: React.FC = () => {
       const response = await axiosInstance.get(`work/${id}`);
       const workload = response.data;
 
+      // Assuming workload.files is an array of file objects from your API
+      // Each file object should have at least 'uid', 'name', 'status', and 'url'
+      const fileList = workload.files
+        ? workload.files.map((file: any, index: number) => ({
+            uid: file.id || -index, // unique id for each file
+            name: file.fileName, // file name
+            status: "done", // status of the file
+            url: file.filePath, // URL to view/download the file
+          }))
+        : [];
+
       form.setFieldsValue({
         title: workload.options.id,
         department: workload.department,
         description: workload.description,
-        dateRange: [
-          moment(workload.dateTimeStart),
-          moment(workload.dateTimeEnd),
-        ],
+        dateRange:
+          workload.dateTimeStart && workload.dateTimeEnd
+            ? [moment(workload.dateTimeStart), moment(workload.dateTimeEnd)]
+            : undefined,
+        fileUpload: fileList,
       });
     } catch (error: any) {
       console.error("Error, fetching workload ", error);
@@ -141,23 +136,31 @@ const EditUserWorkLoad: React.FC = () => {
       setLoading(true);
       const [dateStart, dateEnd] = values.dateRange;
 
+      const payload = {
+        description: values.description,
+        options: String(values.title),
+        dateTimeStart: dateStart.format("YYYY-MM-DD"),
+        dateTimeEnd: dateEnd.format("YYYY-MM-DD"),
+      };
+
       const formData = new FormData();
-      formData.append("description", values.description);
-      formData.append("options", values.description);
-      formData.append("dateTimeStart", dateStart.format("YYYY-MM-DD"));
-      formData.append("dataTimeEnd", dateEnd.format("YYYY-MM-DD"));
+      if (values.fileUpload && values.fileUpload.length > 0) {
+        for (const file of values.fileUpload) {
+          formData.append("fileUpload", file.originFileObj);
+        }
+      }
 
-      console.log("Sending data:", formData);
+      console.log("Sending data:", payload);
 
-      const response = await axiosInstance.patch(`/work/${id}`, formData);
+      const response = await axiosInstance.patch(`/work/${id}`, payload);
       console.log("Response:", response.data);
 
-      message.success("เพิ่มภาระงานสำเร็จ");
+      message.success("แก้ไขภาระงานสำเร็จ");
       navigate("/user/work");
     } catch (error: any) {
-      console.error("Error creating workload:", error);
+      console.error("Error updating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้",
+        error.response?.data?.message || "ไม่สามารถแก้ไขภาระงานได้",
       );
     } finally {
       setLoading(false);
@@ -221,7 +224,7 @@ const EditUserWorkLoad: React.FC = () => {
                     letterSpacing: "0.5px",
                   }}
                 >
-                  เพิ่มภาระงานใหม่
+                  แก้ไขภาระงาน
                 </Title>
                 <Text
                   style={{
@@ -231,7 +234,7 @@ const EditUserWorkLoad: React.FC = () => {
                     fontSize: theme.fontSize.md,
                   }}
                 >
-                  กรอกข้อมูลภาระงานที่ต้องการเพิ่ม
+                  แก้ไขข้อมูลภาระงานที่ต้องการ
                 </Text>
               </div>
 
@@ -326,6 +329,29 @@ const EditUserWorkLoad: React.FC = () => {
                             resize: "none",
                           }}
                         />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item
+                        name="fileUpload"
+                        label="Upload File"
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+                        rules={[
+                          { required: true, message: "กรุณาอัปโหลดไฟล์" },
+                        ]}
+                      >
+                        <Upload
+                          name="files"
+                          beforeUpload={() => false}
+                          listType="picture"
+                          multiple
+                        >
+                          <Button icon={<UploadOutlined />}>
+                            Click to upload
+                          </Button>
+                        </Upload>
                       </Form.Item>
                     </Col>
                   </Row>
@@ -403,7 +429,7 @@ const EditUserWorkLoad: React.FC = () => {
                     letterSpacing: "0.5px",
                   }}
                 >
-                  เพิ่มภาระงานใหม่
+                  แก้ไขภาระงาน
                 </Title>
                 <Text
                   style={{
@@ -413,7 +439,7 @@ const EditUserWorkLoad: React.FC = () => {
                     fontSize: theme.fontSize.md,
                   }}
                 >
-                  กรอกข้อมูลภาระงานที่ต้องการเพิ่ม
+                  แก้ไขข้อมูลภาระงานที่ต้องการ
                 </Text>
               </div>
 
@@ -508,6 +534,29 @@ const EditUserWorkLoad: React.FC = () => {
                             resize: "none",
                           }}
                         />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item
+                        name="fileUpload"
+                        label="Upload File"
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+                        rules={[
+                          { required: true, message: "กรุณาอัปโหลดไฟล์" },
+                        ]}
+                      >
+                        <Upload
+                          name="files"
+                          beforeUpload={() => false}
+                          listType="picture"
+                          multiple
+                        >
+                          <Button icon={<UploadOutlined />}>
+                            Click to upload
+                          </Button>
+                        </Upload>
                       </Form.Item>
                     </Col>
                   </Row>

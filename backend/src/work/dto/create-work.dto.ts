@@ -27,4 +27,8 @@ export class CreateWorkDto {
   @IsNotEmpty()
   @IsNumber()
   options: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  uploadFile: number;
 }

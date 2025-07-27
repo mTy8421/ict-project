@@ -1,6 +1,13 @@
 import { Option } from 'src/option/entities/option.entity';
 import { User } from '../../user/entities/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { UploadFile } from 'src/upload-file/entities/upload-file.entity';
 
 @Entity()
 export class Work {
@@ -27,4 +34,7 @@ export class Work {
 
   @ManyToOne(() => Option, (optins) => optins.works)
   options: Option;
+
+  @OneToMany(() => UploadFile, (uploadFile) => uploadFile.work)
+  uploadFile: UploadFile[];
 }

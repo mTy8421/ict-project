@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { Work } from './entities/work.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Option } from 'src/option/entities/option.entity';
+import { UploadFile } from 'src/upload-file/entities/upload-file.entity';
 
 @Injectable()
 export class WorkService {
@@ -13,7 +14,9 @@ export class WorkService {
     @InjectRepository(Work) private workRepository: Repository<Work>,
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Option) private optionRepsitory: Repository<Option>,
-  ) { }
+    @InjectRepository(UploadFile)
+    private upload_fileRepsitory: Repository<UploadFile>,
+  ) {}
 
   async create(createWorkDto: CreateWorkDto) {
     const user = await this.userRepository.findOne({
@@ -36,6 +39,16 @@ export class WorkService {
       );
     }
 
+    const files = await this.upload_fileRepsitory.findOne({
+      where: { id: createWorkDto.uploadFile },
+    });
+
+    if (!files) {
+      throw new NotFoundException(
+        `File with ID ${createWorkDto.uploadFile} Not found`,
+      );
+    }
+
     const works = await this.workRepository
       .createQueryBuilder('work')
       .insert()
@@ -48,6 +61,7 @@ export class WorkService {
         dateTimeEnd: createWorkDto.dateTimeEnd,
         user: user ?? undefined,
         options: option ?? undefined,
+        uploadFile: files ? [files] : undefined,
       })
       .execute();
     return works;

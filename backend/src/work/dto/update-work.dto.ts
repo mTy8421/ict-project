@@ -17,4 +17,7 @@ export class UpdateWorkDto extends PartialType(CreateWorkDto) {
 
   @IsObject()
   options: number;
+
+  @IsObject()
+  uploadFile: number;
 }

@@ -68,4 +68,43 @@ export class UploadFileService {
 
     return `File ${file && file.originalname ? file.originalname : 'unknown'} uploaded successfully`;
   }
+
+  async uploadMultiFile(files: Express.Multer.File[]): Promise<string[]> {
+    if (!files || files.length === 0) {
+      throw new Error('No files were uploaded.');
+    }
+
+    const uploadDir = path.join(__dirname, '..', '..', 'images');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const promises = files.map(async (file) => {
+      if (
+        !file ||
+        typeof file.originalname !== 'string' ||
+        !Buffer.isBuffer(file.buffer)
+      ) {
+        return `Invalid data for file: ${file?.originalname || 'unknown'}`;
+      }
+
+      const resizedFilename = `resized-${Date.now()}-${file.originalname}`;
+      const resizedFilePath = path.join(uploadDir, resizedFilename);
+
+      try {
+        await sharp(file.buffer)
+          .resize(800)
+          .jpeg({ quality: 70 })
+          .png({ quality: 70 })
+          .toFile(resizedFilePath);
+
+        return `File ${file.originalname} uploaded successfully as ${resizedFilename}`;
+      } catch (error) {
+        console.error(`Error processing file ${file.originalname}:`, error);
+        return `Failed to upload ${file.originalname}.`;
+      }
+    });
+
+    return Promise.all(promises);
+  }
 }
