@@ -8,6 +8,10 @@ import { User } from 'src/user/entities/user.entity';
 import { Option } from 'src/option/entities/option.entity';
 import { UploadFile } from 'src/upload-file/entities/upload-file.entity';
 
+import * as fs from 'fs';
+import * as path from 'path';
+import * as sharp from 'sharp';
+
 @Injectable()
 export class WorkService {
   constructor(
@@ -18,7 +22,7 @@ export class WorkService {
     private upload_fileRepsitory: Repository<UploadFile>,
   ) {}
 
-  async create(createWorkDto: CreateWorkDto) {
+  async create(createWorkDto: CreateWorkDto, files: Express.Multer.File[]) {
     const user = await this.userRepository.findOne({
       where: { user_id: createWorkDto.user },
     });
@@ -39,16 +43,6 @@ export class WorkService {
       );
     }
 
-    const files = await this.upload_fileRepsitory.findOne({
-      where: { id: createWorkDto.uploadFile },
-    });
-
-    if (!files) {
-      throw new NotFoundException(
-        `File with ID ${createWorkDto.uploadFile} Not found`,
-      );
-    }
-
     const works = await this.workRepository
       .createQueryBuilder('work')
       .insert()
@@ -61,9 +55,14 @@ export class WorkService {
         dateTimeEnd: createWorkDto.dateTimeEnd,
         user: user ?? undefined,
         options: option ?? undefined,
-        uploadFile: files ? [files] : undefined,
       })
       .execute();
+
+    if (files && files.length > 0) {
+      const workId = works.identifiers[0].id as number;
+      await this.uploadMultiFile(files, workId);
+    }
+
     return works;
   }
 
@@ -150,5 +149,55 @@ export class WorkService {
       .where('user.user_role != :user_role', { user_role: 'หัวหน้าสำนักงาน' })
       .getMany();
     return works;
+  }
+
+  async uploadMultiFile(files: Express.Multer.File[], workID: number) {
+    if (!files || files.length === 0) {
+      throw new Error('No files were uploaded.');
+    }
+
+    const uploadDir = path.join(__dirname, '..', '..', 'images');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const promises = files.map(async (file) => {
+      if (
+        !file ||
+        typeof file.originalname !== 'string' ||
+        !Buffer.isBuffer(file.buffer)
+      ) {
+        return `Invalid data for file: ${file?.originalname || 'unknown'}`;
+      }
+
+      const resizedFilename = `resized-${Date.now()}-${file.originalname}`;
+      const resizedFilePath = path.join(uploadDir, resizedFilename);
+
+      try {
+        await sharp(file.buffer)
+          .resize(800)
+          .jpeg({ quality: 70 })
+          .png({ quality: 70 })
+          .toFile(resizedFilePath);
+
+        const UploadFiles = await this.upload_fileRepsitory
+          .createQueryBuilder('upload_file')
+          .insert()
+          .into(UploadFile)
+          .values({
+            work: { id: workID },
+            file_name: resizedFilename,
+          })
+          .execute();
+
+        console.log(UploadFiles);
+        return `File ${file.originalname} uploaded successfully as ${resizedFilename}`;
+      } catch (error) {
+        console.error(`Error processing file ${file.originalname}:`, error);
+        return `Failed to upload ${file.originalname}.`;
+      }
+    });
+
+    return Promise.all(promises);
   }
 }

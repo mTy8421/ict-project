@@ -6,8 +6,19 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as sharp from 'sharp';
 
+import { InjectRepository } from '@nestjs/typeorm';
+import { UploadFile } from './entities/upload-file.entity';
+import { Repository } from 'typeorm';
+// import { Work } from 'src/work/entities/work.entity';
+
 @Injectable()
 export class UploadFileService {
+  constructor(
+    @InjectRepository(UploadFile)
+    private upload_fileRepsitory: Repository<UploadFile>,
+    // @InjectRepository(Work) private workRepository: Repository<Work>,
+  ) {}
+
   create(createUploadFileDto: CreateUploadFileDto) {
     console.table(createUploadFileDto);
     return `This action adds a new uploadFile`;
@@ -98,6 +109,16 @@ export class UploadFileService {
           .png({ quality: 70 })
           .toFile(resizedFilePath);
 
+        const UploadFiles = await this.upload_fileRepsitory
+          .createQueryBuilder('upload_file')
+          .insert()
+          .into(UploadFile)
+          .values({
+            file_name: resizedFilename,
+          })
+          .execute();
+
+        console.log(UploadFiles);
         return `File ${file.originalname} uploaded successfully as ${resizedFilename}`;
       } catch (error) {
         console.error(`Error processing file ${file.originalname}:`, error);

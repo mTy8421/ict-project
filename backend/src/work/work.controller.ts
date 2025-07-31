@@ -8,12 +8,16 @@ import {
   Delete,
   Req,
   UseGuards,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { WorkService } from './work.service';
 import { CreateWorkDto } from './dto/create-work.dto';
 import { UpdateWorkDto } from './dto/update-work.dto';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('work')
 export class WorkController {
@@ -37,8 +41,12 @@ export class WorkController {
   }
 
   @Post()
-  create(@Body() createWorkDto: CreateWorkDto) {
-    return this.workService.create(createWorkDto);
+  @UseInterceptors(FilesInterceptor('fileUpload'))
+  create(
+    @Body() createWorkDto: CreateWorkDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    return this.workService.create(createWorkDto, files);
   }
 
   @Get()

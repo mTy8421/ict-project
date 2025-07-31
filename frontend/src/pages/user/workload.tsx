@@ -116,11 +116,7 @@ const UserWorkLoad: React.FC = () => {
         }
       }
 
-      const response = await axiosInstance.post("/work", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axiosInstance.post("/work", formData);
 
       console.log("Response:", response.data);
 
