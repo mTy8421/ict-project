@@ -41,7 +41,7 @@ export class UploadFileService {
     return `This action removes a #${id} uploadFile`;
   }
 
-  async uploadFile(file: Express.Multer.File): Promise<string> {
+  async uploadFile(file: Express.Multer.File): Promise<any> {
     if (
       !file ||
       typeof file.originalname !== 'string' ||
@@ -50,34 +50,30 @@ export class UploadFileService {
       throw new Error('Invalid file upload');
     }
 
-    // Here you can implement your file handling logic, e.g., save file info to DB
-    // For demonstration, just return the original filename
-    await Promise.resolve(); // Dummy await to satisfy async
     const uploadDir = path.join(__dirname, '..', '..', 'images');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
-    const filePath = path.join(uploadDir, file.originalname);
-    fs.writeFileSync(filePath, file.buffer);
 
-    // Resize and compress the image using sharp
+    const resizedFilename = `resized-${Date.now()}-${file.originalname}`;
+    const resizedFilePath = path.join(uploadDir, resizedFilename);
 
-    const resizedFilePath = path.join(
-      uploadDir,
-      `resized-${file.originalname}`,
-    );
-    await sharp(file.buffer)
-      .resize(800) // Resize width to 800px, auto height
-      .jpeg({ quality: 70 }) // Compress to 70% quality JPEG
-      .png({ quality: 70 }) // Compress to 70% quality PNG
-      .toFile(resizedFilePath);
+    try {
+      await sharp(file.buffer)
+        .resize(800)
+        .jpeg({ quality: 70 })
+        .png({ quality: 70 })
+        .toFile(resizedFilePath);
 
-    // Remove the original uploaded file after resizing
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+      const newFile = await this.upload_fileRepsitory.save({
+        file_name: resizedFilename,
+      });
+
+      return { success: true, data: newFile };
+    } catch (error) {
+      console.error(`Error processing file ${file.originalname}:`, error);
+      return `Failed to upload ${file.originalname}.`;
     }
-
-    return `File ${file && file.originalname ? file.originalname : 'unknown'} uploaded successfully`;
   }
 
   async uploadMultiFile(files: Express.Multer.File[]): Promise<string[]> {

@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UploadedFiles,
+  Res,
 } from '@nestjs/common';
 import { UploadFileService } from './upload-file.service';
 import { CreateUploadFileDto } from './dto/create-upload-file.dto';
@@ -17,7 +18,7 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('upload-file')
 export class UploadFileController {
-  constructor(private readonly uploadFileService: UploadFileService) { }
+  constructor(private readonly uploadFileService: UploadFileService) {}
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('fileUpload'))
@@ -31,6 +32,11 @@ export class UploadFileController {
     return this.uploadFileService.uploadMultiFile(files);
   }
 
+  @Get('show/:filename')
+  show(@Param('filename') filename, @Res() res) {
+    return res.sendFile(filename, { root: 'images' });
+  }
+
   @Post()
   create(@Body() createUploadFileDto: CreateUploadFileDto) {
     return this.uploadFileService.create(createUploadFileDto);
@@ -38,7 +44,6 @@ export class UploadFileController {
 
   @Get()
   findAll() {
-    console.log('uploadTest');
     return this.uploadFileService.findAll();
   }
 
