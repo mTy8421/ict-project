@@ -89,8 +89,6 @@ export class WorkService {
   }
 
   async update(id: number, updateWorkDto: UpdateWorkDto) {
-    // const setDate = new Date();
-
     const option = await this.optionRepsitory.findOne({
       where: { id: updateWorkDto.options },
     });
@@ -107,7 +105,6 @@ export class WorkService {
       .set({
         status: updateWorkDto.status,
         description: updateWorkDto.description,
-        // dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
         dateTimeStart: updateWorkDto.dateTimeStart,
         dateTimeEnd: updateWorkDto.dateTimeEnd,
         options: option,
@@ -170,7 +167,7 @@ export class WorkService {
         return `Invalid data for file: ${file?.originalname || 'unknown'}`;
       }
 
-      const resizedFilename = `resized-${Date.now()}-${file.originalname}`;
+      const resizedFilename = `resized-${Date.now()}-${file.originalname}${path.extname(file.originalname)}`;
       const resizedFilePath = path.join(uploadDir, resizedFilename);
 
       try {

@@ -14,6 +14,7 @@ import {
   Divider,
   message,
   Upload,
+  Image,
 } from "antd";
 import {
   ArrowLeftOutlined,
@@ -70,6 +71,8 @@ const EditUserWorkLoad: React.FC = () => {
   const [options, setOptions] = useState<OptionsConfig[]>([]);
   const { id } = useParams();
 
+  const [images, setImages] = useState([]);
+
   const fetchUsers = async () => {
     try {
       const response = await axiosInstance.get("/user/profile");
@@ -99,16 +102,10 @@ const EditUserWorkLoad: React.FC = () => {
       const response = await axiosInstance.get(`work/${id}`);
       const workload = response.data;
 
-      // Assuming workload.files is an array of file objects from your API
-      // Each file object should have at least 'uid', 'name', 'status', and 'url'
-      const fileList = workload.files
-        ? workload.files.map((file: any, index: number) => ({
-            uid: file.id || -index, // unique id for each file
-            name: file.fileName, // file name
-            status: "done", // status of the file
-            url: file.filePath, // URL to view/download the file
-          }))
-        : [];
+      const imagesResponse = await axiosInstance.get(
+        `upload-file/show/id/${id}`,
+      );
+      setImages(imagesResponse.data);
 
       form.setFieldsValue({
         title: workload.options.id,
@@ -118,7 +115,6 @@ const EditUserWorkLoad: React.FC = () => {
           workload.dateTimeStart && workload.dateTimeEnd
             ? [moment(workload.dateTimeStart), moment(workload.dateTimeEnd)]
             : undefined,
-        fileUpload: fileList,
       });
     } catch (error: any) {
       console.error("Error, fetching workload ", error);
@@ -353,6 +349,15 @@ const EditUserWorkLoad: React.FC = () => {
                           </Button>
                         </Upload>
                       </Form.Item>
+                      <div>
+                        {images.map((item, index) => (
+                          <Image
+                            key={index}
+                            width={200}
+                            src={`/api/upload-file/show/${item.file_name}`}
+                          />
+                        ))}
+                      </div>
                     </Col>
                   </Row>
 

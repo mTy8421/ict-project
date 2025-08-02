@@ -41,6 +41,14 @@ export class UploadFileService {
     return `This action removes a #${id} uploadFile`;
   }
 
+  async showImages(id: number) {
+    const findImages = await this.upload_fileRepsitory
+      .createQueryBuilder('upload_file')
+      .where(`workId = :id`, { id: id })
+      .getMany();
+    return findImages;
+  }
+
   async uploadFile(file: Express.Multer.File): Promise<any> {
     if (
       !file ||
@@ -55,7 +63,7 @@ export class UploadFileService {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
 
-    const resizedFilename = `resized-${Date.now()}-${file.originalname}`;
+    const resizedFilename = `resized-${Date.now()}-${file.originalname}${path.extname(file.originalname)}`;
     const resizedFilePath = path.join(uploadDir, resizedFilename);
 
     try {
@@ -95,7 +103,7 @@ export class UploadFileService {
         return `Invalid data for file: ${file?.originalname || 'unknown'}`;
       }
 
-      const resizedFilename = `resized-${Date.now()}-${file.originalname}`;
+      const resizedFilename = `resized-${Date.now()}-${file.originalname}${path.extname(file.originalname)}`;
       const resizedFilePath = path.join(uploadDir, resizedFilename);
 
       try {

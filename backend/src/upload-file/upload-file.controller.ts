@@ -32,8 +32,13 @@ export class UploadFileController {
     return this.uploadFileService.uploadMultiFile(files);
   }
 
+  @Get('show/id/:id')
+  show(@Param('id') id: string) {
+    return this.uploadFileService.showImages(+id);
+  }
+
   @Get('show/:filename')
-  show(@Param('filename') filename, @Res() res) {
+  showFileName(@Param('filename') filename: string, @Res() res) {
     return res.sendFile(filename, { root: 'images' });
   }
 
