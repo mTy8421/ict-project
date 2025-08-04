@@ -212,8 +212,10 @@ const UserWorkLoad: React.FC = () => {
                   background: theme.white,
                   padding: 0,
                 }}
-                bodyStyle={{
-                  padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
+                styles={{
+                  body: {
+                    padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
+                  },
                 }}
               >
                 <Form
@@ -416,8 +418,10 @@ const UserWorkLoad: React.FC = () => {
                   background: theme.white,
                   padding: 0,
                 }}
-                bodyStyle={{
-                  padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
+                styles={{
+                  body: {
+                    padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
+                  },
                 }}
               >
                 <Form

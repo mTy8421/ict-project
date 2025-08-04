@@ -15,6 +15,7 @@ import { UploadFileService } from './upload-file.service';
 import { CreateUploadFileDto } from './dto/create-upload-file.dto';
 import { UpdateUploadFileDto } from './dto/update-upload-file.dto';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
 
 @Controller('upload-file')
 export class UploadFileController {
@@ -38,7 +39,7 @@ export class UploadFileController {
   }
 
   @Get('show/:filename')
-  showFileName(@Param('filename') filename: string, @Res() res) {
+  showFileName(@Param('filename') filename: string, @Res() res: Response) {
     return res.sendFile(filename, { root: 'images' });
   }
 

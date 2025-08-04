@@ -13,14 +13,9 @@ import {
   Col,
   Divider,
   message,
-  Upload,
   Image,
 } from "antd";
-import {
-  ArrowLeftOutlined,
-  SaveOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import theme from "../../theme";
 import DeanHeader from "../../components/user/Header";
@@ -44,39 +39,29 @@ interface WorkloadForm {
   fileUpload: any;
 }
 
-interface User {
-  user_id: number;
-  user_name: string;
-  user_role: string;
-}
-
 interface OptionsConfig {
   id: number;
   title: number;
   priority: string;
 }
 
-const normFile = (e: any) => {
-  if (Array.isArray(e)) {
-    return e;
-  }
-  return e?.fileList;
-};
+interface ImageFile {
+  id: number;
+  file_name: string;
+}
 
 const EditUserWorkLoad: React.FC = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [profile, setProfile] = useState<User | undefined>();
   const [options, setOptions] = useState<OptionsConfig[]>([]);
   const { id } = useParams();
 
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<ImageFile[]>([]);
 
   const fetchUsers = async () => {
     try {
-      const response = await axiosInstance.get("/user/profile");
-      setProfile(response.data);
+      await axiosInstance.get("/user/profile");
     } catch (error: any) {
       console.error("Error fetching users:", error);
       if (error.response?.status === 401) {
@@ -243,8 +228,10 @@ const EditUserWorkLoad: React.FC = () => {
                   background: theme.white,
                   padding: 0,
                 }}
-                bodyStyle={{
-                  padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
+                styles={{
+                  body: {
+                    padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
+                  },
                 }}
               >
                 <Form
@@ -329,26 +316,6 @@ const EditUserWorkLoad: React.FC = () => {
                     </Col>
 
                     <Col span={24}>
-                      <Form.Item
-                        name="fileUpload"
-                        label="Upload File"
-                        valuePropName="fileList"
-                        getValueFromEvent={normFile}
-                        rules={[
-                          { required: true, message: "กรุณาอัปโหลดไฟล์" },
-                        ]}
-                      >
-                        <Upload
-                          name="files"
-                          beforeUpload={() => false}
-                          listType="picture"
-                          multiple
-                        >
-                          <Button icon={<UploadOutlined />}>
-                            Click to upload
-                          </Button>
-                        </Upload>
-                      </Form.Item>
                       <div>
                         {images.map((item, index) => (
                           <Image
@@ -457,8 +424,10 @@ const EditUserWorkLoad: React.FC = () => {
                   background: theme.white,
                   padding: 0,
                 }}
-                bodyStyle={{
-                  padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
+                styles={{
+                  body: {
+                    padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
+                  },
                 }}
               >
                 <Form
@@ -543,26 +512,15 @@ const EditUserWorkLoad: React.FC = () => {
                     </Col>
 
                     <Col span={24}>
-                      <Form.Item
-                        name="fileUpload"
-                        label="Upload File"
-                        valuePropName="fileList"
-                        getValueFromEvent={normFile}
-                        rules={[
-                          { required: true, message: "กรุณาอัปโหลดไฟล์" },
-                        ]}
-                      >
-                        <Upload
-                          name="files"
-                          beforeUpload={() => false}
-                          listType="picture"
-                          multiple
-                        >
-                          <Button icon={<UploadOutlined />}>
-                            Click to upload
-                          </Button>
-                        </Upload>
-                      </Form.Item>
+                      <div>
+                        {images.map((item, index) => (
+                          <Image
+                            key={index}
+                            width={200}
+                            src={`/api/upload-file/show/${item.file_name}`}
+                          />
+                        ))}
+                      </div>
                     </Col>
                   </Row>
 

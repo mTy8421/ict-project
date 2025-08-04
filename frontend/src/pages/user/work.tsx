@@ -97,6 +97,7 @@ const UserWork: React.FC = () => {
       centered: true,
       onOk: async () => {
         try {
+          await axiosInstance.delete(`/upload-file/${id}`);
           await axiosInstance.delete(`/work/${id}`);
           message.success("ลบภาระงานสำเร็จ");
           fetchWorkloads();
@@ -235,14 +236,18 @@ const UserWork: React.FC = () => {
               style={{ color: theme.primary }}
             />
           </Tooltip>
-          <Tooltip title="แก้ไข">
-            <Button
-              type="text"
-              icon={<EditOutlined />}
-              onClick={() => navigate(`/user/work/edit/${record.id}`)}
-              style={{ color: theme.primary }}
-            />
-          </Tooltip>
+          {record.status != "completed" ? (
+            <Tooltip title="แก้ไข">
+              <Button
+                type="text"
+                icon={<EditOutlined />}
+                onClick={() => navigate(`/user/work/edit/${record.id}`)}
+                style={{ color: theme.primary }}
+              />
+            </Tooltip>
+          ) : (
+            ""
+          )}
           <Tooltip title="ลบ">
             <Button
               type="text"
@@ -394,7 +399,7 @@ const UserWork: React.FC = () => {
                   background: theme.white,
                   marginBottom: theme.spacing.xl,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <Row gutter={[24, 24]} align="middle">
                   <Col
@@ -482,7 +487,7 @@ const UserWork: React.FC = () => {
                   boxShadow: theme.shadow,
                   background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <div style={{ width: "100%", overflowX: "auto" }}>
                   <Table
@@ -564,7 +569,7 @@ const UserWork: React.FC = () => {
                   background: theme.white,
                   marginBottom: theme.spacing.xl,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <Row gutter={[24, 24]} align="middle">
                   <Col
@@ -652,7 +657,7 @@ const UserWork: React.FC = () => {
                   boxShadow: theme.shadow,
                   background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <div style={{ width: "100%", overflowX: "auto" }}>
                   <Table

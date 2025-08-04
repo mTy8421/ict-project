@@ -37,8 +37,47 @@ export class UploadFileService {
     return `This action updates a #${id} uploadFile`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} uploadFile`;
+  async remove(id: number) {
+    const filesToDelete = await this.upload_fileRepsitory.find({
+      where: { work: { id: id } },
+    });
+
+    if (!filesToDelete || filesToDelete.length === 0) {
+      return `No files found for work id ${id}`;
+    }
+
+    const uploadDir = path.join(__dirname, '..', '..', 'images');
+    const deletedFileNames: string[] = [];
+    const errors: string[] = [];
+
+    for (const fileToDelete of filesToDelete) {
+      const filePath = path.join(uploadDir, fileToDelete.file_name);
+
+      try {
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+        await this.upload_fileRepsitory.delete(fileToDelete.id);
+        deletedFileNames.push(fileToDelete.file_name);
+      } catch (error) {
+        console.error(`Error deleting file ${fileToDelete.file_name}:`, error);
+        errors.push(fileToDelete.file_name);
+      }
+    }
+
+    let message = '';
+    if (deletedFileNames.length > 0) {
+      message += `Deleted: ${deletedFileNames.join(', ')}. `;
+    }
+    if (errors.length > 0) {
+      message += `Failed to delete: ${errors.join(', ')}.`;
+    }
+
+    if (message === '') {
+      return 'No files were processed.';
+    }
+
+    return message.trim();
   }
 
   async showImages(id: number) {
