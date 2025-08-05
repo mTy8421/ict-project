@@ -227,26 +227,26 @@ const HeadWorkload: React.FC = () => {
       key: "action",
       render: (record: Workload) => (
         <Space size="middle">
-          {record.status == "pending" ? (
+          <Tooltip title="ดูรายละเอียด">
+            <Button
+              type="text"
+              icon={<EyeOutlined />}
+              onClick={() => navigate(`/head/_workload/detail/${record.id}`)}
+              style={{ color: theme.primary }}
+            />
+          </Tooltip>
+          {record.status == "completed" ? (
             ""
           ) : (
-            <Tooltip title="ดูรายละเอียด">
+            <Tooltip title="แก้ไข">
               <Button
                 type="text"
-                icon={<EyeOutlined />}
-                onClick={() => navigate(`/head/_workload/detail/${record.id}`)}
+                icon={<EditOutlined />}
+                onClick={() => navigate(`/head/_workload/edit/${record.id}`)}
                 style={{ color: theme.primary }}
               />
             </Tooltip>
           )}
-          <Tooltip title="แก้ไข">
-            <Button
-              type="text"
-              icon={<EditOutlined />}
-              onClick={() => navigate(`/head/_workload/edit/${record.id}`)}
-              style={{ color: theme.primary }}
-            />
-          </Tooltip>
           <Tooltip title="ลบ">
             <Button
               type="text"

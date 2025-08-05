@@ -13,7 +13,8 @@ export default defineConfig({
     },
     host: true,
     port: 5173,
-    allowedHosts: ["fd7b23ab2845.ngrok-free.app"],
+    // allowedHosts: ["relevant-infinitely-iguana.ngrok-free.app"],
+    allowedHosts: ["mazda-acquired-titled-skills.trycloudflare.com"],
   },
   css: {
     postcss: "./postcss.config.cjs",

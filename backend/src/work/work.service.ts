@@ -177,7 +177,8 @@ export class WorkService {
           .png({ quality: 70 })
           .toFile(resizedFilePath);
 
-        const UploadFiles = await this.upload_fileRepsitory
+        // This is Function Upload File
+        await this.upload_fileRepsitory
           .createQueryBuilder('upload_file')
           .insert()
           .into(UploadFile)
@@ -187,7 +188,6 @@ export class WorkService {
           })
           .execute();
 
-        console.log(UploadFiles);
         return `File ${file.originalname} uploaded successfully as ${resizedFilename}`;
       } catch (error) {
         console.error(`Error processing file ${file.originalname}:`, error);

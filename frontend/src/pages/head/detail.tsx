@@ -15,6 +15,7 @@ import {
   message,
   Upload,
   type UploadProps,
+  Image,
 } from "antd";
 import {
   ArrowLeftOutlined,
@@ -54,6 +55,11 @@ interface OptionsConfig {
   priority: string;
 }
 
+interface ImageFile {
+  id: number;
+  file_name: string;
+}
+
 const DetailHeadWorkLoad: React.FC = () => {
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -64,6 +70,8 @@ const DetailHeadWorkLoad: React.FC = () => {
 
   const [profile, setProfile] = useState<User | undefined>();
   const [options, setOptions] = useState<OptionsConfig[]>([]);
+
+  const [images, setImages] = useState<ImageFile[]>([]);
 
   const getPriorityText = (priority: string) => {
     switch (priority) {
@@ -120,6 +128,11 @@ const DetailHeadWorkLoad: React.FC = () => {
     try {
       const response = await axiosInstance.get(`/work/${id}`);
       const workload = response.data;
+
+      const imagesResponse = await axiosInstance.get(
+        `upload-file/show/id/${id}`,
+      );
+      setImages(imagesResponse.data);
 
       form.setFieldsValue({
         title: workload.options.title,
@@ -331,6 +344,18 @@ const DetailHeadWorkLoad: React.FC = () => {
                         />
                       </Form.Item>
                     </Col>
+
+                    <Col span={24}>
+                      <div>
+                        {images.map((item, index) => (
+                          <Image
+                            key={index}
+                            width={200}
+                            src={`/api/upload-file/show/${item.file_name}`}
+                          />
+                        ))}
+                      </div>
+                    </Col>
                   </Row>
 
                   <Divider style={{ margin: `${theme.spacing.xl} 0` }} />
@@ -510,6 +535,18 @@ const DetailHeadWorkLoad: React.FC = () => {
                           }}
                         />
                       </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <div>
+                        {images.map((item, index) => (
+                          <Image
+                            key={index}
+                            width={200}
+                            src={`/api/upload-file/show/${item.file_name}`}
+                          />
+                        ))}
+                      </div>
                     </Col>
                   </Row>
 
