@@ -50,6 +50,7 @@ export default function App() {
           path="/user/history/detail/:id"
           element={<UserHistoryDetail />}
         />
+
         <Route path="/head" element={<Head />} />
         <Route path="/head/work" element={<HeadWork />} />
         <Route path="/head/work/user/:id" element={<HeadWorkUser />} />
@@ -67,10 +68,12 @@ export default function App() {
           path="/head/history/detail/:id"
           element={<HeadHistoryDetail />}
         />
+
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/user/new" element={<AdminWorkLoad />} />
         <Route path="/admin/user/edit/:id" element={<AdminEdit />} />
         <Route path="/admin/config" element={<AdminConfig />} />
+        <Route path="/admin/config/view/priority" element={<Priority />} />
         <Route path="/admin/config/priority" element={<Priority />} />
         <Route path="/admin/work" element={<AdminWork />} />
 

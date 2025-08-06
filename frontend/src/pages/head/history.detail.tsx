@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   Form,
   Input,
-  Select,
   DatePicker,
   Button,
   Card,
@@ -13,14 +12,9 @@ import {
   Col,
   Divider,
   message,
-  Upload,
-  type UploadProps,
+  Image,
 } from "antd";
-import {
-  ArrowLeftOutlined,
-  SaveOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import theme from "../../theme";
 import DeanHeader from "../../components/head/Header";
@@ -34,142 +28,59 @@ const { Title, Text } = Typography;
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
-interface WorkloadForm {
-  title: number;
-  department: string;
-  assignee: string;
-  description: string;
-  dateRange: [any, any];
-}
-
-interface User {
-  user_id: number;
-  user_name: string;
-  user_role: string;
-}
-
-interface OptionsConfig {
+interface ImageFile {
   id: number;
-  title: number;
-  priority: string;
+  file_name: string;
 }
 
 const HeadHistoryDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
-
-  const [profile, setProfile] = useState<User | undefined>();
-  const [options, setOptions] = useState<OptionsConfig[]>([]);
-
-  const getPriorityText = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "สูง";
-      case "medium":
-        return "ปานกลาง";
-      case "low":
-        return "ต่ำ";
-      default:
-        return priority;
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return theme.danger;
-      case "medium":
-        return theme.warning;
-      case "low":
-        return theme.success;
-      default:
-        return theme.textLight;
-    }
-  };
-
-  const fetchUsers = async () => {
-    try {
-      const response = await axiosInstance.get("/user/profile");
-      setUsers(response.data);
-      setProfile(response.data);
-    } catch (error: any) {
-      console.error("Error fetching users:", error);
-      if (error.response?.status === 401) {
-        message.error("กรุณาเข้าสู่ระบบใหม่");
-        navigate("/");
-      } else {
-        message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
-      }
-    }
-  };
-
-  const fetchOptions = async () => {
-    try {
-      const response = await axiosInstance.get("/option");
-      setOptions(response.data);
-    } catch (error: any) {
-      console.error("Error, fetching Options ", error);
-    }
-  };
-
-  const fetchWorkload = async () => {
-    try {
-      const response = await axiosInstance.get(`/work/${id}`);
-      const workload = response.data;
-
-      form.setFieldsValue({
-        title: workload.options.title,
-        department: workload.department,
-        description: workload.description,
-        dateRange: [
-          moment(workload.dateTimeStart),
-          moment(workload.dateTimeEnd),
-        ],
-      });
-    } catch (error: any) {
-      console.error("Error fetching workload:", error);
-    }
-  };
+  const [images, setImages] = useState<ImageFile[]>([]);
 
   useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        await axiosInstance.get("/user/profile");
+      } catch (error: any) {
+        console.error("Error fetching users:", error);
+        if (error.response?.status === 401) {
+          message.error("กรุณาเข้าสู่ระบบใหม่");
+          navigate("/");
+        } else {
+          message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
+        }
+      }
+    };
+
+    const fetchWorkload = async () => {
+      try {
+        const response = await axiosInstance.get(`/work/${id}`);
+        const workload = response.data;
+
+        const imagesResponse = await axiosInstance.get(
+          `upload-file/show/id/${id}`,
+        );
+        setImages(imagesResponse.data);
+
+        form.setFieldsValue({
+          title: workload.options.title,
+          department: workload.department,
+          description: workload.description,
+          dateRange: [
+            moment(workload.dateTimeStart),
+            moment(workload.dateTimeEnd),
+          ],
+        });
+      } catch (error: any) {
+        console.error("Error fetching workload:", error);
+      }
+    };
+
     fetchUsers();
     fetchWorkload();
-    fetchOptions();
-  }, [navigate]);
-
-  const onFinish = async (values: WorkloadForm) => {
-    try {
-      setLoading(true);
-      // const end_date = values.dateRange;
-
-      // const setDate = new Date();
-
-      const workloadData = {
-        description: values.description,
-        // dateTimeStart: `${setDate.getFullYear()}-${setDate.getMonth() + 1}-${setDate.getDate()}`,
-        // dateTimeEnd: end_date.format("YYYY-MM-DD"),
-        status: "pending",
-      };
-
-      console.log("Sending data:", workloadData);
-
-      const response = await axiosInstance.patch(`/work/${id}`, workloadData);
-      console.log("Response:", response.data);
-
-      message.success("เพิ่มภาระงานสำเร็จ");
-      navigate(`/head/history`);
-    } catch (error: any) {
-      console.error("Error creating workload:", error);
-      message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [id, form]);
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
@@ -206,7 +117,7 @@ const HeadHistoryDetail: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/head/history")}
+                  onClick={() => navigate("/user/history")}
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,
@@ -253,14 +164,15 @@ const HeadHistoryDetail: React.FC = () => {
                   background: theme.white,
                   padding: 0,
                 }}
-                bodyStyle={{
-                  padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
+                styles={{
+                  body: {
+                    padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
+                  },
                 }}
               >
                 <Form
                   form={form}
                   layout="vertical"
-                  onFinish={onFinish}
                   requiredMark={false}
                   size="large"
                   style={{ width: "100%" }}
@@ -331,6 +243,18 @@ const HeadHistoryDetail: React.FC = () => {
                           }}
                         />
                       </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <div>
+                        {images.map((item, index) => (
+                          <Image
+                            key={index}
+                            width={200}
+                            src={`/api/upload-file/show/${item.file_name}`}
+                          />
+                        ))}
+                      </div>
                     </Col>
                   </Row>
 
@@ -360,7 +284,7 @@ const HeadHistoryDetail: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/head/history")}
+                  onClick={() => navigate("/user/history")}
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,
@@ -407,14 +331,15 @@ const HeadHistoryDetail: React.FC = () => {
                   background: theme.white,
                   padding: 0,
                 }}
-                bodyStyle={{
-                  padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
+                styles={{
+                  body: {
+                    padding: `${theme.spacing.xxl} ${theme.spacing.xl}`,
+                  },
                 }}
               >
                 <Form
                   form={form}
                   layout="vertical"
-                  onFinish={onFinish}
                   requiredMark={false}
                   size="large"
                   style={{ width: "100%" }}
@@ -485,6 +410,18 @@ const HeadHistoryDetail: React.FC = () => {
                           }}
                         />
                       </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <div>
+                        {images.map((item, index) => (
+                          <Image
+                            key={index}
+                            width={200}
+                            src={`/api/upload-file/show/${item.file_name}`}
+                          />
+                        ))}
+                      </div>
                     </Col>
                   </Row>
 

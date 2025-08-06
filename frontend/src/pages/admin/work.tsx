@@ -58,16 +58,9 @@ interface Workload {
   users: any;
 }
 
-interface User {
-  user_id: number;
-  user_name: string;
-  user_role: string;
-}
-
 const AdminWork: React.FC = () => {
   const navigate = useNavigate();
   const [workloads, setWorkloads] = useState<Workload[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
@@ -88,8 +81,7 @@ const AdminWork: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axiosInstance.get("/user");
-      setUsers(response.data);
+      await axiosInstance.get("/user");
     } catch (error) {
       console.error("Error fetching users:", error);
       message.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
