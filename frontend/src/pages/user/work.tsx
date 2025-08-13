@@ -191,7 +191,7 @@ const UserWork: React.FC = () => {
       ),
     },
     {
-      title: "ความสำคัญ",
+      title: "ระดับความเร่งด่วน",
       dataIndex: "options",
       key: "options",
       render: (priority: any) => (
@@ -422,7 +422,7 @@ const UserWork: React.FC = () => {
                   >
                     <Select
                       mode="multiple"
-                      placeholder="กรองตามสถานะ"
+                      placeholder="ค้นหาตามสถานะ"
                       style={{ width: "100%" }}
                       onChange={setStatusFilter}
                       options={[
@@ -439,7 +439,7 @@ const UserWork: React.FC = () => {
                   >
                     <Select
                       mode="multiple"
-                      placeholder="กรองตามความสำคัญ"
+                      placeholder="ค้นหาตามความสำคัญ"
                       style={{ width: "100%" }}
                       onChange={setPriorityFilter}
                       options={[
@@ -475,7 +475,7 @@ const UserWork: React.FC = () => {
                         setDateRange(dateString.toString() as any)
                       }
                       format="YYYY-MM-DD"
-                      placeholder="กรองตามวันที่สิ้นสุด"
+                      placeholder="ค้นหาตามวันที่สิ้นสุด"
                     />
                   </Col>
                 </Row>
@@ -592,7 +592,7 @@ const UserWork: React.FC = () => {
                   >
                     <Select
                       mode="multiple"
-                      placeholder="กรองตามสถานะ"
+                      placeholder="ค้นหาตามสถานะ"
                       style={{ width: "100%" }}
                       onChange={setStatusFilter}
                       options={[
@@ -609,7 +609,7 @@ const UserWork: React.FC = () => {
                   >
                     <Select
                       mode="multiple"
-                      placeholder="กรองตามความสำคัญ"
+                      placeholder="ค้นหาตามความสำคัญ"
                       style={{ width: "100%" }}
                       onChange={setPriorityFilter}
                       options={[
@@ -645,7 +645,7 @@ const UserWork: React.FC = () => {
                         setDateRange(dateString.toString() as any)
                       }
                       format="YYYY-MM-DD"
-                      placeholder="กรองตามวันที่สิ้นสุด"
+                      placeholder="ค้นหาตามวันที่สิ้นสุด"
                     />
                   </Col>
                 </Row>

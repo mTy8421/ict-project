@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, Typography, Layout, Button, Table, Space, Tooltip } from "antd";
-import { SyncOutlined, EditOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import theme from "../../theme";
 import DeanHeader from "../../components/admin/Header";
 import DeanNavbar from "../../components/admin/Navbar";
