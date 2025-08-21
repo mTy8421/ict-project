@@ -41,7 +41,7 @@ services:
     links:
       - mysql:db
     ports:
-      - 8765:80 # สามารถแก้ใข Port จาก 8765 เป็นอย่างอื่นได้ เช่น 8080
+      - 8080:80 # สามารถแก้ใข Port จาก 8080 เป็นอย่างอื่นได้ เช่น 8765
     image: phpmyadmin/phpmyadmin
 networks: {}
 ```
