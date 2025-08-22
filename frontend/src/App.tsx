@@ -34,6 +34,7 @@ import HeadWorkLoadDetail from "./pages/head/workload.detail";
 import HeadHistoryDetail from "./pages/head/history.detail";
 import HeadWorkUser from "./pages/head/work.user";
 import HeadWorkStatus from "./pages/head/work.status";
+import PriorityView from "./pages/admin/setting/priority.view";
 
 export default function App() {
   return (
@@ -73,7 +74,7 @@ export default function App() {
         <Route path="/admin/user/new" element={<AdminWorkLoad />} />
         <Route path="/admin/user/edit/:id" element={<AdminEdit />} />
         <Route path="/admin/config" element={<AdminConfig />} />
-        <Route path="/admin/config/view/priority" element={<Priority />} />
+        <Route path="/admin/config/view/priority" element={<PriorityView />} />
         <Route path="/admin/config/priority" element={<Priority />} />
         <Route path="/admin/work" element={<AdminWork />} />
 
