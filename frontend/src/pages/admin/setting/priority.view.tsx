@@ -224,7 +224,7 @@ const PriorityView: React.FC = () => {
               style={{ color: theme.primary }}
             />
           </Tooltip>
-          {/* <Tooltip title="แก้ไข">
+          <Tooltip title="แก้ไข">
             <Button
               type="text"
               icon={<EditOutlined />}
@@ -239,7 +239,7 @@ const PriorityView: React.FC = () => {
               icon={<DeleteOutlined />}
               onClick={() => handleDelete(record.id)}
             />
-          </Tooltip> */}
+          </Tooltip>
         </Space>
       ),
     },
