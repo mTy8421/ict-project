@@ -29,7 +29,7 @@ const DeanNavbar: React.FC = () => {
         top: 70,
         height: "calc(100vh - 70px)",
         boxShadow: theme.shadowLarge,
-        overflow: "auto",
+        overflow: "hidden",
       }}
     >
       <Menu

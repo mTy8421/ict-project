@@ -77,7 +77,7 @@ const Priority: React.FC = () => {
       console.log("Response:", response.data);
 
       message.success("เพิ่มภาระงานสำเร็จ");
-      navigate("/admin/config");
+      navigate("/admin/config/priority");
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
@@ -124,7 +124,7 @@ const Priority: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/admin/config")}
+                  onClick={() => navigate("/admin/config/priority")}
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,
@@ -282,7 +282,7 @@ const Priority: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/admin/config")}
+                  onClick={() => navigate("/admin/config/priority")}
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,

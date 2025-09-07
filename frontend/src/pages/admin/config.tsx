@@ -19,16 +19,6 @@ const AdminConfig: React.FC = () => {
       user_name: "ความสำคัญ",
       id: "priority",
     },
-    {
-      key: "user_name",
-      user_name: "test1",
-      id: "2",
-    },
-    {
-      key: "user_name",
-      user_name: "test2",
-      id: "3",
-    },
   ];
 
   const columns = [

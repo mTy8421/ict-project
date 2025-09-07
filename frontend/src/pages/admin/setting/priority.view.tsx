@@ -62,9 +62,7 @@ const PriorityView: React.FC = () => {
   const [workloads, setWorkloads] = useState<Workload[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState();
 
   const fetchWorkloads = async () => {
     try {
@@ -248,26 +246,20 @@ const PriorityView: React.FC = () => {
   const filteredWorkloads = workloads.filter((workload) => {
     const matchesSearch =
       (workload.options.title?.toLowerCase() || "").includes(
-        searchText.toLowerCase()
+        searchText.toLowerCase(),
       ) ||
       (workload.department?.toLowerCase() || "").includes(
-        searchText.toLowerCase()
+        searchText.toLowerCase(),
       ) ||
       (workload.assignee?.toLowerCase() || "").includes(
-        searchText.toLowerCase()
+        searchText.toLowerCase(),
       );
 
-    const matchesStatus =
-      statusFilter.length === 0 || statusFilter.includes(workload.status);
     const matchesPriority =
       priorityFilter.length === 0 ||
       priorityFilter.includes(workload.options.priority);
 
-    const matchesDate =
-      !dateRange ||
-      (workload.dateTimeEnd?.toString() || "").includes(dateRange);
-
-    return matchesSearch && matchesStatus && matchesPriority && matchesDate;
+    return matchesSearch && matchesPriority;
   });
 
   if (loading) {
@@ -341,7 +333,7 @@ const PriorityView: React.FC = () => {
                         fontWeight: theme.fontWeight.semibold,
                       }}
                     >
-                      ประวัติภาระงาน
+                      ความสำคัญ
                     </Title>
                     <Text
                       style={{
@@ -363,12 +355,12 @@ const PriorityView: React.FC = () => {
                   background: theme.white,
                   marginBottom: theme.spacing.xl,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <Row gutter={[24, 24]} align="middle">
                   <Col
                     xs={24}
-                    sm={8}
+                    sm={14}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
                     <Search
@@ -381,24 +373,7 @@ const PriorityView: React.FC = () => {
                   </Col>
                   <Col
                     xs={24}
-                    sm={8}
-                    style={{ paddingBottom: theme.spacing.md }}
-                  >
-                    <Select
-                      mode="multiple"
-                      placeholder="กรองตามสถานะ"
-                      style={{ width: "100%" }}
-                      onChange={setStatusFilter}
-                      options={[
-                        { label: "รอดำเนินการ", value: "pending" },
-                        { label: "กำลังดำเนินการ", value: "in_progress" },
-                        { label: "เสร็จสิ้น", value: "completed" },
-                      ]}
-                    />
-                  </Col>
-                  <Col
-                    xs={24}
-                    sm={8}
+                    sm={10}
                     style={{ paddingBottom: theme.spacing.md }}
                   >
                     <Select
@@ -413,37 +388,6 @@ const PriorityView: React.FC = () => {
                       ]}
                     />
                   </Col>
-                  <Col
-                    xs={24}
-                    sm={12}
-                    style={{ paddingBottom: theme.spacing.md }}
-                  >
-                    {/* <Select */}
-                    {/*   style={{ width: "100%" }} */}
-                    {/*   placeholder="กรองตามวันที่" */}
-                    {/*   onChange={(dates) => setDateRange(dates)} */}
-                    {/* > */}
-                    {/*   {workloads.map((val) => ( */}
-                    {/*     <Select.Option value={val.dateTimeEnd}> */}
-                    {/*       {new Date(val.dateTimeEnd).toLocaleDateString( */}
-                    {/*         "th-TH", */}
-                    {/*       )} */}
-                    {/*     </Select.Option> */}
-                    {/*   ))} */}
-                    {/* </Select> */}
-                    <DatePicker
-                      style={{
-                        width: "100%",
-                        marginTop: theme.spacing.sm,
-                        borderRadius: theme.borderRadius.md,
-                      }}
-                      onChange={(_date, dateString) =>
-                        setDateRange(dateString.toString() as any)
-                      }
-                      format="YYYY-MM-DD"
-                      placeholder="กรองตามวันที่สิ้นสุด"
-                    />
-                  </Col>
                 </Row>
               </Card>
 
@@ -453,7 +397,7 @@ const PriorityView: React.FC = () => {
                   boxShadow: theme.shadow,
                   background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <Table
                   columns={columns}
@@ -497,7 +441,7 @@ const PriorityView: React.FC = () => {
                         fontWeight: theme.fontWeight.semibold,
                       }}
                     >
-                      ประวัติภาระงาน
+                      ความสำคัญ
                     </Title>
                     <Text
                       style={{
@@ -519,7 +463,7 @@ const PriorityView: React.FC = () => {
                   background: theme.white,
                   marginBottom: theme.spacing.xl,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <Row gutter={[24, 24]} align="middle">
                   <Col
@@ -542,23 +486,6 @@ const PriorityView: React.FC = () => {
                   >
                     <Select
                       mode="multiple"
-                      placeholder="กรองตามสถานะ"
-                      style={{ width: "100%" }}
-                      onChange={setStatusFilter}
-                      options={[
-                        { label: "รอดำเนินการ", value: "pending" },
-                        { label: "กำลังดำเนินการ", value: "in_progress" },
-                        { label: "เสร็จสิ้น", value: "completed" },
-                      ]}
-                    />
-                  </Col>
-                  <Col
-                    xs={24}
-                    sm={8}
-                    style={{ paddingBottom: theme.spacing.md }}
-                  >
-                    <Select
-                      mode="multiple"
                       placeholder="กรองตามความสำคัญ"
                       style={{ width: "100%" }}
                       onChange={setPriorityFilter}
@@ -567,37 +494,6 @@ const PriorityView: React.FC = () => {
                         { label: "ปานกลาง", value: "medium" },
                         { label: "ต่ำ", value: "low" },
                       ]}
-                    />
-                  </Col>
-                  <Col
-                    xs={24}
-                    sm={12}
-                    style={{ paddingBottom: theme.spacing.md }}
-                  >
-                    {/* <Select */}
-                    {/*   style={{ width: "100%" }} */}
-                    {/*   placeholder="กรองตามวันที่" */}
-                    {/*   onChange={(dates) => setDateRange(dates)} */}
-                    {/* > */}
-                    {/*   {workloads.map((val) => ( */}
-                    {/*     <Select.Option value={val.dateTimeEnd}> */}
-                    {/*       {new Date(val.dateTimeEnd).toLocaleDateString( */}
-                    {/*         "th-TH", */}
-                    {/*       )} */}
-                    {/*     </Select.Option> */}
-                    {/*   ))} */}
-                    {/* </Select> */}
-                    <DatePicker
-                      style={{
-                        width: "100%",
-                        marginTop: theme.spacing.sm,
-                        borderRadius: theme.borderRadius.md,
-                      }}
-                      onChange={(_date, dateString) =>
-                        setDateRange(dateString.toString() as any)
-                      }
-                      format="YYYY-MM-DD"
-                      placeholder="กรองตามวันที่สิ้นสุด"
                     />
                   </Col>
                 </Row>
@@ -609,7 +505,7 @@ const PriorityView: React.FC = () => {
                   boxShadow: theme.shadow,
                   background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <div style={{ overflowX: "auto", width: "100%" }}>
                   <Table
