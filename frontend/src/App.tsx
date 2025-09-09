@@ -79,6 +79,7 @@ export default function App() {
         <Route path="/admin/config" element={<AdminConfig />} />
         <Route path="/admin/config/priority" element={<PriorityView />} />
         <Route path="/admin/config/priority/add" element={<Priority />} />
+        <Route path="/admin/config/priority/edit/:id" element={<Priority />} />
         <Route path="/admin/work" element={<AdminWork />} />
         <Route path="/admin/work/user/:id" element={<AdminWorkUser />} />
         <Route

@@ -21,7 +21,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('work')
 export class WorkController {
-  constructor(private readonly workService: WorkService) {}
+  constructor(private readonly workService: WorkService) { }
 
   @UseGuards(JwtAuthGuard)
   @Get('user')

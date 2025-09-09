@@ -47,14 +47,10 @@ const { RangePicker } = DatePicker;
 
 interface Workload {
   id: number;
-  // title: string;
-  department: string;
-  assignee: string;
-  status: "pending" | "in_progress" | "completed";
-  // priority: "low" | "medium" | "high";
-  dateTimeStart: string;
-  dateTimeEnd: string;
-  options: any;
+  title: string;
+  priority: string;
+  department?: string;
+  assignee?: string;
 }
 
 const PriorityView: React.FC = () => {
@@ -66,8 +62,9 @@ const PriorityView: React.FC = () => {
 
   const fetchWorkloads = async () => {
     try {
-      const response = await axiosInstance.get("/work/user");
+      const response = await axiosInstance.get("/option");
       setWorkloads(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);
       message.error("ไม่สามารถดึงข้อมูลภาระงานได้");
@@ -86,9 +83,10 @@ const PriorityView: React.FC = () => {
       content: "คุณต้องการลบภาระงานนี้ใช่หรือไม่?",
       okText: "ยืนยัน",
       cancelText: "ยกเลิก",
+      centered: true,
       onOk: async () => {
         try {
-          await axiosInstance.delete(`/work/${id}`);
+          await axiosInstance.delete(`/option/${id}`);
           message.success("ลบภาระงานสำเร็จ");
           fetchWorkloads();
         } catch (error) {
@@ -154,28 +152,28 @@ const PriorityView: React.FC = () => {
   const columns = [
     {
       title: "หัวข้อ",
-      dataIndex: "options",
-      key: "options",
+      dataIndex: "title",
+      key: "title",
       render: (text: any) => (
         <Text strong style={{ color: theme.primary }}>
-          {text.title}
+          {text}
         </Text>
       ),
     },
     {
       title: "ความสำคัญ",
-      dataIndex: "options",
-      key: "options",
+      dataIndex: "priority",
+      key: "priority",
       render: (priority: any) => (
         <Tag
-          color={getPriorityColor(priority.priority)}
+          color={getPriorityColor(priority)}
           style={{
             padding: "4px 8px",
             borderRadius: theme.borderRadius.sm,
             fontSize: theme.fontSize.sm,
           }}
         >
-          {getPriorityText(priority.priority)}
+          {getPriorityText(priority)}
         </Tag>
       ),
     },
@@ -184,19 +182,13 @@ const PriorityView: React.FC = () => {
       key: "action",
       render: (record: Workload) => (
         <Space size="middle">
-          <Tooltip title="ดูรายละเอียด">
-            <Button
-              type="text"
-              icon={<EyeOutlined />}
-              onClick={() => navigate(`/head/history/detail/${record.id}`)}
-              style={{ color: theme.primary }}
-            />
-          </Tooltip>
           <Tooltip title="แก้ไข">
             <Button
               type="text"
               icon={<EditOutlined />}
-              onClick={() => navigate(`/dean/workload/${record.id}/edit`)}
+              onClick={() =>
+                navigate(`/admin/config/priority/edit/${record.id}`)
+              }
               style={{ color: theme.primary }}
             />
           </Tooltip>
@@ -215,7 +207,7 @@ const PriorityView: React.FC = () => {
 
   const filteredWorkloads = workloads.filter((workload) => {
     const matchesSearch =
-      (workload.options.title?.toLowerCase() || "").includes(
+      (workload.title?.toLowerCase() || "").includes(
         searchText.toLowerCase(),
       ) ||
       (workload.department?.toLowerCase() || "").includes(
@@ -226,8 +218,7 @@ const PriorityView: React.FC = () => {
       );
 
     const matchesPriority =
-      priorityFilter.length === 0 ||
-      priorityFilter.includes(workload.options.priority);
+      priorityFilter.length === 0 || priorityFilter.includes(workload.priority);
 
     return matchesSearch && matchesPriority;
   });

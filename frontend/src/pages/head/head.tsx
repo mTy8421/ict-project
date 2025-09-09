@@ -256,7 +256,7 @@ const Head: React.FC = () => {
                       boxShadow: theme.shadow,
                       background: theme.white,
                     }}
-                    bodyStyle={{ padding: theme.spacing.xl }}
+                    styles={{ body: { padding: theme.spacing.xl } }}
                   >
                     <Statistic
                       title="ภาระงานทั้งหมด"
@@ -275,7 +275,7 @@ const Head: React.FC = () => {
                       boxShadow: theme.shadow,
                       background: theme.white,
                     }}
-                    bodyStyle={{ padding: theme.spacing.xl }}
+                    styles={{ body: { padding: theme.spacing.xl } }}
                   >
                     <Statistic
                       title="กำลังดำเนินการ"
@@ -294,7 +294,7 @@ const Head: React.FC = () => {
                       boxShadow: theme.shadow,
                       background: theme.white,
                     }}
-                    bodyStyle={{ padding: theme.spacing.xl }}
+                    styles={{ body: { padding: theme.spacing.xl } }}
                   >
                     <Statistic
                       title="เสร็จสิ้น"
@@ -316,14 +316,14 @@ const Head: React.FC = () => {
                     boxShadow: theme.shadow,
                     background: theme.white,
                   }}
-                  bodyStyle={{ padding: theme.spacing.xl }}
+                  styles={{ body: { padding: theme.spacing.xl } }}
                 >
                   <Progress
                     type="circle"
                     percent={completionRate}
                     format={(percent) => `${percent?.toFixed(1)}%`}
-                    width={200}
-                    strokeColor={theme.primary}
+                    size={200}
+                    strokeColor={theme.success}
                   />
                   <div style={{ marginTop: theme.spacing.lg }}>
                     <Text
@@ -382,7 +382,7 @@ const Head: React.FC = () => {
                     boxShadow: theme.shadow,
                     background: theme.white,
                   }}
-                  bodyStyle={{ padding: theme.spacing.xl }}
+                  styles={{ body: { padding: theme.spacing.xl } }}
                 >
                   <List
                     dataSource={filteredWorkloads}
@@ -513,7 +513,7 @@ const Head: React.FC = () => {
                       boxShadow: theme.shadow,
                       background: theme.white,
                     }}
-                    bodyStyle={{ padding: theme.spacing.xl }}
+                    styles={{ body: { padding: theme.spacing.xl } }}
                   >
                     <Statistic
                       title="ภาระงานทั้งหมด"
@@ -532,7 +532,7 @@ const Head: React.FC = () => {
                       boxShadow: theme.shadow,
                       background: theme.white,
                     }}
-                    bodyStyle={{ padding: theme.spacing.xl }}
+                    styles={{ body: { padding: theme.spacing.xl } }}
                   >
                     <Statistic
                       title="กำลังดำเนินการ"
@@ -551,7 +551,7 @@ const Head: React.FC = () => {
                       boxShadow: theme.shadow,
                       background: theme.white,
                     }}
-                    bodyStyle={{ padding: theme.spacing.xl }}
+                    styles={{ body: { padding: theme.spacing.xl } }}
                   >
                     <Statistic
                       title="เสร็จสิ้น"
@@ -573,14 +573,14 @@ const Head: React.FC = () => {
                     boxShadow: theme.shadow,
                     background: theme.white,
                   }}
-                  bodyStyle={{ padding: theme.spacing.xl }}
+                  styles={{ body: { padding: theme.spacing.xl } }}
                 >
                   <Progress
                     type="circle"
                     percent={completionRate}
                     format={(percent) => `${percent?.toFixed(1)}%`}
-                    width={200}
-                    strokeColor={theme.primary}
+                    size={200}
+                    strokeColor={theme.success}
                   />
                   <div style={{ marginTop: theme.spacing.lg }}>
                     <Text
@@ -639,7 +639,7 @@ const Head: React.FC = () => {
                     boxShadow: theme.shadow,
                     background: theme.white,
                   }}
-                  bodyStyle={{ padding: theme.spacing.xl }}
+                  styles={{ body: { padding: theme.spacing.xl } }}
                 >
                   <List
                     dataSource={filteredWorkloads}

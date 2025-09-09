@@ -163,10 +163,11 @@ const AdminWorkStatusDetail: React.FC = () => {
         status: "completed",
       };
 
-      console.log("Sending data:", workloadData);
+      // console.log("Sending data:", workloadData);
 
-      const response = await axiosInstance.patch(`/work/${id}`, workloadData);
-      console.log("Response:", response.data);
+      // const response = await axiosInstance.patch(`/work/${id}`, workloadData);
+      // console.log("Response:", response.data);
+      await axiosInstance.patch(`/work/${id}`, workloadData);
 
       message.success("เพิ่มภาระงานสำเร็จ");
       navigate(`/admin/work/user/${searchParams.get("uid")}`);
