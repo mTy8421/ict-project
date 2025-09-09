@@ -9,7 +9,7 @@ import { User } from './entities/user.entity';
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto) {
     const user = this.userRepository.create({
@@ -32,6 +32,14 @@ export class UserService {
         user_role: 'หัวหน้าสำนักงาน',
         user_role2: 'admin',
       })
+      .getMany();
+    return users;
+  }
+
+  async findAllHead(): Promise<User[]> {
+    const users = this.userRepository
+      .createQueryBuilder('user')
+      .where('user.user_role LIKE "%หัวหน้าสำนักงาน%"')
       .getMany();
     return users;
   }

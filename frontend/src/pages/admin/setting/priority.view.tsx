@@ -162,24 +162,6 @@ const PriorityView: React.FC = () => {
         </Text>
       ),
     },
-
-    {
-      title: "สถานะ",
-      dataIndex: "status",
-      key: "status",
-      render: (status: string) => (
-        <Tag
-          color={getStatusColor(status)}
-          style={{
-            padding: "4px 8px",
-            borderRadius: theme.borderRadius.sm,
-            fontSize: theme.fontSize.sm,
-          }}
-        >
-          {getStatusText(status)}
-        </Tag>
-      ),
-    },
     {
       title: "ความสำคัญ",
       dataIndex: "options",
@@ -196,18 +178,6 @@ const PriorityView: React.FC = () => {
           {getPriorityText(priority.priority)}
         </Tag>
       ),
-    },
-    {
-      title: "วันที่เริ่มต้น",
-      dataIndex: "dateTimeStart",
-      key: "dateTimeStart",
-      render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
-    },
-    {
-      title: "วันที่สิ้นสุด",
-      dataIndex: "dateTimeEnd",
-      key: "dateTimeEnd",
-      render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
     },
     {
       title: "จัดการ",

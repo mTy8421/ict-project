@@ -35,6 +35,9 @@ import HeadHistoryDetail from "./pages/head/history.detail";
 import HeadWorkUser from "./pages/head/work.user";
 import HeadWorkStatus from "./pages/head/work.status";
 import PriorityView from "./pages/admin/setting/priority.view";
+import AdminWorkStatus from "./pages/admin/work.status";
+import AdminWorkUser from "./pages/admin/work.user";
+import AdminWorkStatusDetail from "./pages/admin/work.detail";
 
 export default function App() {
   return (
@@ -77,6 +80,15 @@ export default function App() {
         <Route path="/admin/config/priority" element={<PriorityView />} />
         <Route path="/admin/config/priority/add" element={<Priority />} />
         <Route path="/admin/work" element={<AdminWork />} />
+        <Route path="/admin/work/user/:id" element={<AdminWorkUser />} />
+        <Route
+          path="/admin/work/user/status/:id"
+          element={<AdminWorkStatus />}
+        />
+        <Route
+          path="/admin/work/detail/:id"
+          element={<AdminWorkStatusDetail />}
+        />
 
         <Route path="/dean" element={<DeanDashboard />} />
         <Route path="/dean/workload" element={<DeanWorkload />} />
