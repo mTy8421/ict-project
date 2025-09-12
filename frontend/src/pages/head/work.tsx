@@ -296,7 +296,7 @@ const HeadWork: React.FC = () => {
                   background: theme.white,
                   marginBottom: theme.spacing.xl,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <Row gutter={[24, 24]} align="middle">
                   <Col span={24} style={{ paddingBottom: theme.spacing.md }}>
@@ -317,13 +317,13 @@ const HeadWork: React.FC = () => {
                   boxShadow: theme.shadow,
                   background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <div style={{ width: "100%", overflowX: "auto" }}>
                   <Table
                     columns={columns}
                     dataSource={filteredWorkloads}
-                    rowKey="id"
+                    rowKey="user_id"
                     loading={loading}
                     pagination={{
                       pageSize: 10,
@@ -380,7 +380,7 @@ const HeadWork: React.FC = () => {
                   background: theme.white,
                   marginBottom: theme.spacing.xl,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <Row gutter={[24, 24]} align="middle">
                   <Col span={24} style={{ paddingBottom: theme.spacing.md }}>
@@ -401,13 +401,13 @@ const HeadWork: React.FC = () => {
                   boxShadow: theme.shadow,
                   background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <div style={{ width: "100%", overflowX: "auto" }}>
                   <Table
                     columns={columns}
                     dataSource={filteredWorkloads}
-                    rowKey="id"
+                    rowKey="user_id"
                     loading={loading}
                     pagination={{
                       pageSize: 10,

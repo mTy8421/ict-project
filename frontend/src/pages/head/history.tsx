@@ -363,7 +363,7 @@ const HeadHistory: React.FC = () => {
                   background: theme.white,
                   marginBottom: theme.spacing.xl,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <Row gutter={[24, 24]} align="middle">
                   <Col
@@ -453,7 +453,7 @@ const HeadHistory: React.FC = () => {
                   boxShadow: theme.shadow,
                   background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <Table
                   columns={columns}
@@ -519,7 +519,7 @@ const HeadHistory: React.FC = () => {
                   background: theme.white,
                   marginBottom: theme.spacing.xl,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <Row gutter={[24, 24]} align="middle">
                   <Col
@@ -609,7 +609,7 @@ const HeadHistory: React.FC = () => {
                   boxShadow: theme.shadow,
                   background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <div style={{ overflowX: "auto", width: "100%" }}>
                   <Table

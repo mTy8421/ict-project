@@ -115,7 +115,7 @@ const Admin: React.FC = () => {
         setUsers(response.data);
       } else {
         const response = await axiosInstance.get(
-          `/user/filter?department=${value[0]}`,
+          `/user/filter?department=${value[0]}`
         );
         setUsers(response.data);
       }
@@ -342,12 +342,12 @@ const Admin: React.FC = () => {
                   boxShadow: theme.shadow,
                   background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <Table
                   columns={columns}
                   dataSource={users}
-                  rowKey="id"
+                  rowKey="user_id"
                   loading={loading}
                   pagination={{
                     pageSize: 10,
@@ -426,13 +426,13 @@ const Admin: React.FC = () => {
                   boxShadow: theme.shadow,
                   background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <div style={{ width: "100%", overflowX: "auto" }}>
                   <Table
                     columns={columns}
                     dataSource={users}
-                    rowKey="id"
+                    rowKey="user_id"
                     loading={loading}
                     pagination={{
                       pageSize: 10,

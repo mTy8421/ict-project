@@ -38,6 +38,7 @@ import PriorityView from "./pages/admin/setting/priority.view";
 import AdminWorkStatus from "./pages/admin/work.status";
 import AdminWorkUser from "./pages/admin/work.user";
 import AdminWorkStatusDetail from "./pages/admin/work.detail";
+import PriorityEdit from "./pages/admin/setting/priority.edit";
 
 export default function App() {
   return (
@@ -79,7 +80,10 @@ export default function App() {
         <Route path="/admin/config" element={<AdminConfig />} />
         <Route path="/admin/config/priority" element={<PriorityView />} />
         <Route path="/admin/config/priority/add" element={<Priority />} />
-        <Route path="/admin/config/priority/edit/:id" element={<Priority />} />
+        <Route
+          path="/admin/config/priority/edit/:id"
+          element={<PriorityEdit />}
+        />
         <Route path="/admin/work" element={<AdminWork />} />
         <Route path="/admin/work/user/:id" element={<AdminWorkUser />} />
         <Route

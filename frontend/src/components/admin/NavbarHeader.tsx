@@ -59,7 +59,7 @@ const ReHeader: React.FC = () => {
       key: "Config",
       label: "ตั่งค่าระบบภาระงาน",
       icon: <SettingOutlined style={{ color: "#000" }} />,
-      onClick: () => navigate("/admin/config"),
+      onClick: () => navigate("/admin/config/priority"),
     },
     {
       key: "Logout",

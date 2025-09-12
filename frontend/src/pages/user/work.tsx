@@ -264,13 +264,13 @@ const UserWork: React.FC = () => {
   const filteredWorkloads = workloads.filter((workload) => {
     const matchesSearch =
       (workload.options.title?.toLowerCase() || "").includes(
-        searchText.toLowerCase(),
+        searchText.toLowerCase()
       ) ||
       (workload.department?.toLowerCase() || "").includes(
-        searchText.toLowerCase(),
+        searchText.toLowerCase()
       ) ||
       (workload.assignee?.toLowerCase() || "").includes(
-        searchText.toLowerCase(),
+        searchText.toLowerCase()
       );
 
     const matchesDate =
@@ -422,7 +422,7 @@ const UserWork: React.FC = () => {
                   >
                     <Select
                       mode="multiple"
-                      placeholder="ค้นหาตามสถานะ"
+                      placeholder="ค้นหาภาระงานตามสถานะ"
                       style={{ width: "100%" }}
                       onChange={setStatusFilter}
                       options={[
@@ -439,7 +439,7 @@ const UserWork: React.FC = () => {
                   >
                     <Select
                       mode="multiple"
-                      placeholder="ค้นหาตามความสำคัญ"
+                      placeholder="ค้นหาภาระงานตามความสำคัญ"
                       style={{ width: "100%" }}
                       onChange={setPriorityFilter}
                       options={[
@@ -475,7 +475,7 @@ const UserWork: React.FC = () => {
                         setDateRange(dateString.toString() as any)
                       }
                       format="YYYY-MM-DD"
-                      placeholder="ค้นหาตามวันที่สิ้นสุด"
+                      placeholder="ค้นหาตามภาระงานวันที่สิ้นสุด"
                     />
                   </Col>
                 </Row>

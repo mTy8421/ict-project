@@ -208,13 +208,13 @@ const PriorityView: React.FC = () => {
   const filteredWorkloads = workloads.filter((workload) => {
     const matchesSearch =
       (workload.title?.toLowerCase() || "").includes(
-        searchText.toLowerCase(),
+        searchText.toLowerCase()
       ) ||
       (workload.department?.toLowerCase() || "").includes(
-        searchText.toLowerCase(),
+        searchText.toLowerCase()
       ) ||
       (workload.assignee?.toLowerCase() || "").includes(
-        searchText.toLowerCase(),
+        searchText.toLowerCase()
       );
 
     const matchesPriority =
@@ -268,7 +268,7 @@ const PriorityView: React.FC = () => {
         </div>
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
           <div className="hidden md:block max-w-[1200px]">
-            <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
+            <Content style={{ maxWidth: "1200px", margin: "0 15%" }}>
               <div
                 style={{
                   marginBottom: theme.spacing.xl,
@@ -281,7 +281,7 @@ const PriorityView: React.FC = () => {
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "center",
+                    justifyContent: "space-between",
                     alignItems: "center",
                   }}
                 >
@@ -306,6 +306,24 @@ const PriorityView: React.FC = () => {
                       ดูประวัติภาระงานภาระงานทั้งหมด
                     </Text>
                   </div>
+                  <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => navigate("/admin/user/new")}
+                    style={{
+                      background: theme.success,
+                      borderColor: theme.success,
+                      height: "45px",
+                      padding: `0 ${theme.spacing.xl}`,
+                      borderRadius: theme.borderRadius.md,
+                      fontSize: theme.fontSize.md,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: theme.spacing.sm,
+                    }}
+                  >
+                    เพิ่มหัวข้อความสำคัญ
+                  </Button>
                 </div>
               </div>
 
@@ -387,11 +405,11 @@ const PriorityView: React.FC = () => {
                 }}
               >
                 <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
+                // style={{
+                //   display: "flex",
+                //   justifyContent: "center",
+                //   alignItems: "center",
+                // }}
                 >
                   <div>
                     <Title
@@ -414,6 +432,25 @@ const PriorityView: React.FC = () => {
                       ดูประวัติภาระงานภาระงานทั้งหมด
                     </Text>
                   </div>
+                  <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => navigate("/admin/user/new")}
+                    style={{
+                      background: theme.success,
+                      borderColor: theme.success,
+                      height: "45px",
+                      padding: `0 ${theme.spacing.xl}`,
+                      borderRadius: theme.borderRadius.md,
+                      fontSize: theme.fontSize.md,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: theme.spacing.sm,
+                      marginTop: "1rem",
+                    }}
+                  >
+                    เพิ่มหัวข้อความสำคัญ
+                  </Button>
                 </div>
               </div>
 

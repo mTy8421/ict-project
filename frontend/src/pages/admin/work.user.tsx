@@ -239,13 +239,13 @@ const AdminWorkUser: React.FC = () => {
   const filteredWorkloads = workloads.filter((workload) => {
     const matchesSearch =
       (workload.options.title?.toLowerCase() || "").includes(
-        searchText.toLowerCase(),
+        searchText.toLowerCase()
       ) ||
       (workload.department?.toLowerCase() || "").includes(
-        searchText.toLowerCase(),
+        searchText.toLowerCase()
       ) ||
       (workload.assignee?.toLowerCase() || "").includes(
-        searchText.toLowerCase(),
+        searchText.toLowerCase()
       );
 
     const matchesDate =
@@ -308,7 +308,7 @@ const AdminWorkUser: React.FC = () => {
         </div>
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
           <div className="hidden md:block max-w-[1200px]">
-            <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
+            <Content style={{ maxWidth: "1200px", margin: "0 15%" }}>
               <div
                 style={{
                   marginBottom: theme.spacing.xl,

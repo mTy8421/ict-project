@@ -33,7 +33,7 @@ export class OptionService {
   findOne(id: number) {
     const options = this.optionRepository
       .createQueryBuilder('option')
-      .where('option.id = :id', { id })
+      .where('id = :id', { id })
       .getOne();
     return options;
   }
@@ -46,7 +46,7 @@ export class OptionService {
         title: updateOptionDto.title,
         priority: updateOptionDto.priority,
       })
-      .where('optin.id = :id', { id })
+      .where('id = :id', { id })
       .execute();
     return options;
   }
@@ -56,7 +56,7 @@ export class OptionService {
       .createQueryBuilder('option')
       .delete()
       .from(Option)
-      .where('option.id = :id', { id })
+      .where('id = :id', { id })
       .execute();
     return options;
   }

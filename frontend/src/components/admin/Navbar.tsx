@@ -16,7 +16,7 @@ const DeanNavbar: React.FC = () => {
   const getSelectedKey = () => {
     if (location.pathname === "/admin") return "1";
     if (location.pathname.startsWith("/admin/work")) return "2";
-    if (location.pathname.startsWith("/admin/config")) return "3";
+    if (location.pathname.startsWith("/admin/config/priority")) return "3";
     return "1";
   };
 
@@ -42,77 +42,81 @@ const DeanNavbar: React.FC = () => {
           background: theme.sidebarBg,
         }}
         theme="light"
-      >
-        <Menu.Item
-          key="1"
-          icon={
-            <BarChartOutlined
-              style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
-            />
-          }
-          style={{
-            margin: `${theme.spacing.sm} ${theme.spacing.md}`,
-            borderRadius: theme.borderRadius.md,
-            height: "48px",
-            lineHeight: "48px",
-            color: theme.primary,
-            background: getSelectedKey() === "1" ? "#5746b6" : "",
-          }}
-        >
-          <Link
-            to="/admin"
-            style={{ fontSize: theme.fontSize.md, color: "#fff" }}
-          >
-            ภาพรวม
-          </Link>
-        </Menu.Item>
-        <Menu.Item
-          key="2"
-          icon={
-            <FileTextOutlined
-              style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
-            />
-          }
-          style={{
-            margin: `${theme.spacing.sm} ${theme.spacing.md}`,
-            borderRadius: theme.borderRadius.md,
-            height: "48px",
-            lineHeight: "48px",
-            color: theme.primary,
-            background: getSelectedKey() === "2" ? "#5746b6" : "",
-          }}
-        >
-          <Link
-            to="/admin/work"
-            style={{ fontSize: theme.fontSize.md, color: "#fff" }}
-          >
-            ตรวจสอบภาระงาน
-          </Link>
-        </Menu.Item>
-        <Menu.Item
-          key="3"
-          icon={
-            <SettingOutlined
-              style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
-            />
-          }
-          style={{
-            margin: `${theme.spacing.sm} ${theme.spacing.md}`,
-            borderRadius: theme.borderRadius.md,
-            height: "48px",
-            lineHeight: "48px",
-            color: theme.primary,
-            background: getSelectedKey() === "3" ? "#5746b6" : "",
-          }}
-        >
-          <Link
-            to="/admin/config"
-            style={{ fontSize: theme.fontSize.md, color: "#fff" }}
-          >
-            ตั่งค่าระบบภาระงาน
-          </Link>
-        </Menu.Item>
-      </Menu>
+        items={[
+          {
+            key: "1",
+            icon: (
+              <BarChartOutlined
+                style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
+              />
+            ),
+            label: (
+              <Link
+                to="/admin"
+                style={{ fontSize: theme.fontSize.md, color: "#fff" }}
+              >
+                ภาพรวม
+              </Link>
+            ),
+            style: {
+              margin: `${theme.spacing.sm} ${theme.spacing.md}`,
+              borderRadius: theme.borderRadius.md,
+              height: "48px",
+              lineHeight: "48px",
+              color: theme.primary,
+              background: getSelectedKey() === "1" ? "#5746b6" : "",
+            },
+          },
+          {
+            key: "2",
+            icon: (
+              <FileTextOutlined
+                style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
+              />
+            ),
+            label: (
+              <Link
+                to="/admin/work"
+                style={{ fontSize: theme.fontSize.md, color: "#fff" }}
+              >
+                ตรวจสอบภาระงาน
+              </Link>
+            ),
+            style: {
+              margin: `${theme.spacing.sm} ${theme.spacing.md}`,
+              borderRadius: theme.borderRadius.md,
+              height: "48px",
+              lineHeight: "48px",
+              color: theme.primary,
+              background: getSelectedKey() === "2" ? "#5746b6" : "",
+            },
+          },
+          {
+            key: "3",
+            icon: (
+              <SettingOutlined
+                style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
+              />
+            ),
+            label: (
+              <Link
+                to="/admin/config/priority"
+                style={{ fontSize: theme.fontSize.md, color: "#fff" }}
+              >
+                ตั่งค่าระบบภาระงาน
+              </Link>
+            ),
+            style: {
+              margin: `${theme.spacing.sm} ${theme.spacing.md}`,
+              borderRadius: theme.borderRadius.md,
+              height: "48px",
+              lineHeight: "48px",
+              color: theme.primary,
+              background: getSelectedKey() === "3" ? "#5746b6" : "",
+            },
+          },
+        ]}
+      />
     </Sider>
   );
 };

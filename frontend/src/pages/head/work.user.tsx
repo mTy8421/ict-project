@@ -366,7 +366,7 @@ const HeadWorkUser: React.FC = () => {
                   background: theme.white,
                   marginBottom: theme.spacing.xl,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <Row gutter={[24, 24]} align="middle">
                   <Col
@@ -454,7 +454,7 @@ const HeadWorkUser: React.FC = () => {
                   boxShadow: theme.shadow,
                   background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <div style={{ width: "100%", overflowX: "auto" }}>
                   <Table
@@ -517,7 +517,7 @@ const HeadWorkUser: React.FC = () => {
                   background: theme.white,
                   marginBottom: theme.spacing.xl,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <Row gutter={[24, 24]} align="middle">
                   <Col
@@ -597,7 +597,7 @@ const HeadWorkUser: React.FC = () => {
                   boxShadow: theme.shadow,
                   background: theme.white,
                 }}
-                bodyStyle={{ padding: theme.spacing.xl }}
+                styles={{ body: { padding: theme.spacing.xl } }}
               >
                 <div style={{ width: "100%", overflowX: "auto" }}>
                   <Table

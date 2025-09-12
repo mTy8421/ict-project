@@ -13,8 +13,7 @@ export default defineConfig({
     },
     host: true,
     port: 5173,
-    // allowedHosts: ["relevant-infinitely-iguana.ngrok-free.app"],
-    allowedHosts: ["robot-expenses-yamaha-univ.trycloudflare.com"],
+    // allowedHosts: ["involvement-problem-ecology-taxation.trycloudflare.com"],
   },
   css: {
     postcss: "./postcss.config.cjs",

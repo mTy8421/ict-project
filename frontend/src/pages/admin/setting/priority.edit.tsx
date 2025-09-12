@@ -13,17 +13,13 @@ import {
   Col,
   Divider,
   message,
-  Image,
 } from "antd";
 import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
-import axiosInstance from "../../utils/axios";
-import theme from "../../theme";
-import DeanHeader from "../../components/user/Header";
-import DeanNavbar from "../../components/user/Navbar";
-import ReHeader from "../../components/user/NavbarHeader";
-import "./workload-new.override.css";
-
-import moment from "moment";
+import axiosInstance from "../../../utils/axios";
+import theme from "../../../theme";
+import DeanHeader from "../../../components/admin/Header";
+import DeanNavbar from "../../../components/admin/Navbar";
+import ReHeader from "../../../components/admin/NavbarHeader";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -31,39 +27,23 @@ const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 interface WorkloadForm {
-  title: number;
-  department: string;
-  assignee: string;
-  description: string;
-  dateRange: [any, any];
-  fileUpload: any;
-}
-
-interface OptionsConfig {
-  id: number;
-  title: number;
+  title: string;
   priority: string;
 }
 
-interface ImageFile {
-  id: number;
-  file_name: string;
-}
-
-const EditUserWorkLoad: React.FC = () => {
+const PriorityEdit: React.FC = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [options, setOptions] = useState<OptionsConfig[]>([]);
   const { id } = useParams();
 
-  const [images, setImages] = useState<ImageFile[]>([]);
+  //   const [option, setOptions] = useState<WorkloadForm | null>(null);
 
-  const fetchUsers = async () => {
+  const fetchUser = async () => {
     try {
       await axiosInstance.get("/user/profile");
     } catch (error: any) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching user:", error);
       if (error.response?.status === 401) {
         message.error("กรุณาเข้าสู่ระบบใหม่");
         navigate("/");
@@ -75,73 +55,46 @@ const EditUserWorkLoad: React.FC = () => {
 
   const fetchOptions = async () => {
     try {
-      const response = await axiosInstance.get("/option");
-      setOptions(response.data);
-    } catch (error: any) {
-      console.error("Error, fetching Options ", error);
-    }
-  };
-
-  const fetchWorkload = async () => {
-    try {
-      const response = await axiosInstance.get(`work/${id}`);
-      const workload = response.data;
-
-      const imagesResponse = await axiosInstance.get(
-        `upload-file/show/id/${id}`
-      );
-      setImages(imagesResponse.data);
+      const response = await axiosInstance.get(`/option/${id}`);
+      const options = response.data;
 
       form.setFieldsValue({
-        title: workload.options.id,
-        department: workload.department,
-        description: workload.description,
-        dateRange:
-          workload.dateTimeStart && workload.dateTimeEnd
-            ? [moment(workload.dateTimeStart), moment(workload.dateTimeEnd)]
-            : undefined,
+        title: options.title,
+        priority: options.priority,
       });
-    } catch (error: any) {
-      console.error("Error, fetching workload ", error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error("An unknown error occurred:", error);
+      }
     }
   };
 
   useEffect(() => {
-    fetchUsers();
-    fetchWorkload();
+    fetchUser();
     fetchOptions();
   }, [navigate]);
 
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
-      const [dateStart, dateEnd] = values.dateRange;
-
-      const payload = {
-        description: values.description,
-        options: String(values.title),
-        dateTimeStart: dateStart.format("YYYY-MM-DD"),
-        dateTimeEnd: dateEnd.format("YYYY-MM-DD"),
+      const workloadData = {
+        title: values.title,
+        priority: values.priority,
       };
 
-      const formData = new FormData();
-      if (values.fileUpload && values.fileUpload.length > 0) {
-        for (const file of values.fileUpload) {
-          formData.append("fileUpload", file.originFileObj);
-        }
-      }
+      console.log("Sending data:", workloadData);
 
-      console.log("Sending data:", payload);
-
-      const response = await axiosInstance.patch(`/work/${id}`, payload);
+      const response = await axiosInstance.patch(`/option/${id}`, workloadData);
       console.log("Response:", response.data);
 
-      message.success("แก้ไขภาระงานสำเร็จ");
-      navigate("/user/work");
+      message.success("เพิ่มภาระงานสำเร็จ");
+      navigate("/admin/config/priority");
     } catch (error: any) {
-      console.error("Error updating workload:", error);
+      console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถแก้ไขภาระงานได้"
+        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้"
       );
     } finally {
       setLoading(false);
@@ -153,13 +106,16 @@ const EditUserWorkLoad: React.FC = () => {
       <div className="hidden md:block">
         <DeanHeader />
       </div>
+
       <div className="md:hidden">
         <ReHeader />
       </div>
+
       <Layout style={{ height: "calc(100vh - 70px)" }}>
         <div className="hidden md:block">
           <DeanNavbar />
         </div>
+
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
           <div className="hidden md:block">
             <Content
@@ -181,7 +137,7 @@ const EditUserWorkLoad: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/user/work")}
+                  onClick={() => navigate("/admin/config/priority")}
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,
@@ -193,7 +149,7 @@ const EditUserWorkLoad: React.FC = () => {
                     gap: theme.spacing.sm,
                   }}
                 >
-                  กลับไปหน้ารายการภาระงาน
+                  กลับไปหน้ารายงานความสำคัญ
                 </Button>
                 <Title
                   level={3}
@@ -205,7 +161,7 @@ const EditUserWorkLoad: React.FC = () => {
                     letterSpacing: "0.5px",
                   }}
                 >
-                  แก้ไขภาระงาน
+                  ความสำคัญ
                 </Title>
                 <Text
                   style={{
@@ -215,7 +171,7 @@ const EditUserWorkLoad: React.FC = () => {
                     fontSize: theme.fontSize.md,
                   }}
                 >
-                  แก้ไขข้อมูลภาระงานที่ต้องการ
+                  ตั่งค่าความสำคัญของภาระงาน
                 </Text>
               </div>
 
@@ -248,12 +204,33 @@ const EditUserWorkLoad: React.FC = () => {
                         name="title"
                         label="หัวข้อภาระงาน"
                         rules={[
-                          { required: true, message: "กรุณากรอกหัวข้อภาระงาน" },
+                          { required: true, message: "กรุณากรอกชื่อผู้ใช้" },
                         ]}
                         style={{ width: "100%" }}
                       >
+                        <Input
+                          placeholder="กรอกหัวข้อภาระงาน"
+                          style={{
+                            height: 48,
+                            borderRadius: theme.borderRadius.md,
+                            fontSize: theme.fontSize.md,
+                            padding: `0 ${theme.spacing.md}`,
+                            borderColor: theme.textLight,
+                            width: "100%",
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item
+                        name="priority"
+                        label="ความสำคัญ"
+                        rules={[
+                          { required: true, message: "กรุณาเลือกความสำคัญ" },
+                        ]}
+                      >
                         <Select
-                          placeholder="เลือกหัวข้อภาระงาน"
+                          placeholder="เลือกความสำคัญ"
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,
@@ -263,68 +240,11 @@ const EditUserWorkLoad: React.FC = () => {
                             width: "100%",
                           }}
                         >
-                          {options.map((opt) => (
-                            <Select.Option key={opt.id} value={opt.id}>
-                              {opt.title}
-                            </Select.Option>
-                          ))}
+                          <Select.Option value="high">สูง</Select.Option>
+                          <Select.Option value="medium">ปานกลาง</Select.Option>
+                          <Select.Option value="low">ต่ำ</Select.Option>
                         </Select>
                       </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                      <Form.Item
-                        name="dateRange"
-                        label="ระยะเวลา"
-                        rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลา" },
-                        ]}
-                      >
-                        <RangePicker
-                          style={{
-                            height: 48,
-                            borderRadius: theme.borderRadius.md,
-                            fontSize: theme.fontSize.md,
-                            padding: `0 ${theme.spacing.md}`,
-                            borderColor: theme.textLight,
-                            width: "100%",
-                          }}
-                          format="YYYY-MM-DD"
-                        />
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                      <Form.Item
-                        name="description"
-                        label="รายละเอียด"
-                        rules={[
-                          { required: true, message: "กรุณากรอกรายละเอียด" },
-                        ]}
-                      >
-                        <TextArea
-                          placeholder="กรอกรายละเอียดภาระงาน"
-                          rows={4}
-                          style={{
-                            borderRadius: theme.borderRadius.md,
-                            fontSize: theme.fontSize.md,
-                            padding: `${theme.spacing.sm} ${theme.spacing.md}`,
-                            resize: "none",
-                          }}
-                        />
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                      <div>
-                        {images.map((item, index) => (
-                          <Image
-                            key={index}
-                            width={200}
-                            src={`/api/upload-file/show/${item.file_name}`}
-                          />
-                        ))}
-                      </div>
                     </Col>
                   </Row>
 
@@ -349,7 +269,7 @@ const EditUserWorkLoad: React.FC = () => {
                         gap: theme.spacing.sm,
                       }}
                     >
-                      บันทึกภาระงาน
+                      บันทึก
                     </Button>
                   </Form.Item>
                 </Form>
@@ -360,7 +280,7 @@ const EditUserWorkLoad: React.FC = () => {
           <div className="md:hidden">
             <Content
               style={{
-                maxWidth: "1200px",
+                width: "100%",
                 margin: "0 auto",
                 // padding: `0 ${theme.spacing.xl}`,
               }}
@@ -377,7 +297,7 @@ const EditUserWorkLoad: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/user/work")}
+                  onClick={() => navigate("/admin/config/priority")}
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,
@@ -389,7 +309,7 @@ const EditUserWorkLoad: React.FC = () => {
                     gap: theme.spacing.sm,
                   }}
                 >
-                  กลับไปหน้ารายการภาระงาน
+                  กลับไปหน้ารายงานความสำคัญ
                 </Button>
                 <Title
                   level={3}
@@ -401,7 +321,7 @@ const EditUserWorkLoad: React.FC = () => {
                     letterSpacing: "0.5px",
                   }}
                 >
-                  แก้ไขภาระงาน
+                  ความสำคัญ
                 </Title>
                 <Text
                   style={{
@@ -411,7 +331,7 @@ const EditUserWorkLoad: React.FC = () => {
                     fontSize: theme.fontSize.md,
                   }}
                 >
-                  แก้ไขข้อมูลภาระงานที่ต้องการ
+                  ตั่งค่าความสำคัญของภาระงาน
                 </Text>
               </div>
 
@@ -444,12 +364,33 @@ const EditUserWorkLoad: React.FC = () => {
                         name="title"
                         label="หัวข้อภาระงาน"
                         rules={[
-                          { required: true, message: "กรุณากรอกหัวข้อภาระงาน" },
+                          { required: true, message: "กรุณากรอกชื่อผู้ใช้" },
                         ]}
                         style={{ width: "100%" }}
                       >
+                        <Input
+                          placeholder="กรอกหัวข้อภาระงาน"
+                          style={{
+                            height: 48,
+                            borderRadius: theme.borderRadius.md,
+                            fontSize: theme.fontSize.md,
+                            padding: `0 ${theme.spacing.md}`,
+                            borderColor: theme.textLight,
+                            width: "100%",
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item
+                        name="priority"
+                        label="ความสำคัญ"
+                        rules={[
+                          { required: true, message: "กรุณาเลือกความสำคัญ" },
+                        ]}
+                      >
                         <Select
-                          placeholder="เลือกหัวข้อภาระงาน"
+                          placeholder="เลือกความสำคัญ"
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,
@@ -459,68 +400,11 @@ const EditUserWorkLoad: React.FC = () => {
                             width: "100%",
                           }}
                         >
-                          {options.map((opt) => (
-                            <Select.Option key={opt.id} value={opt.id}>
-                              {opt.title}
-                            </Select.Option>
-                          ))}
+                          <Select.Option value="high">สูง</Select.Option>
+                          <Select.Option value="medium">ปานกลาง</Select.Option>
+                          <Select.Option value="low">ต่ำ</Select.Option>
                         </Select>
                       </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                      <Form.Item
-                        name="dateRange"
-                        label="ระยะเวลา"
-                        rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลา" },
-                        ]}
-                      >
-                        <RangePicker
-                          style={{
-                            height: 48,
-                            borderRadius: theme.borderRadius.md,
-                            fontSize: theme.fontSize.md,
-                            padding: `0 ${theme.spacing.md}`,
-                            borderColor: theme.textLight,
-                            width: "100%",
-                          }}
-                          format="YYYY-MM-DD"
-                        />
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                      <Form.Item
-                        name="description"
-                        label="รายละเอียด"
-                        rules={[
-                          { required: true, message: "กรุณากรอกรายละเอียด" },
-                        ]}
-                      >
-                        <TextArea
-                          placeholder="กรอกรายละเอียดภาระงาน"
-                          rows={4}
-                          style={{
-                            borderRadius: theme.borderRadius.md,
-                            fontSize: theme.fontSize.md,
-                            padding: `${theme.spacing.sm} ${theme.spacing.md}`,
-                            resize: "none",
-                          }}
-                        />
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                      <div>
-                        {images.map((item, index) => (
-                          <Image
-                            key={index}
-                            width={200}
-                            src={`/api/upload-file/show/${item.file_name}`}
-                          />
-                        ))}
-                      </div>
                     </Col>
                   </Row>
 
@@ -545,7 +429,7 @@ const EditUserWorkLoad: React.FC = () => {
                         gap: theme.spacing.sm,
                       }}
                     >
-                      บันทึกภาระงาน
+                      บันทึก
                     </Button>
                   </Form.Item>
                 </Form>
@@ -558,4 +442,4 @@ const EditUserWorkLoad: React.FC = () => {
   );
 };
 
-export default EditUserWorkLoad;
+export default PriorityEdit;
