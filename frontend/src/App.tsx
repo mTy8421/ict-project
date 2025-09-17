@@ -40,6 +40,8 @@ import AdminWorkUser from "./pages/admin/work.user";
 import AdminWorkStatusDetail from "./pages/admin/work.detail";
 import PriorityEdit from "./pages/admin/setting/priority.edit";
 
+import UserBar from "./pages/user/chart/bar";
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -114,7 +116,7 @@ export default function App() {
           path="/vice-dean/student-quality"
           element={<StudentQualityDashboard />}
         />
-        <Route path="/test" element={<div>Test Page</div>} />
+        <Route path="/test" element={<UserBar />} />
       </Routes>
     </BrowserRouter>
   );

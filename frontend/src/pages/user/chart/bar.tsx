@@ -1,0 +1,228 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Card,
+  Typography,
+  Layout,
+  Row,
+  Col,
+  Statistic,
+  Progress,
+  List,
+  Tag,
+  Select,
+  DatePicker,
+} from "antd";
+import {
+  FileTextOutlined,
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
+import axiosInstance from "../../../utils/axios";
+import theme from "../../../theme";
+import DeanHeader from "../../../components/user/Header";
+import DeanNavbar from "../../../components/user/Navbar";
+import ReHeader from "../../../components/user/NavbarHeader";
+
+import { BarChart } from "../../../lib/user/barChart";
+import { Doughnuts } from "../../../lib/user/doughnutChart";
+
+const { Content } = Layout;
+const { Title, Text } = Typography;
+
+interface Workload {
+  id: number;
+  // title: string;
+  description: string;
+  department: string;
+  // priority: "low" | "medium" | "high";
+  status: "pending" | "in_progress" | "completed";
+  dateTimeStart: string;
+  dateTimeEnd: string;
+  options: any;
+}
+
+const UserBar: React.FC = () => {
+  const navigate = useNavigate();
+  const [workloads, setWorkloads] = useState<Workload[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [dateRange, setDateRange] = useState();
+
+  const fetchWorkloads = async () => {
+    try {
+      const response = await axiosInstance.get("/work/user");
+      setWorkloads(response.data);
+    } catch (error) {
+      console.error("Error fetching workloads:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkloads();
+  }, []);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "warning";
+      case "in_progress":
+        return "processing";
+      case "completed":
+        return "success";
+      default:
+        return "default";
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "รอดำเนินการ";
+      case "in_progress":
+        return "กำลังดำเนินการ";
+      case "completed":
+        return "เสร็จสิ้น";
+      default:
+        return status;
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return "red";
+      case "medium":
+        return "orange";
+      case "low":
+        return "green";
+      default:
+        return "default";
+    }
+  };
+
+  const getPriorityText = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return "สูง";
+      case "medium":
+        return "ปานกลาง";
+      case "low":
+        return "ต่ำ";
+      default:
+        return priority;
+    }
+  };
+
+  // const totalWorkloads = workloads.length;
+  const totalWorkloads = workloads.filter((workloads) => {
+    const recentWorkloads =
+      !dateRange ||
+      (workloads.dateTimeEnd?.toString() || "").includes(dateRange).toString();
+
+    return recentWorkloads;
+  });
+
+  const completedWorkloads = workloads.filter(
+    (w) => w.status === "completed"
+  ).length;
+  const inProgressWorkloads = workloads.filter(
+    (w) => w.status === "in_progress"
+  ).length;
+  const pendingWorkloads = workloads.filter(
+    (w) => w.status === "pending"
+  ).length;
+
+  const completionRate =
+    totalWorkloads.length > 0
+      ? (completedWorkloads / totalWorkloads.length) * 100
+      : 0;
+
+  const filteredWorkloads = workloads.filter((workloads) => {
+    const recentWorkloads =
+      !dateRange ||
+      (workloads.dateTimeEnd?.toString() || "").includes(dateRange);
+
+    return recentWorkloads;
+  });
+
+  return (
+    <Layout style={{ minHeight: "100vh", background: theme.background }}>
+      <div className="hidden md:block">
+        <DeanHeader />
+      </div>
+
+      <div className="md:hidden">
+        <ReHeader />
+      </div>
+
+      <Layout style={{ height: "calc(100vh - 70px)" }}>
+        <div className="hidden md:block">
+          <DeanNavbar />
+        </div>
+        <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
+          <div className="hidden md:block">
+            <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
+              <div
+                style={{
+                  marginBottom: theme.spacing.xl,
+                  background: theme.white,
+                  padding: theme.spacing.xl,
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                }}
+              >
+                <Title
+                  level={3}
+                  style={{
+                    // margin: 0,
+                    color: theme.primary,
+                    fontWeight: theme.fontWeight.semibold,
+                  }}
+                >
+                  ภาพรวมภาระงาน
+                </Title>
+                <BarChart />
+              </div>
+
+              <div
+                style={{
+                  marginBottom: theme.spacing.xl,
+                  background: theme.white,
+                  padding: theme.spacing.xl,
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                }}
+              >
+                <Title
+                  level={3}
+                  style={{
+                    margin: 0,
+                    color: theme.primary,
+                    fontWeight: theme.fontWeight.semibold,
+                  }}
+                >
+                  Test
+                </Title>
+                <div
+                  style={{
+                    height: "50vh",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Doughnuts />
+                </div>
+              </div>
+            </Content>
+          </div>
+        </Layout>
+      </Layout>
+    </Layout>
+  );
+};
+
+export default UserBar;

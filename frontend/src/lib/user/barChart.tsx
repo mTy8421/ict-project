@@ -6,9 +6,8 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
-import { Bar } from 'react-chartjs-2';
-// import faker from 'faker';
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -23,12 +22,12 @@ const options = {
   plugins: {
     title: {
       display: false,
-      text: 'test',
+      text: "test",
     },
   },
   responsive: true,
   interaction: {
-    mode: 'index' as const,
+    mode: "index" as const,
     intersect: false,
   },
   scales: {
@@ -62,11 +61,22 @@ const data = {
   labels,
   datasets: [
     {
-      label: 'จำนวนภาระงาน',
-      // data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
+      label: "จำนวนภาระงาน",
       data: datas,
-      backgroundColor: 'rgb(255, 99, 132)',
-      stack: 'Stack 0',
+      backgroundColor: "rgb(255, 99, 132)",
+      stack: "Stack 0",
+    },
+    {
+      label: "success",
+      data: datas,
+      backgroundColor: "#31C950",
+      stack: "Stack 0",
+    },
+    {
+      label: "Info",
+      data: datas,
+      backgroundColor: "#FDC745",
+      stack: "Stack 0",
     },
   ],
 };
