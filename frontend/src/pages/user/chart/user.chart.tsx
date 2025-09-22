@@ -150,20 +150,32 @@ const UserChert: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
-      <div className="hidden md:block">
+      <div
+        style={{
+          display: window.innerWidth >= 768 ? "block" : "none",
+        }}
+      >
         <DeanHeader />
       </div>
 
-      <div className="md:hidden">
+      <div style={{ display: window.innerWidth < 768 ? "block" : "none" }}>
         <ReHeader />
       </div>
 
       <Layout style={{ height: "calc(100vh - 70px)" }}>
-        <div className="hidden md:block">
+        <div
+          style={{
+            display: window.innerWidth >= 768 ? "block" : "none",
+          }}
+        >
           <DeanNavbar />
         </div>
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
-          <div className="hidden md:block">
+          <div
+            style={{
+              display: window.innerWidth >= 768 ? "block" : "none",
+            }}
+          >
             <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
               <div
                 style={{
