@@ -40,7 +40,7 @@ import AdminWorkUser from "./pages/admin/work.user";
 import AdminWorkStatusDetail from "./pages/admin/work.detail";
 import PriorityEdit from "./pages/admin/setting/priority.edit";
 
-import UserBar from "./pages/user/chart/bar";
+import UserChert from "./pages/user/chart/user.chart";
 
 export default function App() {
   return (
@@ -116,7 +116,7 @@ export default function App() {
           path="/vice-dean/student-quality"
           element={<StudentQualityDashboard />}
         />
-        <Route path="/test" element={<UserBar />} />
+        <Route path="/test" element={<UserChert />} />
       </Routes>
     </BrowserRouter>
   );

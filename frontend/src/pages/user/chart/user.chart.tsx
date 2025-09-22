@@ -43,7 +43,7 @@ interface Workload {
   options: any;
 }
 
-const UserBar: React.FC = () => {
+const UserChert: React.FC = () => {
   const navigate = useNavigate();
   const [workloads, setWorkloads] = useState<Workload[]>([]);
   const [loading, setLoading] = useState(true);
@@ -225,4 +225,4 @@ const UserBar: React.FC = () => {
   );
 };
 
-export default UserBar;
+export default UserChert;
