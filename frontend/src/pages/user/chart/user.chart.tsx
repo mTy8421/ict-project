@@ -126,13 +126,13 @@ const UserChert: React.FC = () => {
   });
 
   const completedWorkloads = workloads.filter(
-    (w) => w.status === "completed"
+    (w) => w.status === "completed",
   ).length;
   const inProgressWorkloads = workloads.filter(
-    (w) => w.status === "in_progress"
+    (w) => w.status === "in_progress",
   ).length;
   const pendingWorkloads = workloads.filter(
-    (w) => w.status === "pending"
+    (w) => w.status === "pending",
   ).length;
 
   const completionRate =
@@ -172,11 +172,11 @@ const UserChert: React.FC = () => {
         </div>
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
           <div
-            style={{
-              display: window.innerWidth >= 768 ? "block" : "none",
-            }}
+          // style={{
+          //   display: window.innerWidth >= 768 ? "block" : "none",
+          // }}
           >
-            <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
+            <Content style={{ maxWidth: "70dvw", margin: "0 auto" }}>
               <div
                 style={{
                   marginBottom: theme.spacing.xl,
@@ -196,6 +196,7 @@ const UserChert: React.FC = () => {
                 >
                   ภาพรวมภาระงาน
                 </Title>
+
                 <BarChart />
               </div>
 
@@ -216,11 +217,11 @@ const UserChert: React.FC = () => {
                     fontWeight: theme.fontWeight.semibold,
                   }}
                 >
-                  Test
+                  ภาพรวมภาระงาน
                 </Title>
                 <div
                   style={{
-                    height: "50vh",
+                    height: "50dvh",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",

@@ -15,7 +15,7 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 const options = {
@@ -61,22 +61,22 @@ const data = {
   labels,
   datasets: [
     {
-      label: "จำนวนภาระงาน",
+      label: "สูง",
       data: datas,
-      backgroundColor: "rgb(255, 99, 132)",
+      backgroundColor: "rgba(255, 99, 132, 0.6)",
       stack: "Stack 0",
     },
     {
-      label: "success",
+      label: "ปานกลาง",
       data: datas,
-      backgroundColor: "#31C950",
-      stack: "Stack 0",
+      backgroundColor: "rgba(255, 206, 86, 0.6)",
+      stack: "Stack 1",
     },
     {
-      label: "Info",
+      label: "ต่ำ",
       data: datas,
-      backgroundColor: "#FDC745",
-      stack: "Stack 0",
+      backgroundColor: "rgba(75, 192, 192, 0.6)",
+      stack: "Stack 2",
     },
   ],
 };

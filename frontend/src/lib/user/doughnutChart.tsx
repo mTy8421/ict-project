@@ -4,10 +4,10 @@ import { Doughnut } from "react-chartjs-2";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const data = {
-  // labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+  labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
   datasets: [
     {
-      label: "test",
+      label: "# of Votes",
       data: [12, 19, 3, 5, 2, 3],
       backgroundColor: [
         "rgba(255, 99, 132, 0.2)",
@@ -30,9 +30,17 @@ export const data = {
   ],
 };
 
-const options = {
-  responsive: true,
-};
 export function Doughnuts() {
-  return <Doughnut options={options} data={data} />;
+  return (
+    <Doughnut
+      data={data}
+      options={{
+        plugins: {
+          legend: {
+            position: "bottom",
+          },
+        },
+      }}
+    />
+  );
 }
