@@ -13,7 +13,7 @@ export default defineConfig({
     },
     host: true,
     port: 5173,
-    // allowedHosts: ["involvement-problem-ecology-taxation.trycloudflare.com"],
+    allowedHosts: ["scuba-filter-farm-supervisor.trycloudflare.com"],
   },
   css: {
     postcss: "./postcss.config.cjs",

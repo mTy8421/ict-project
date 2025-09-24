@@ -309,7 +309,7 @@ const PriorityView: React.FC = () => {
                   <Button
                     type="primary"
                     icon={<PlusOutlined />}
-                    onClick={() => navigate("/admin/user/new")}
+                    onClick={() => navigate("/admin/config/priority/add")}
                     style={{
                       background: theme.success,
                       borderColor: theme.success,
@@ -435,7 +435,7 @@ const PriorityView: React.FC = () => {
                   <Button
                     type="primary"
                     icon={<PlusOutlined />}
-                    onClick={() => navigate("/admin/user/new")}
+                    onClick={() => navigate("/admin/config/priority/add")}
                     style={{
                       background: theme.success,
                       borderColor: theme.success,

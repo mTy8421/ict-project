@@ -5,6 +5,8 @@ import {
   FileTextOutlined,
   BarChartOutlined,
   UserOutlined,
+  SnippetsOutlined,
+  HistoryOutlined,
 } from "@ant-design/icons";
 import theme from "../../theme";
 
@@ -17,6 +19,7 @@ const DeanNavbar: React.FC = () => {
     if (location.pathname === "/user") return "1";
     if (location.pathname.startsWith("/user/work")) return "2";
     if (location.pathname.startsWith("/user/history")) return "3";
+    if (location.pathname.startsWith("/user/chart")) return "4";
     return "1";
   };
 
@@ -69,7 +72,7 @@ const DeanNavbar: React.FC = () => {
         <Menu.Item
           key="2"
           icon={
-            <FileTextOutlined
+            <SnippetsOutlined
               style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
             />
           }
@@ -92,7 +95,7 @@ const DeanNavbar: React.FC = () => {
         <Menu.Item
           key="3"
           icon={
-            <FileTextOutlined
+            <HistoryOutlined
               style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
             />
           }
@@ -110,6 +113,29 @@ const DeanNavbar: React.FC = () => {
             style={{ fontSize: theme.fontSize.md, color: "#fff" }}
           >
             ประวัติภาระงาน
+          </Link>
+        </Menu.Item>
+        <Menu.Item
+          key="4"
+          icon={
+            <FileTextOutlined
+              style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
+            />
+          }
+          style={{
+            margin: `${theme.spacing.sm} ${theme.spacing.md}`,
+            borderRadius: theme.borderRadius.md,
+            height: "48px",
+            lineHeight: "48px",
+            color: theme.primary,
+            background: getSelectedKey() === "4" ? "#5746b6" : "",
+          }}
+        >
+          <Link
+            to="/user/chart"
+            style={{ fontSize: theme.fontSize.md, color: "#fff" }}
+          >
+            Test
           </Link>
         </Menu.Item>
       </Menu>

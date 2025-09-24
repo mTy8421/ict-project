@@ -61,6 +61,12 @@ const ReHeader: React.FC = () => {
       onClick: () => navigate("/user/history"),
     },
     {
+      key: "Chart",
+      label: "ประวัติภาระงาน",
+      icon: <HistoryOutlined style={{ color: "#000" }} />,
+      onClick: () => navigate("/user/chart"),
+    },
+    {
       key: "Logout",
       label: "ออกจากระบบ",
       icon: <LogoutOutlined style={{ color: "#000" }} />,

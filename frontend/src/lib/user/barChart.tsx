@@ -15,72 +15,101 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend,
+  Legend
 );
 
-const options = {
-  plugins: {
-    title: {
-      display: false,
-      text: "test",
-    },
-  },
-  responsive: true,
-  interaction: {
-    mode: "index" as const,
-    intersect: false,
-  },
-  scales: {
-    x: {
-      stacked: true,
-    },
-    y: {
-      stacked: true,
-    },
-  },
-};
+interface Props {
+  dataResponse: any;
+}
 
-const labels = [
-  "มกราคม",
-  "กุมภาพันธ์",
-  "มีนาคม",
-  "เมษายน",
-  "พฤษภาคม",
-  "มิถุนายน",
-  "กรกฎาคม",
-  "สิงหาคม",
-  "กันยายน",
-  "ตุลาคม",
-  "พฤศจิกายน",
-  "ธันวาคม",
-];
+export function BarChart({ dataResponse }: Props) {
+  const labels = Array.from(
+    new Set(
+      dataResponse.map((item: any) =>
+        new Date(item.dateTimeEnd).toLocaleString("th-TH", { month: "long" })
+      )
+    )
+  );
 
-const datas = [10, 20, 30, 40, 50, 60, 70, 30, 40, 50, 60, 70];
+  // Count occurrences of each month
+  const datasLow = labels.map(
+    (month) =>
+      dataResponse.filter(
+        (item: any) =>
+          item.options.priority === "low" &&
+          new Date(item.dateTimeEnd).toLocaleString("th-TH", {
+            month: "long",
+          }) === month
+      ).length
+  );
 
-const data = {
-  labels,
-  datasets: [
-    {
-      label: "สูง",
-      data: datas,
-      backgroundColor: "rgba(255, 99, 132, 0.6)",
-      stack: "Stack 0",
-    },
-    {
-      label: "ปานกลาง",
-      data: datas,
-      backgroundColor: "rgba(255, 206, 86, 0.6)",
-      stack: "Stack 1",
-    },
-    {
-      label: "ต่ำ",
-      data: datas,
-      backgroundColor: "rgba(75, 192, 192, 0.6)",
-      stack: "Stack 2",
-    },
-  ],
-};
+  const datasMedium = labels.map(
+    (month) =>
+      dataResponse.filter(
+        (item: any) =>
+          item.options.priority === "medium" &&
+          new Date(item.dateTimeEnd).toLocaleString("th-TH", {
+            month: "long",
+          }) === month
+      ).length
+  );
 
-export function BarChart() {
-  return <Bar options={options} data={data} />;
+  const datasHigh = labels.map(
+    (month) =>
+      dataResponse.filter(
+        (item: any) =>
+          item.options.priority === "high" &&
+          new Date(item.dateTimeEnd).toLocaleString("th-TH", {
+            month: "long",
+          }) === month
+      ).length
+  );
+
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        label: "สูง",
+        data: datasHigh,
+        backgroundColor: "rgba(255, 99, 132, 0.6)",
+        stack: "Stack 0",
+      },
+      {
+        label: "ปานกลาง",
+        data: datasMedium,
+        backgroundColor: "rgba(255, 206, 86, 0.6)",
+        stack: "Stack 0",
+      },
+      {
+        label: "ต่ำ",
+        data: datasLow,
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        stack: "Stack 0",
+      },
+    ],
+  };
+
+  const option = {
+    plugins: {
+      title: {
+        display: false,
+        text: "test",
+      },
+    },
+    responsive: true,
+    interaction: {
+      mode: "index" as const,
+      intersect: false,
+    },
+    scales: {
+      x: {
+        stacked: true,
+      },
+      y: {
+        stacked: true,
+      },
+    },
+  };
+
+  return <Bar options={option} data={data} />;
 }

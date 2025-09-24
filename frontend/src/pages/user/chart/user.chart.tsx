@@ -33,10 +33,8 @@ const { Title, Text } = Typography;
 
 interface Workload {
   id: number;
-  // title: string;
   description: string;
   department: string;
-  // priority: "low" | "medium" | "high";
   status: "pending" | "in_progress" | "completed";
   dateTimeStart: string;
   dateTimeEnd: string;
@@ -63,6 +61,7 @@ const UserChert: React.FC = () => {
   useEffect(() => {
     fetchWorkloads();
   }, []);
+
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -189,7 +188,6 @@ const UserChert: React.FC = () => {
                 <Title
                   level={3}
                   style={{
-                    // margin: 0,
                     color: theme.primary,
                     fontWeight: theme.fontWeight.semibold,
                   }}
@@ -197,7 +195,7 @@ const UserChert: React.FC = () => {
                   ภาพรวมภาระงาน
                 </Title>
 
-                <BarChart />
+                <BarChart dataResponse={workloads} />
               </div>
 
               <div

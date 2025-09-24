@@ -57,6 +57,7 @@ export default function App() {
           path="/user/history/detail/:id"
           element={<UserHistoryDetail />}
         />
+        <Route path="/user/chart" element={<UserChert />} />
 
         <Route path="/head" element={<Head />} />
         <Route path="/head/work" element={<HeadWork />} />
@@ -116,7 +117,6 @@ export default function App() {
           path="/vice-dean/student-quality"
           element={<StudentQualityDashboard />}
         />
-        <Route path="/test" element={<UserChert />} />
       </Routes>
     </BrowserRouter>
   );
