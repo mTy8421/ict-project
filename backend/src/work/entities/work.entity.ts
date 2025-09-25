@@ -24,6 +24,9 @@ export class Work {
   department: string;
 
   @Column({ type: 'date', nullable: true })
+  dateTimeNow: string;
+
+  @Column({ type: 'date', nullable: true })
   dateTimeStart: string;
 
   @Column({ type: 'date', nullable: true })

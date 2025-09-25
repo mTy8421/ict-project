@@ -42,19 +42,20 @@ export class WorkService {
         `Option with ID ${createWorkDto.options} Not found`,
       );
     }
-
+// 2025-09-25
     const works = await this.workRepository
       .createQueryBuilder('work')
       .insert()
       .into(Work)
       .values({
-        description: createWorkDto.description,
-        status: createWorkDto.status,
-        department: createWorkDto.department,
-        dateTimeStart: createWorkDto.dateTimeStart,
-        dateTimeEnd: createWorkDto.dateTimeEnd,
-        user: user ?? undefined,
-        options: option ?? undefined,
+      description: createWorkDto.description,
+      status: createWorkDto.status,
+      department: createWorkDto.department,
+      dateTimeNow: new Date().getFullYear().toString() + '-' + (new Date().getMonth() + 1).toString() + '-' + new Date().getDate().toString(),
+      dateTimeStart: createWorkDto.dateTimeStart,
+      dateTimeEnd: createWorkDto.dateTimeEnd,
+      user: user ?? undefined,
+      options: option ?? undefined,
       })
       .execute();
 

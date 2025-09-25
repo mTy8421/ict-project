@@ -191,7 +191,7 @@ const UserChert: React.FC = () => {
                     fontWeight: theme.fontWeight.semibold,
                   }}
                 >
-                  สรุปผลภาระงาน (ประจำเดือน)
+                  สรุปผลภาระงาน ( ประจำปี {new Date().getFullYear()} )
                 </Title>
 
                 <BarChart dataResponse={workloads} />

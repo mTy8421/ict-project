@@ -39,7 +39,8 @@ export function BarChart({ dataResponse }: Props) {
           item.options.priority === "low" &&
           new Date(item.dateTimeEnd).toLocaleString("th-TH", {
             month: "long",
-          }) === month
+          }) === month &&
+          new Date(item.dateTimeEnd).getFullYear() === new Date().getFullYear()
       ).length
   );
 
@@ -50,7 +51,8 @@ export function BarChart({ dataResponse }: Props) {
           item.options.priority === "medium" &&
           new Date(item.dateTimeEnd).toLocaleString("th-TH", {
             month: "long",
-          }) === month
+          }) === month &&
+          new Date(item.dateTimeEnd).getFullYear() === new Date().getFullYear()
       ).length
   );
 
@@ -61,7 +63,8 @@ export function BarChart({ dataResponse }: Props) {
           item.options.priority === "high" &&
           new Date(item.dateTimeEnd).toLocaleString("th-TH", {
             month: "long",
-          }) === month
+          }) === month &&
+          new Date(item.dateTimeEnd).getFullYear() === new Date().getFullYear()
       ).length
   );
 
@@ -72,19 +75,19 @@ export function BarChart({ dataResponse }: Props) {
         label: "สูง",
         data: datasHigh,
         backgroundColor: "rgba(255, 99, 132, 0.6)",
-        stack: "Stack 0",
+        stack: "Stack 1",
       },
       {
         label: "ปานกลาง",
         data: datasMedium,
         backgroundColor: "rgba(255, 206, 86, 0.6)",
-        stack: "Stack 0",
+        stack: "Stack 2",
       },
       {
         label: "ต่ำ",
         data: datasLow,
         backgroundColor: "rgba(75, 192, 192, 0.6)",
-        stack: "Stack 0",
+        stack: "Stack 3",
       },
     ],
   };

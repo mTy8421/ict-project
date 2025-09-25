@@ -88,7 +88,7 @@ const AdminWorkLoad: React.FC = () => {
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้",
+        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้"
       );
     } finally {
       setLoading(false);
@@ -171,7 +171,7 @@ const AdminWorkLoad: React.FC = () => {
 
               <Card
                 style={{
-                  maxWidth: 800,
+                  // maxWidth: 800,
                   margin: `${theme.spacing.xl} auto`,
                   borderRadius: theme.borderRadius.lg,
                   boxShadow: theme.shadow,
@@ -244,6 +244,7 @@ const AdminWorkLoad: React.FC = () => {
                       >
                         <Input
                           placeholder="กรอกรหัสผ่าน"
+                          type="password"
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,
@@ -436,7 +437,7 @@ const AdminWorkLoad: React.FC = () => {
 
               <Card
                 style={{
-                  maxWidth: 800,
+                  // maxWidth: 800,
                   margin: `${theme.spacing.xl} auto`,
                   borderRadius: theme.borderRadius.lg,
                   boxShadow: theme.shadow,
@@ -517,6 +518,7 @@ const AdminWorkLoad: React.FC = () => {
                             borderColor: theme.textLight,
                             width: "100%",
                           }}
+                          type="password"
                         />
                       </Form.Item>
                     </Col>

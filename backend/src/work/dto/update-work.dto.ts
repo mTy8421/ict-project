@@ -10,6 +10,9 @@ export class UpdateWorkDto extends PartialType(CreateWorkDto) {
   status: string;
 
   @IsObject()
+  dateTimeNow: string;
+  
+  @IsObject()
   dateTimeStart: string;
 
   @IsObject()

@@ -81,7 +81,7 @@ const Priority: React.FC = () => {
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้",
+        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้"
       );
     } finally {
       setLoading(false);
@@ -164,7 +164,7 @@ const Priority: React.FC = () => {
 
               <Card
                 style={{
-                  maxWidth: 800,
+                  // maxWidth: 800,
                   margin: `${theme.spacing.xl} auto`,
                   borderRadius: theme.borderRadius.lg,
                   boxShadow: theme.shadow,
@@ -322,7 +322,7 @@ const Priority: React.FC = () => {
 
               <Card
                 style={{
-                  maxWidth: 800,
+                  // maxWidth: 800,
                   margin: `${theme.spacing.xl} auto`,
                   borderRadius: theme.borderRadius.lg,
                   boxShadow: theme.shadow,

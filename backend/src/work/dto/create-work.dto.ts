@@ -14,6 +14,9 @@ export class CreateWorkDto {
   department: string;
 
   @IsString()
+  dateTimeNow?: string;
+  
+  @IsString()
   dateTimeStart?: string;
 
   @IsNotEmpty()
