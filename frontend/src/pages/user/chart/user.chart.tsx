@@ -35,7 +35,7 @@ interface Workload {
   id: number;
   description: string;
   department: string;
-  status: "pending" | "in_progress" | "completed";
+  status: "pending" | "not_completed" | "completed";
   dateTimeStart: string;
   dateTimeEnd: string;
   options: any;
@@ -62,12 +62,11 @@ const UserChert: React.FC = () => {
     fetchWorkloads();
   }, []);
 
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
         return "warning";
-      case "in_progress":
+      case "not_completed":
         return "processing";
       case "completed":
         return "success";
@@ -80,10 +79,10 @@ const UserChert: React.FC = () => {
     switch (status) {
       case "pending":
         return "รอดำเนินการ";
-      case "in_progress":
-        return "กำลังดำเนินการ";
+      case "not_completed":
+        return "ไม่อนุมัติ";
       case "completed":
-        return "เสร็จสิ้น";
+        return "อนุมัติ";
       default:
         return status;
     }
@@ -125,13 +124,13 @@ const UserChert: React.FC = () => {
   });
 
   const completedWorkloads = workloads.filter(
-    (w) => w.status === "completed",
+    (w) => w.status === "completed"
   ).length;
   const inProgressWorkloads = workloads.filter(
-    (w) => w.status === "in_progress",
+    (w) => w.status === "not_completed"
   ).length;
   const pendingWorkloads = workloads.filter(
-    (w) => w.status === "pending",
+    (w) => w.status === "pending"
   ).length;
 
   const completionRate =
@@ -192,7 +191,7 @@ const UserChert: React.FC = () => {
                     fontWeight: theme.fontWeight.semibold,
                   }}
                 >
-                  ภาพรวมภาระงาน
+                  สรุปผลภาระงาน (ประจำเดือน)
                 </Title>
 
                 <BarChart dataResponse={workloads} />

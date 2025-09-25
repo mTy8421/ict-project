@@ -51,7 +51,7 @@ interface Workload {
   // title: string;
   department: string;
   assignee: string;
-  status: "pending" | "in_progress" | "completed";
+  status: "pending" | "not_completed" | "completed";
   // priority: "low" | "medium" | "high";
   dateTimeStart: string;
   dateTimeEnd: string;
@@ -114,7 +114,7 @@ const AdminWork: React.FC = () => {
     switch (status) {
       case "pending":
         return theme.warning;
-      case "in_progress":
+      case "not_completed":
         return theme.accent;
       case "completed":
         return theme.success;
@@ -140,10 +140,10 @@ const AdminWork: React.FC = () => {
     switch (status) {
       case "pending":
         return "รอดำเนินการ";
-      case "in_progress":
-        return "กำลังดำเนินการ";
+      case "not_completed":
+        return "ไม่อนุมัติ";
       case "completed":
-        return "เสร็จสิ้น";
+        return "อนุมัติ";
       default:
         return status;
     }

@@ -51,7 +51,7 @@ interface Workload {
   // title: string;
   department: string;
   assignee: string;
-  status: "pending" | "in_progress" | "completed";
+  status: "pending" | "not_completed" | "completed";
   // priority: "low" | "medium" | "high";
   dateTimeStart: string;
   dateTimeEnd: string;
@@ -114,7 +114,7 @@ const HeadWork: React.FC = () => {
     switch (status) {
       case "pending":
         return theme.warning;
-      case "in_progress":
+      case "not_completed":
         return theme.accent;
       case "completed":
         return theme.success;
@@ -140,10 +140,10 @@ const HeadWork: React.FC = () => {
     switch (status) {
       case "pending":
         return "รอดำเนินการ";
-      case "in_progress":
-        return "กำลังดำเนินการ";
+      case "not_completed":
+        return "ไม่อนุมัติ";
       case "completed":
-        return "เสร็จสิ้น";
+        return "อนุมัติ";
       default:
         return status;
     }
@@ -203,41 +203,41 @@ const HeadWork: React.FC = () => {
 
   const filteredWorkloads = workloads.filter((workload) => {
     const matchesSearch = (workload.user_name?.toLowerCase() || "").includes(
-      searchText.toLowerCase(),
+      searchText.toLowerCase()
     );
 
     return matchesSearch;
   });
 
-  if (loading) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          background: theme.background,
-        }}
-      >
-        <div style={{ textAlign: "center" }}>
-          <SyncOutlined
-            spin
-            style={{ fontSize: "48px", color: theme.accent }}
-          />
-          <p
-            style={{
-              marginTop: theme.spacing.md,
-              fontSize: theme.fontSize.md,
-              color: theme.textLight,
-            }}
-          >
-            กำลังโหลดข้อมูล...
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div
+  //       style={{
+  //         display: "flex",
+  //         justifyContent: "center",
+  //         alignItems: "center",
+  //         height: "100vh",
+  //         background: theme.background,
+  //       }}
+  //     >
+  //       <div style={{ textAlign: "center" }}>
+  //         <SyncOutlined
+  //           spin
+  //           style={{ fontSize: "48px", color: theme.accent }}
+  //         />
+  //         <p
+  //           style={{
+  //             marginTop: theme.spacing.md,
+  //             fontSize: theme.fontSize.md,
+  //             color: theme.textLight,
+  //           }}
+  //         >
+  //           กำลังโหลดข้อมูล...
+  //         </p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>

@@ -135,7 +135,7 @@ const DeanNavbar: React.FC = () => {
             to="/user/chart"
             style={{ fontSize: theme.fontSize.md, color: "#fff" }}
           >
-            Test
+            สรุปผลภาระงาน
           </Link>
         </Menu.Item>
       </Menu>

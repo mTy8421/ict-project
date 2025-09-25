@@ -34,7 +34,7 @@ interface Workload {
   description: string;
   department: string;
   // priority: "low" | "medium" | "high";
-  status: "pending" | "in_progress" | "completed";
+  status: "pending" | "not_completed" | "completed";
   dateTimeStart: string;
   dateTimeEnd: string;
   options: any;
@@ -65,7 +65,7 @@ const Head: React.FC = () => {
     switch (status) {
       case "pending":
         return "warning";
-      case "in_progress":
+      case "not_completed":
         return "processing";
       case "completed":
         return "success";
@@ -78,10 +78,10 @@ const Head: React.FC = () => {
     switch (status) {
       case "pending":
         return "รอดำเนินการ";
-      case "in_progress":
-        return "กำลังดำเนินการ";
+      case "not_completed":
+        return "ไม่อนุมัติ";
       case "completed":
-        return "เสร็จสิ้น";
+        return "อนุมัติ";
       default:
         return status;
     }
@@ -123,13 +123,13 @@ const Head: React.FC = () => {
   });
 
   const completedWorkloads = workloads.filter(
-    (w) => w.status === "completed",
+    (w) => w.status === "completed"
   ).length;
   const inProgressWorkloads = workloads.filter(
-    (w) => w.status === "in_progress",
+    (w) => w.status === "not_completed"
   ).length;
   const pendingWorkloads = workloads.filter(
-    (w) => w.status === "pending",
+    (w) => w.status === "pending"
   ).length;
 
   const completionRate =
@@ -278,7 +278,7 @@ const Head: React.FC = () => {
                     styles={{ body: { padding: theme.spacing.xl } }}
                   >
                     <Statistic
-                      title="กำลังดำเนินการ"
+                      title="ไม่อนุมัติ"
                       value={inProgressWorkloads}
                       prefix={
                         <ClockCircleOutlined style={{ color: theme.primary }} />
@@ -297,7 +297,7 @@ const Head: React.FC = () => {
                     styles={{ body: { padding: theme.spacing.xl } }}
                   >
                     <Statistic
-                      title="เสร็จสิ้น"
+                      title="อนุมัติ"
                       value={completedWorkloads}
                       prefix={
                         <CheckCircleOutlined style={{ color: theme.primary }} />
@@ -310,7 +310,7 @@ const Head: React.FC = () => {
 
               <div style={{ marginTop: theme.spacing.xl }}>
                 <Card
-                  title="อัตราการเสร็จสิ้น"
+                  title="อัตราการอนุมัติ"
                   style={{
                     borderRadius: theme.borderRadius.lg,
                     boxShadow: theme.shadow,
@@ -352,7 +352,7 @@ const Head: React.FC = () => {
                         </Text>
                       </div>
                       <div>
-                        <Text type="secondary">กำลังดำเนินการ</Text>
+                        <Text type="secondary">ไม่อนุมัติ</Text>
                         <Text
                           strong
                           style={{ display: "block", color: theme.primary }}
@@ -361,7 +361,7 @@ const Head: React.FC = () => {
                         </Text>
                       </div>
                       <div>
-                        <Text type="secondary">เสร็จสิ้น</Text>
+                        <Text type="secondary">อนุมัติ</Text>
                         <Text
                           strong
                           style={{ display: "block", color: theme.success }}
@@ -535,7 +535,7 @@ const Head: React.FC = () => {
                     styles={{ body: { padding: theme.spacing.xl } }}
                   >
                     <Statistic
-                      title="กำลังดำเนินการ"
+                      title="ไม่อนุมัติ"
                       value={inProgressWorkloads}
                       prefix={
                         <ClockCircleOutlined style={{ color: theme.primary }} />
@@ -554,7 +554,7 @@ const Head: React.FC = () => {
                     styles={{ body: { padding: theme.spacing.xl } }}
                   >
                     <Statistic
-                      title="เสร็จสิ้น"
+                      title="อนุมัติ"
                       value={completedWorkloads}
                       prefix={
                         <CheckCircleOutlined style={{ color: theme.primary }} />
@@ -567,7 +567,7 @@ const Head: React.FC = () => {
 
               <div style={{ marginTop: theme.spacing.xl }}>
                 <Card
-                  title="อัตราการเสร็จสิ้น"
+                  title="อัตราการอนุมัติ"
                   style={{
                     borderRadius: theme.borderRadius.lg,
                     boxShadow: theme.shadow,
@@ -609,7 +609,7 @@ const Head: React.FC = () => {
                         </Text>
                       </div>
                       <div>
-                        <Text type="secondary">กำลังดำเนินการ</Text>
+                        <Text type="secondary">ไม่อนุมัติ</Text>
                         <Text
                           strong
                           style={{ display: "block", color: theme.primary }}
@@ -618,7 +618,7 @@ const Head: React.FC = () => {
                         </Text>
                       </div>
                       <div>
-                        <Text type="secondary">เสร็จสิ้น</Text>
+                        <Text type="secondary">อนุมัติ</Text>
                         <Text
                           strong
                           style={{ display: "block", color: theme.success }}

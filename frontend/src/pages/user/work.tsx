@@ -50,7 +50,7 @@ interface Workload {
   // title: string;
   department: string;
   assignee: string;
-  status: "pending" | "in_progress" | "completed";
+  status: "pending" | "not_completed" | "completed";
   // priority: "low" | "medium" | "high";
   dateTimeStart: string;
   dateTimeEnd: string;
@@ -113,7 +113,7 @@ const UserWork: React.FC = () => {
     switch (status) {
       case "pending":
         return theme.warning;
-      case "in_progress":
+      case "not_completed":
         return theme.accent;
       case "completed":
         return theme.success;
@@ -139,10 +139,10 @@ const UserWork: React.FC = () => {
     switch (status) {
       case "pending":
         return "รอดำเนินการ";
-      case "in_progress":
-        return "กำลังดำเนินการ";
+      case "not_completed":
+        return "ไม่อนุมัติ";
       case "completed":
-        return "เสร็จสิ้น";
+        return "อนุมัติ";
       default:
         return status;
     }
@@ -207,21 +207,27 @@ const UserWork: React.FC = () => {
         </Tag>
       ),
     },
+    // {
+    //   title: "วันที่เริ่มต้น",
+    //   dataIndex: "dateTimeStart",
+    //   key: "dateTimeStart",
+    //   render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
+    // },
+    // {
+    //   title: "วันที่สิ้นสุด",
+    //   dataIndex: "dateTimeEnd",
+    //   key: "dateTimeEnd",
+    //   render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
+    // },
     {
-      title: "วันที่เริ่มต้น",
-      dataIndex: "dateTimeStart",
-      key: "dateTimeStart",
-      // dataIndex: "start_date",
-      // key: "start_date",
-      render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
-    },
-    {
-      title: "วันที่สิ้นสุด",
-      dataIndex: "dateTimeEnd",
-      key: "dateTimeEnd",
-      // dataIndex: "end_date",
-      // key: "end_date",
-      render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
+      title: "วันที่เริ่มต้น - สิ้นสุด",
+      key: "dateRange",
+      render: (record: Workload) => (
+        <span>
+          {new Date(record.dateTimeStart).toLocaleDateString("th-TH")} -{" "}
+          {new Date(record.dateTimeEnd).toLocaleDateString("th-TH")}
+        </span>
+      ),
     },
     {
       title: "จัดการ",
@@ -288,35 +294,35 @@ const UserWork: React.FC = () => {
     return matchesSearch && matchesStatus && matchesPriority && matchesDate;
   });
 
-  if (loading) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          background: theme.background,
-        }}
-      >
-        <div style={{ textAlign: "center" }}>
-          <SyncOutlined
-            spin
-            style={{ fontSize: "48px", color: theme.accent }}
-          />
-          <p
-            style={{
-              marginTop: theme.spacing.md,
-              fontSize: theme.fontSize.md,
-              color: theme.textLight,
-            }}
-          >
-            กำลังโหลดข้อมูล...
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div
+  //       style={{
+  //         display: "flex",
+  //         justifyContent: "center",
+  //         alignItems: "center",
+  //         height: "100vh",
+  //         background: theme.background,
+  //       }}
+  //     >
+  //       <div style={{ textAlign: "center" }}>
+  //         <SyncOutlined
+  //           spin
+  //           style={{ fontSize: "48px", color: theme.accent }}
+  //         />
+  //         <p
+  //           style={{
+  //             marginTop: theme.spacing.md,
+  //             fontSize: theme.fontSize.md,
+  //             color: theme.textLight,
+  //           }}
+  //         >
+  //           กำลังโหลดข้อมูล...
+  //         </p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
@@ -427,8 +433,8 @@ const UserWork: React.FC = () => {
                       onChange={setStatusFilter}
                       options={[
                         { label: "รอดำเนินการ", value: "pending" },
-                        { label: "กำลังดำเนินการ", value: "in_progress" },
-                        { label: "เสร็จสิ้น", value: "completed" },
+                        { label: "ไม่อนุมัติ", value: "not_completed" },
+                        { label: "อนุมัติ", value: "completed" },
                       ]}
                     />
                   </Col>
@@ -597,8 +603,8 @@ const UserWork: React.FC = () => {
                       onChange={setStatusFilter}
                       options={[
                         { label: "รอดำเนินการ", value: "pending" },
-                        { label: "กำลังดำเนินการ", value: "in_progress" },
-                        { label: "เสร็จสิ้น", value: "completed" },
+                        { label: "ไม่อนุมัติ", value: "not_completed" },
+                        { label: "อนุมัติ", value: "completed" },
                       ]}
                     />
                   </Col>

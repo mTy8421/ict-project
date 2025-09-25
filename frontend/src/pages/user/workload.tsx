@@ -125,7 +125,7 @@ const UserWorkLoad: React.FC = () => {
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้",
+        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้"
       );
     } finally {
       setLoading(false);
@@ -149,7 +149,7 @@ const UserWorkLoad: React.FC = () => {
             <Content
               style={{
                 maxWidth: "1200px",
-                margin: "0 15%",
+                margin: "0 auto",
                 padding: `0 ${theme.spacing.xl}`,
               }}
             >
@@ -205,7 +205,7 @@ const UserWorkLoad: React.FC = () => {
 
               <Card
                 style={{
-                  maxWidth: 800,
+                  // maxWidth: 800,
                   margin: `${theme.spacing.xl} auto`,
                   borderRadius: theme.borderRadius.lg,
                   boxShadow: theme.shadow,
@@ -411,7 +411,7 @@ const UserWorkLoad: React.FC = () => {
 
               <Card
                 style={{
-                  maxWidth: 800,
+                  // maxWidth: 800,
                   margin: `${theme.spacing.xl} auto`,
                   borderRadius: theme.borderRadius.lg,
                   boxShadow: theme.shadow,

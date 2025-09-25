@@ -62,7 +62,7 @@ const ReHeader: React.FC = () => {
     },
     {
       key: "Chart",
-      label: "ประวัติภาระงาน",
+      label: "สรุปผลภาระงาน",
       icon: <HistoryOutlined style={{ color: "#000" }} />,
       onClick: () => navigate("/user/chart"),
     },
