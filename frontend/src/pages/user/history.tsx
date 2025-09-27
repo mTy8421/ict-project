@@ -199,17 +199,27 @@ const UserHistory: React.FC = () => {
         </Tag>
       ),
     },
+    // {
+    //   title: "วันที่เริ่มต้น",
+    //   dataIndex: "dateTimeStart",
+    //   key: "dateTimeStart",
+    //   render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
+    // },
+    // {
+    //   title: "วันที่สิ้นสุด",
+    //   dataIndex: "dateTimeEnd",
+    //   key: "dateTimeEnd",
+    //   render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
+    // },
     {
-      title: "วันที่เริ่มต้น",
-      dataIndex: "dateTimeStart",
-      key: "dateTimeStart",
-      render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
-    },
-    {
-      title: "วันที่สิ้นสุด",
-      dataIndex: "dateTimeEnd",
-      key: "dateTimeEnd",
-      render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
+      title: "วันที่เริ่มต้น - สิ้นสุด",
+      key: "dateRange",
+      render: (record: Workload) => (
+        <span>
+          {new Date(record.dateTimeStart).toLocaleDateString("th-TH")} -{" "}
+          {new Date(record.dateTimeEnd).toLocaleDateString("th-TH")}
+        </span>
+      ),
     },
     {
       title: "จัดการ",

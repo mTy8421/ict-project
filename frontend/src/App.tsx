@@ -76,6 +76,7 @@ export default function App() {
           path="/head/history/detail/:id"
           element={<HeadHistoryDetail />}
         />
+        <Route path="/head/chart" element={<UserChert />} />
 
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/user/new" element={<AdminWorkLoad />} />
