@@ -41,6 +41,7 @@ import AdminWorkStatusDetail from "./pages/admin/work.detail";
 import PriorityEdit from "./pages/admin/setting/priority.edit";
 
 import UserChert from "./pages/user/chart/user.chart";
+import HeadChart from "./pages/head/chart/head.chart";
 
 export default function App() {
   return (
@@ -76,7 +77,7 @@ export default function App() {
           path="/head/history/detail/:id"
           element={<HeadHistoryDetail />}
         />
-        <Route path="/head/chart" element={<UserChert />} />
+        <Route path="/head/chart" element={<HeadChart />} />
 
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/user/new" element={<AdminWorkLoad />} />

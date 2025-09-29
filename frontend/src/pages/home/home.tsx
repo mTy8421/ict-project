@@ -52,7 +52,21 @@ export default function Home() {
             case "หัวหน้าสำนักงาน":
               navigate("/head");
               break;
+            case "หัวหน้างานฝ่ายวิจัยและนวัตถกรรม":
+              navigate("/head");
+              break;
+            case "หัวหน้างานฝ่ายคุณภาพนิสิต":
+              navigate("/head");
+              break;
+            case "หัวหน้างานฝ่ายยุทธศาสตร์และพัฒนาองค์กร":
+              navigate("/head");
+              break;
+            case "หัวหน้างานฝ่ายวิชาการ":
+              navigate("/head");
+              break;
             case "พนักงาน":
+              navigate("/user");
+              break;
             default:
               navigate("/user");
           }
@@ -112,7 +126,21 @@ export default function Home() {
           case "หัวหน้าสำนักงาน":
             navigate("/head");
             break;
+          case "หัวหน้างานฝ่ายวิจัยและนวัตถกรรม":
+            navigate("/head");
+            break;
+          case "หัวหน้างานฝ่ายคุณภาพนิสิต":
+            navigate("/head");
+            break;
+          case "หัวหน้างานฝ่ายยุทธศาสตร์และพัฒนาองค์กร":
+            navigate("/head");
+            break;
+          case "หัวหน้างานฝ่ายวิชาการ":
+            navigate("/head");
+            break;
           case "พนักงาน":
+            navigate("/user");
+            break;
           default:
             navigate("/user");
         }

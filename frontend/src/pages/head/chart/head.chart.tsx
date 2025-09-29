@@ -21,9 +21,9 @@ import {
 } from "@ant-design/icons";
 import axiosInstance from "../../../utils/axios";
 import theme from "../../../theme";
-import DeanHeader from "../../../components/user/Header";
-import DeanNavbar from "../../../components/user/Navbar";
-import ReHeader from "../../../components/user/NavbarHeader";
+import DeanHeader from "../../../components/head/Header";
+import DeanNavbar from "../../../components/head/Navbar";
+import ReHeader from "../../../components/head/NavbarHeader";
 
 import { BarChart } from "../../../lib/user/barChart";
 import { Doughnuts } from "../../../lib/user/doughnutChart";
@@ -41,7 +41,7 @@ interface Workload {
   options: any;
 }
 
-const UserChert: React.FC = () => {
+const HeadChart: React.FC = () => {
   const navigate = useNavigate();
   const [workloads, setWorkloads] = useState<Workload[]>([]);
   const [loading, setLoading] = useState(true);
@@ -236,4 +236,4 @@ const UserChert: React.FC = () => {
   );
 };
 
-export default UserChert;
+export default HeadChart;
