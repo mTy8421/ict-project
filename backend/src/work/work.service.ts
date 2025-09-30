@@ -20,7 +20,7 @@ export class WorkService {
     @InjectRepository(Option) private optionRepsitory: Repository<Option>,
     @InjectRepository(UploadFile)
     private upload_fileRepsitory: Repository<UploadFile>,
-  ) { }
+  ) {}
 
   async create(createWorkDto: CreateWorkDto, files: Express.Multer.File[]) {
     const user = await this.userRepository.findOne({
@@ -42,20 +42,24 @@ export class WorkService {
         `Option with ID ${createWorkDto.options} Not found`,
       );
     }
-// 2025-09-25
     const works = await this.workRepository
       .createQueryBuilder('work')
       .insert()
       .into(Work)
       .values({
-      description: createWorkDto.description,
-      status: createWorkDto.status,
-      department: createWorkDto.department,
-      dateTimeNow: new Date().getFullYear().toString() + '-' + (new Date().getMonth() + 1).toString() + '-' + new Date().getDate().toString(),
-      dateTimeStart: createWorkDto.dateTimeStart,
-      dateTimeEnd: createWorkDto.dateTimeEnd,
-      user: user ?? undefined,
-      options: option ?? undefined,
+        description: createWorkDto.description,
+        status: createWorkDto.status,
+        department: createWorkDto.department,
+        dateTimeNow:
+          new Date().getFullYear().toString() +
+          '-' +
+          (new Date().getMonth() + 1).toString() +
+          '-' +
+          new Date().getDate().toString(),
+        dateTimeStart: createWorkDto.dateTimeStart,
+        dateTimeEnd: createWorkDto.dateTimeEnd,
+        user: user ?? undefined,
+        options: option ?? undefined,
       })
       .execute();
 
@@ -149,6 +153,19 @@ export class WorkService {
     return works;
   }
 
+  findAllByUserRole(role: string) {
+    const works = this.workRepository
+      .createQueryBuilder('work')
+      .innerJoinAndSelect('work.options', 'option')
+      .innerJoinAndSelect('work.user', 'user')
+      .where('user.user_role = :user_role', {
+        user_role: role,
+      })
+      .getMany();
+    return works;
+  }
+
+  // File Upload Function
   async uploadMultiFile(files: Express.Multer.File[], workID: number) {
     if (!files || files.length === 0) {
       throw new Error('No files were uploaded.');

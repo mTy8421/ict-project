@@ -19,7 +19,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 @Controller('user')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -39,6 +39,11 @@ export class UserController {
   @Get('user')
   findAllUser() {
     return this.userService.findAllUser();
+  }
+
+  @Get('department/:role')
+  findAllDepartment(@Param('role') role: string) {
+    return this.userService.findAllDepartment(role);
   }
 
   @Get('head')

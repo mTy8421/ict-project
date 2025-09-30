@@ -21,7 +21,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('work')
 export class WorkController {
-  constructor(private readonly workService: WorkService) { }
+  constructor(private readonly workService: WorkService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('user')
@@ -38,6 +38,11 @@ export class WorkController {
   @Get('head/:id')
   findByUserHead(@Param('id') id: string) {
     return this.workService.findByUser(+id);
+  }
+
+  @Get('role/:role')
+  findAllByUserRole(@Param('role') role: string) {
+    return this.workService.findAllByUserRole(role);
   }
 
   @Post()

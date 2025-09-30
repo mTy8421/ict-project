@@ -65,6 +65,7 @@ const DetailHeadWorkLoad: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const [buttonAction, setButtonAction] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
 
@@ -130,7 +131,7 @@ const DetailHeadWorkLoad: React.FC = () => {
       const workload = response.data;
 
       const imagesResponse = await axiosInstance.get(
-        `upload-file/show/id/${id}`,
+        `upload-file/show/id/${id}`
       );
       setImages(imagesResponse.data);
 
@@ -160,20 +161,17 @@ const DetailHeadWorkLoad: React.FC = () => {
 
       const workloadData = {
         description: values.description,
-        status: "completed",
+        status: buttonAction,
       };
 
-      console.log("Sending data:", workloadData);
-
-      const response = await axiosInstance.patch(`/work/${id}`, workloadData);
-      console.log("Response:", response.data);
+      await axiosInstance.patch(`/work/${id}`, workloadData);
 
       message.success("เพิ่มภาระงานสำเร็จ");
       navigate(`/head/work/user/${searchParams.get("uid")}`);
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้",
+        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้"
       );
     } finally {
       setLoading(false);
@@ -257,7 +255,7 @@ const DetailHeadWorkLoad: React.FC = () => {
 
               <Card
                 style={{
-                  maxWidth: 800,
+                  // maxWidth: 800,
                   margin: `${theme.spacing.xl} auto`,
                   borderRadius: theme.borderRadius.lg,
                   boxShadow: theme.shadow,
@@ -362,11 +360,41 @@ const DetailHeadWorkLoad: React.FC = () => {
 
                   <Divider style={{ margin: `${theme.spacing.xl} 0` }} />
 
-                  <Form.Item style={{ textAlign: "right", marginBottom: 0 }}>
+                  <Form.Item
+                    style={{
+                      marginBottom: 0,
+                      display: "flex",
+                      justifyContent: "space-around",
+                    }}
+                  >
                     <Button
                       type="primary"
                       htmlType="submit"
-                      loading={loading}
+                      // loading={loading}
+                      icon={<SaveOutlined />}
+                      style={{
+                        height: 48,
+                        minWidth: 180,
+                        fontSize: theme.fontSize.md,
+                        borderRadius: theme.borderRadius.md,
+                        fontWeight: theme.fontWeight.semibold,
+                        boxShadow: theme.shadow,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: theme.spacing.sm,
+                        background: theme.danger,
+                        marginRight: theme.spacing.lg,
+                      }}
+                      onClick={() => setButtonAction("not_completed")}
+                    >
+                      ไม่อนุมัติภาระงาน
+                    </Button>
+
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      // loading={loading}
                       icon={<SaveOutlined />}
                       style={{
                         height: 48,
@@ -380,7 +408,9 @@ const DetailHeadWorkLoad: React.FC = () => {
                         justifyContent: "center",
                         gap: theme.spacing.sm,
                         background: theme.success,
+                        marginLeft: theme.spacing.lg,
                       }}
+                      onClick={() => setButtonAction("completed")}
                     >
                       อนุมัติภาระงาน
                     </Button>

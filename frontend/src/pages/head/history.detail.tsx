@@ -60,7 +60,7 @@ const HeadHistoryDetail: React.FC = () => {
         const workload = response.data;
 
         const imagesResponse = await axiosInstance.get(
-          `upload-file/show/id/${id}`,
+          `upload-file/show/id/${id}`
         );
         setImages(imagesResponse.data);
 
@@ -117,7 +117,7 @@ const HeadHistoryDetail: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/user/history")}
+                  onClick={() => navigate("/head/history")}
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,
@@ -157,7 +157,7 @@ const HeadHistoryDetail: React.FC = () => {
 
               <Card
                 style={{
-                  maxWidth: 800,
+                  // maxWidth: 800,
                   margin: `${theme.spacing.xl} auto`,
                   borderRadius: theme.borderRadius.lg,
                   boxShadow: theme.shadow,
@@ -284,7 +284,7 @@ const HeadHistoryDetail: React.FC = () => {
                 <Button
                   type="link"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => navigate("/user/history")}
+                  onClick={() => navigate("/head/history")}
                   style={{
                     padding: 0,
                     marginBottom: theme.spacing.md,

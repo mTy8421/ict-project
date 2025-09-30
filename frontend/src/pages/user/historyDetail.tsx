@@ -60,7 +60,7 @@ const UserHistoryDetail: React.FC = () => {
         const workload = response.data;
 
         const imagesResponse = await axiosInstance.get(
-          `upload-file/show/id/${id}`,
+          `upload-file/show/id/${id}`
         );
         setImages(imagesResponse.data);
 
@@ -157,7 +157,7 @@ const UserHistoryDetail: React.FC = () => {
 
               <Card
                 style={{
-                  maxWidth: 800,
+                  // maxWidth: 800,
                   margin: `${theme.spacing.xl} auto`,
                   borderRadius: theme.borderRadius.lg,
                   boxShadow: theme.shadow,

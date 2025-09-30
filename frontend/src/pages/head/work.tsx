@@ -76,8 +76,18 @@ const HeadWork: React.FC = () => {
 
   const fetchWorkloads = async () => {
     try {
-      const response = await axiosInstance.get(`/user/user`);
-      setWorkloads(response.data);
+      const userProfile = await axiosInstance.get("/user/profile");
+      const userData = userProfile.data;
+      const textUser = userData.user_role.split("หัวหน้า");
+      if (userData.user_role !== "หัวหน้าสำนักงาน") {
+        const response = await axiosInstance.get(
+          `/user/department/พนัก${textUser[1]}`
+        );
+        setWorkloads(response.data);
+      } else {
+        const response = await axiosInstance.get(`/user/user`);
+        setWorkloads(response.data);
+      }
     } catch (error) {
       console.error("Error fetching workloads:", error);
       message.error("ไม่สามารถดึงข้อมูลภาระงานได้");

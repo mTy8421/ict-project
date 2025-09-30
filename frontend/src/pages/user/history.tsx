@@ -106,7 +106,7 @@ const UserHistory: React.FC = () => {
       case "pending":
         return theme.warning;
       case "not_completed":
-        return theme.accent;
+        return theme.danger;
       case "completed":
         return theme.success;
       default:
@@ -211,6 +211,20 @@ const UserHistory: React.FC = () => {
     //   key: "dateTimeEnd",
     //   render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
     // },
+    {
+      title: "ระยะเวลาที่ใช้",
+      key: "dateCount",
+      render: (record: Workload) => (
+        <span>
+          {Math.ceil(
+            (new Date(record.dateTimeEnd).getTime() -
+              new Date(record.dateTimeStart).getTime()) /
+              (1000 * 60 * 60 * 24)
+          )}{" "}
+          วัน
+        </span>
+      ),
+    },
     {
       title: "วันที่เริ่มต้น - สิ้นสุด",
       key: "dateRange",

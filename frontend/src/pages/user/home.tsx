@@ -66,7 +66,7 @@ const UserHome: React.FC = () => {
       case "pending":
         return "warning";
       case "not_completed":
-        return "processing";
+        return "error";
       case "completed":
         return "success";
       default:
@@ -356,7 +356,7 @@ const UserHome: React.FC = () => {
                         <Text type="secondary">ไม่อนุมัติ</Text>
                         <Text
                           strong
-                          style={{ display: "block", color: theme.primary }}
+                          style={{ display: "block", color: theme.danger }}
                         >
                           {inProgressWorkloads} รายการ
                         </Text>

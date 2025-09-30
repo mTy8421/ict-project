@@ -106,7 +106,7 @@ const HeadHistory: React.FC = () => {
       case "pending":
         return theme.warning;
       case "not_completed":
-        return theme.accent;
+        return theme.danger;
       case "completed":
         return theme.success;
       default:
@@ -199,17 +199,41 @@ const HeadHistory: React.FC = () => {
         </Tag>
       ),
     },
+    // {
+    //   title: "วันที่เริ่มต้น",
+    //   dataIndex: "dateTimeStart",
+    //   key: "dateTimeStart",
+    //   render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
+    // },
+    // {
+    //   title: "วันที่สิ้นสุด",
+    //   dataIndex: "dateTimeEnd",
+    //   key: "dateTimeEnd",
+    //   render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
+    // },
     {
-      title: "วันที่เริ่มต้น",
-      dataIndex: "dateTimeStart",
-      key: "dateTimeStart",
-      render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
+      title: "ระยะเวลาที่ใช้",
+      key: "dateCount",
+      render: (record: Workload) => (
+        <span>
+          {Math.ceil(
+            (new Date(record.dateTimeEnd).getTime() -
+              new Date(record.dateTimeStart).getTime()) /
+              (1000 * 60 * 60 * 24)
+          )}{" "}
+          วัน
+        </span>
+      ),
     },
     {
-      title: "วันที่สิ้นสุด",
-      dataIndex: "dateTimeEnd",
-      key: "dateTimeEnd",
-      render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
+      title: "วันที่เริ่มต้น - สิ้นสุด",
+      key: "dateRange",
+      render: (record: Workload) => (
+        <span>
+          {new Date(record.dateTimeStart).toLocaleDateString("th-TH")} -{" "}
+          {new Date(record.dateTimeEnd).toLocaleDateString("th-TH")}
+        </span>
+      ),
     },
     {
       title: "จัดการ",

@@ -13,7 +13,7 @@ export default defineConfig({
     },
     host: true,
     port: 5173,
-    allowedHosts: ["scuba-filter-farm-supervisor.trycloudflare.com"],
+    allowedHosts: ["kit-reasoning-consequence-innovation.trycloudflare.com"],
   },
   css: {
     postcss: "./postcss.config.cjs",

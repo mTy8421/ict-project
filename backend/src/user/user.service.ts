@@ -9,7 +9,7 @@ import { User } from './entities/user.entity';
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     const user = this.userRepository.create({
@@ -28,10 +28,26 @@ export class UserService {
   async findAllUser(): Promise<User[]> {
     const users = this.userRepository
       .createQueryBuilder('user')
-      .where('user.user_role != :user_role AND user.user_role != :user_role2', {
-        user_role: 'หัวหน้าสำนักงาน',
-        user_role2: 'admin',
-      })
+      .where(
+        'user.user_role != :user_role AND user.user_role != :user_role2 AND user.user_role NOT LIKE "พนักงาน%"',
+        {
+          user_role: 'หัวหน้าสำนักงาน',
+          user_role2: 'admin',
+        },
+      )
+      .getMany();
+    return users;
+  }
+
+  async findAllDepartment(role: string): Promise<User[]> {
+    const users = this.userRepository
+      .createQueryBuilder('user')
+      .where(
+        'user.user_role NOT LIKE "%admin%" AND user.user_role NOT LIKE "หัวหน้า%" AND user.user_role = :user_role',
+        {
+          user_role: role,
+        },
+      )
       .getMany();
     return users;
   }
