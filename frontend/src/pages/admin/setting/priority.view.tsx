@@ -161,7 +161,7 @@ const PriorityView: React.FC = () => {
       ),
     },
     {
-      title: "ความสำคัญ",
+      title: "ระดับความเร่งด่วน	",
       dataIndex: "priority",
       key: "priority",
       render: (priority: any) => (
@@ -294,7 +294,7 @@ const PriorityView: React.FC = () => {
                         fontWeight: theme.fontWeight.semibold,
                       }}
                     >
-                      ความสำคัญ
+                      ระดับความเร่งด่วน
                     </Title>
                     <Text
                       style={{
@@ -303,7 +303,7 @@ const PriorityView: React.FC = () => {
                         display: "block",
                       }}
                     >
-                      ดูประวัติภาระงานภาระงานทั้งหมด
+                      ตั่งค่าระดับความเร่งด่วนภาระงาน
                     </Text>
                   </div>
                   <Button
@@ -322,7 +322,7 @@ const PriorityView: React.FC = () => {
                       gap: theme.spacing.sm,
                     }}
                   >
-                    เพิ่มหัวข้อความสำคัญ
+                    เพิ่มหัวข้อระดับความเร่งด่วน
                   </Button>
                 </div>
               </div>
@@ -420,7 +420,7 @@ const PriorityView: React.FC = () => {
                         fontWeight: theme.fontWeight.semibold,
                       }}
                     >
-                      ความสำคัญ
+                      ระดับความเร่งด่วน
                     </Title>
                     <Text
                       style={{
@@ -429,7 +429,7 @@ const PriorityView: React.FC = () => {
                         display: "block",
                       }}
                     >
-                      ดูประวัติภาระงานภาระงานทั้งหมด
+                      ตั่งค่าระดับความเร่งด่วนภาระงาน
                     </Text>
                   </div>
                   <Button
@@ -449,7 +449,7 @@ const PriorityView: React.FC = () => {
                       marginTop: "1rem",
                     }}
                   >
-                    เพิ่มหัวข้อความสำคัญ
+                    เพิ่มหัวข้อระดับความเร่งด่วน
                   </Button>
                 </div>
               </div>

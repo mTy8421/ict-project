@@ -263,7 +263,7 @@ const AdminWorkLoad: React.FC = () => {
                         style={{ width: "100%" }}
                       >
                         <Select
-                          defaultValue="admin"
+                          defaultValue="พนักงานฝ่ายวิจัยและนวัตถกรรม"
                           onChange={(value) => {
                             setRole(value);
                           }}
@@ -302,44 +302,6 @@ const AdminWorkLoad: React.FC = () => {
                                   label: <span>พนักงานฝ่ายวิชาการ</span>,
                                   value: "พนักงานฝ่ายวิชาการ",
                                 },
-                                {
-                                  label: <span>พนักงาน</span>,
-                                  value: "พนักงาน",
-                                },
-                              ],
-                            },
-                            {
-                              label: <span>หัวหน้างาน</span>,
-                              title: "หัวหน้างาน",
-                              options: [
-                                {
-                                  label: <span>หัวหน้าสำนักงาน</span>,
-                                  value: "หัวหน้าสำนักงาน",
-                                },
-                                {
-                                  label: (
-                                    <span>หัวหน้างานฝ่ายวิจัยและนวัตถกรรม</span>
-                                  ),
-                                  value: "หัวหน้างานฝ่ายวิจัยและนวัตถกรรม",
-                                },
-                                {
-                                  label: <span>หัวหน้างานฝ่ายคุณภาพนิสิต</span>,
-                                  value: "หัวหน้างานฝ่ายคุณภาพนิสิต",
-                                },
-                                {
-                                  label: (
-                                    <span>
-                                      หัวหน้างานฝ่ายยุทธศาสตร์และพัฒนาองค์กร
-                                    </span>
-                                  ),
-                                  value:
-                                    "หัวหน้างานฝ่ายยุทธศาสตร์และพัฒนาองค์กร",
-                                },
-                                {
-                                  label: <span>หัวหน้างานฝ่ายวิชาการ</span>,
-                                  value: "หัวหน้างานฝ่ายวิชาการ",
-                                },
-                                { label: <span>admin</span>, value: "admin" },
                               ],
                             },
                             {
@@ -569,7 +531,7 @@ const AdminWorkLoad: React.FC = () => {
                         style={{ width: "100%" }}
                       >
                         <Select
-                          defaultValue="admin"
+                          defaultValue="พนักงานฝ่ายวิจัยและนวัตถกรรม"
                           onChange={(value) => {
                             setRole(value);
                           }}
@@ -608,44 +570,6 @@ const AdminWorkLoad: React.FC = () => {
                                   label: <span>พนักงานฝ่ายวิชาการ</span>,
                                   value: "พนักงานฝ่ายวิชาการ",
                                 },
-                                {
-                                  label: <span>พนักงาน</span>,
-                                  value: "พนักงาน",
-                                },
-                              ],
-                            },
-                            {
-                              label: <span>หัวหน้างาน</span>,
-                              title: "หัวหน้างาน",
-                              options: [
-                                {
-                                  label: <span>หัวหน้าสำนักงาน</span>,
-                                  value: "หัวหน้าสำนักงาน",
-                                },
-                                {
-                                  label: (
-                                    <span>หัวหน้างานฝ่ายวิจัยและนวัตถกรรม</span>
-                                  ),
-                                  value: "หัวหน้างานฝ่ายวิจัยและนวัตถกรรม",
-                                },
-                                {
-                                  label: <span>หัวหน้างานฝ่ายคุณภาพนิสิต</span>,
-                                  value: "หัวหน้างานฝ่ายคุณภาพนิสิต",
-                                },
-                                {
-                                  label: (
-                                    <span>
-                                      หัวหน้างานฝ่ายยุทธศาสตร์และพัฒนาองค์กร
-                                    </span>
-                                  ),
-                                  value:
-                                    "หัวหน้างานฝ่ายยุทธศาสตร์และพัฒนาองค์กร",
-                                },
-                                {
-                                  label: <span>หัวหน้างานฝ่ายวิชาการ</span>,
-                                  value: "หัวหน้างานฝ่ายวิชาการ",
-                                },
-                                { label: <span>admin</span>, value: "admin" },
                               ],
                             },
                             {

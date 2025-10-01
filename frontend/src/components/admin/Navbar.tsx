@@ -3,8 +3,10 @@ import { Layout, Menu } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import {
   BarChartOutlined,
+  CheckOutlined,
   FileTextOutlined,
   SettingOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import theme from "../../theme";
 
@@ -46,7 +48,7 @@ const DeanNavbar: React.FC = () => {
           {
             key: "1",
             icon: (
-              <BarChartOutlined
+              <UserOutlined
                 style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
               />
             ),
@@ -55,7 +57,7 @@ const DeanNavbar: React.FC = () => {
                 to="/admin"
                 style={{ fontSize: theme.fontSize.md, color: "#fff" }}
               >
-                ภาพรวม
+                จัดการผู้ใช้
               </Link>
             ),
             style: {
@@ -70,7 +72,7 @@ const DeanNavbar: React.FC = () => {
           {
             key: "2",
             icon: (
-              <FileTextOutlined
+              <CheckOutlined
                 style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
               />
             ),
@@ -79,7 +81,7 @@ const DeanNavbar: React.FC = () => {
                 to="/admin/work"
                 style={{ fontSize: theme.fontSize.md, color: "#fff" }}
               >
-                ตรวจสอบภาระงาน
+                อนุมัติภาระงาน
               </Link>
             ),
             style: {
@@ -103,7 +105,7 @@ const DeanNavbar: React.FC = () => {
                 to="/admin/config/priority"
                 style={{ fontSize: theme.fontSize.md, color: "#fff" }}
               >
-                ตั่งค่าระบบภาระงาน
+                ตั่งค่าระดับความเร่งด่วน
               </Link>
             ),
             style: {

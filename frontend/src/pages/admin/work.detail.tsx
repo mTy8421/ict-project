@@ -130,7 +130,7 @@ const AdminWorkStatusDetail: React.FC = () => {
       const workload = response.data;
 
       const imagesResponse = await axiosInstance.get(
-        `upload-file/show/id/${id}`,
+        `upload-file/show/id/${id}`
       );
       setImages(imagesResponse.data);
 
@@ -174,7 +174,7 @@ const AdminWorkStatusDetail: React.FC = () => {
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้",
+        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้"
       );
     } finally {
       setLoading(false);
@@ -258,7 +258,7 @@ const AdminWorkStatusDetail: React.FC = () => {
 
               <Card
                 style={{
-                  maxWidth: 800,
+                  // maxWidth: 800,
                   margin: `${theme.spacing.xl} auto`,
                   borderRadius: theme.borderRadius.lg,
                   boxShadow: theme.shadow,
