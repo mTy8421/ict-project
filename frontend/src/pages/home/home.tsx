@@ -52,16 +52,16 @@ export default function Home() {
             case "หัวหน้าสำนักงาน":
               navigate("/head");
               break;
-            case "หัวหน้างานฝ่ายวิจัยและนวัตถกรรม":
-              navigate("/head");
-              break;
-            case "หัวหน้างานฝ่ายคุณภาพนิสิต":
-              navigate("/head");
-              break;
-            case "หัวหน้างานฝ่ายยุทธศาสตร์และพัฒนาองค์กร":
+            case "หัวหน้างานฝ่ายบริหารทั่วไป":
               navigate("/head");
               break;
             case "หัวหน้างานฝ่ายวิชาการ":
+              navigate("/head");
+              break;
+            case "หัวหน้างานฝ่ายแผนงาน":
+              navigate("/head");
+              break;
+            case "หัวหน้างานฝ่ายพัฒนาทักษะดิจิทัล":
               navigate("/head");
               break;
             case "พนักงาน":
@@ -126,16 +126,16 @@ export default function Home() {
           case "หัวหน้าสำนักงาน":
             navigate("/head");
             break;
-          case "หัวหน้างานฝ่ายวิจัยและนวัตถกรรม":
+          case "หัวหน้างานฝ่ายวิชาการ":
             navigate("/head");
             break;
           case "หัวหน้างานฝ่ายคุณภาพนิสิต":
             navigate("/head");
             break;
-          case "หัวหน้างานฝ่ายยุทธศาสตร์และพัฒนาองค์กร":
+          case "หัวหน้างานฝ่ายแผนงาน":
             navigate("/head");
             break;
-          case "หัวหน้างานฝ่ายวิชาการ":
+          case "หัวหน้างานฝ่ายพัฒนาทักษะดิจิทัล":
             navigate("/head");
             break;
           case "พนักงาน":

@@ -136,7 +136,7 @@ const Priority: React.FC = () => {
                     gap: theme.spacing.sm,
                   }}
                 >
-                  กลับไปหน้ารายงานความสำคัญ
+                  กลับไปหน้ารายงานระดับความเร่งด่วน
                 </Button>
                 <Title
                   level={3}
@@ -148,7 +148,7 @@ const Priority: React.FC = () => {
                     letterSpacing: "0.5px",
                   }}
                 >
-                  ความสำคัญ
+                  ระดับความเร่งด่วน
                 </Title>
                 <Text
                   style={{
@@ -209,13 +209,13 @@ const Priority: React.FC = () => {
                     <Col span={24}>
                       <Form.Item
                         name="priority"
-                        label="ความสำคัญ"
+                        label="ระดับความเร่งด่วน"
                         rules={[
                           { required: true, message: "กรุณาเลือกความสำคัญ" },
                         ]}
                       >
                         <Select
-                          placeholder="เลือกความสำคัญ"
+                          placeholder="เลือกระดับความเร่งด่วน"
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,
@@ -294,7 +294,7 @@ const Priority: React.FC = () => {
                     gap: theme.spacing.sm,
                   }}
                 >
-                  กลับไปหน้ารายงานความสำคัญ
+                  กลับไปหน้ารายงานระดับความเร่งด่วน
                 </Button>
                 <Title
                   level={3}
@@ -306,7 +306,7 @@ const Priority: React.FC = () => {
                     letterSpacing: "0.5px",
                   }}
                 >
-                  ความสำคัญ
+                  ระดับความเร่งด่วน
                 </Title>
                 <Text
                   style={{
@@ -367,13 +367,13 @@ const Priority: React.FC = () => {
                     <Col span={24}>
                       <Form.Item
                         name="priority"
-                        label="ความสำคัญ"
+                        label="ระดับความเร่งด่วน"
                         rules={[
                           { required: true, message: "กรุณาเลือกความสำคัญ" },
                         ]}
                       >
                         <Select
-                          placeholder="เลือกความสำคัญ"
+                          placeholder="เลือกระดับความเร่งด่วน"
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,

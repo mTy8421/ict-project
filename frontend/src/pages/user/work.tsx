@@ -54,6 +54,7 @@ interface Workload {
   // priority: "low" | "medium" | "high";
   dateTimeStart: string;
   dateTimeEnd: string;
+  dateTimeNow: string;
   options: any;
 }
 
@@ -256,7 +257,9 @@ const UserWork: React.FC = () => {
               style={{ color: theme.primary }}
             />
           </Tooltip>
-          {record.status != "completed" && record.status != "not_completed" ? (
+          {record.status == "completed" || record.status == "not_completed" ? (
+            ""
+          ) : (
             <Tooltip title="แก้ไข">
               <Button
                 type="text"
@@ -265,8 +268,6 @@ const UserWork: React.FC = () => {
                 style={{ color: theme.primary }}
               />
             </Tooltip>
-          ) : (
-            ""
           )}
           <Tooltip title="ลบ">
             <Button
@@ -516,7 +517,7 @@ const UserWork: React.FC = () => {
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                      pageSize: 10,
+                      // pageSize: 10,
                       showSizeChanger: true,
                       showTotal: (total) => `ทั้งหมด ${total} รายการ`,
                     }}
@@ -686,7 +687,7 @@ const UserWork: React.FC = () => {
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                      pageSize: 10,
+                      // pageSize: 10,
                       showSizeChanger: true,
                       showTotal: (total) => `ทั้งหมด ${total} รายการ`,
                     }}

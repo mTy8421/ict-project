@@ -479,7 +479,7 @@ const HeadWorkUser: React.FC = () => {
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                      pageSize: 10,
+                      // pageSize: 10,
                       showSizeChanger: true,
                       showTotal: (total) => `ทั้งหมด ${total} รายการ`,
                     }}
@@ -622,7 +622,7 @@ const HeadWorkUser: React.FC = () => {
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                      pageSize: 10,
+                      // pageSize: 10,
                       showSizeChanger: true,
                       showTotal: (total) => `ทั้งหมด ${total} รายการ`,
                     }}

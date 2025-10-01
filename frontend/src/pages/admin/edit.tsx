@@ -46,7 +46,7 @@ const AdminEdit: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
-  const [role, setRole] = useState("admin");
+  const [role, setRole] = useState("พนักงานฝ่ายบริหารทั่วไป");
   const [user, setUser] = useState<User | null>(null);
 
   const fetchUser = async () => {
@@ -104,7 +104,7 @@ const AdminEdit: React.FC = () => {
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้",
+        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้"
       );
     } finally {
       setLoading(false);
@@ -294,28 +294,19 @@ const AdminEdit: React.FC = () => {
                               label: <span>พนักงาน</span>,
                               title: "พนักงาน",
                               options: [
-                                { label: <span>admin</span>, value: "admin" },
                                 {
-                                  label: <span>หัวหน้าสำนักงาน</span>,
-                                  value: "หัวหน้าสำนักงาน",
+                                  label: <span>พนักงานฝ่ายบริหารทั่วไป</span>,
+                                  value: "พนักงานฝ่ายบริหารทั่วไป",
+                                },
+                                {
+                                  label: <span>พนักงานฝ่ายแผนงาน</span>,
+                                  value: "พนักงานฝ่ายแผนงาน",
                                 },
                                 {
                                   label: (
-                                    <span>พนักงานฝ่ายวิจัยและนวัตถกรรม</span>
+                                    <span>พนักงานฝ่ายพัฒนาทักษะดิจิทัล</span>
                                   ),
-                                  value: "พนักงานฝ่ายวิจัยและนวัตถกรรม",
-                                },
-                                {
-                                  label: <span>พนักงานฝ่ายคุณภาพนิสิต</span>,
-                                  value: "พนักงานฝ่ายคุณภาพนิสิต",
-                                },
-                                {
-                                  label: (
-                                    <span>
-                                      พนักงานฝ่ายยุทธศาสตร์และพัฒนาองค์กร
-                                    </span>
-                                  ),
-                                  value: "พนักงานฝ่ายยุทธศาสตร์และพัฒนาองค์กร",
+                                  value: "พนักงานฝ่ายพัฒนาทักษะดิจิทัล",
                                 },
                                 {
                                   label: <span>พนักงานฝ่ายวิชาการ</span>,
@@ -324,32 +315,40 @@ const AdminEdit: React.FC = () => {
                               ],
                             },
                             {
-                              label: <span>คณบดี</span>,
-                              title: "คณบดี",
+                              label: <span>หัวหน้างาน</span>,
+                              title: "หัวหน้างาน",
                               options: [
-                                { label: <span>คณบดี</span>, value: "คณบดี" },
                                 {
-                                  label: (
-                                    <span>
-                                      คณบดีฝ่ายยุทธศาสตร์และพัฒนาองค์กร
-                                    </span>
-                                  ),
-                                  value: "คณบดีฝ่ายยุทธศาสตร์และพัฒนาองค์กร",
-                                },
-                                {
-                                  label: <span>รองคณบดีฝ่ายวิชาการ</span>,
-                                  value: "รองคณบดีฝ่ายวิชาการ",
+                                  label: <span>หัวหน้าสำนักงาน</span>,
+                                  value: "หัวหน้าสำนักงาน",
                                 },
                                 {
                                   label: (
-                                    <span>รองคณบดีฝ่ายวิจัยและนวัตถกรรม</span>
+                                    <span>หัวหน้างานฝ่ายบริหารทั่วไป</span>
                                   ),
-                                  value: "รองคณบดีฝ่ายวิจัยและนวัตถกรรม",
+                                  value: "หัวหน้างานฝ่ายบริหารทั่วไป",
                                 },
                                 {
-                                  label: <span>รองคณบดีฝ่ายคุณภาพนิสิต</span>,
-                                  value: "รองคณบดีฝ่ายคุณภาพนิสิต",
+                                  label: <span>หัวหน้างานฝ่ายแผนงาน</span>,
+                                  value: "หัวหน้างานฝ่ายแผนงาน",
                                 },
+                                {
+                                  label: (
+                                    <span>หัวหน้างานฝ่ายพัฒนาทักษะดิจิทัล</span>
+                                  ),
+                                  value: "หัวหน้างานฝ่ายพัฒนาทักษะดิจิทัล",
+                                },
+                                {
+                                  label: <span>หัวหน้างานฝ่ายวิชาการ</span>,
+                                  value: "หัวหน้างานฝ่ายวิชาการ",
+                                },
+                              ],
+                            },
+                            {
+                              label: <span>admin</span>,
+                              title: "admin",
+                              options: [
+                                { label: <span>admin</span>, value: "admin" },
                               ],
                             },
                           ]}
@@ -553,28 +552,19 @@ const AdminEdit: React.FC = () => {
                               label: <span>พนักงาน</span>,
                               title: "พนักงาน",
                               options: [
-                                { label: <span>admin</span>, value: "admin" },
                                 {
-                                  label: <span>หัวหน้าสำนักงาน</span>,
-                                  value: "หัวหน้าสำนักงาน",
+                                  label: <span>พนักงานฝ่ายบริหารทั่วไป</span>,
+                                  value: "พนักงานฝ่ายบริหารทั่วไป",
+                                },
+                                {
+                                  label: <span>พนักงานฝ่ายแผนงาน</span>,
+                                  value: "พนักงานฝ่ายแผนงาน",
                                 },
                                 {
                                   label: (
-                                    <span>พนักงานฝ่ายวิจัยและนวัตถกรรม</span>
+                                    <span>พนักงานฝ่ายพัฒนาทักษะดิจิทัล</span>
                                   ),
-                                  value: "พนักงานฝ่ายวิจัยและนวัตถกรรม",
-                                },
-                                {
-                                  label: <span>พนักงานฝ่ายคุณภาพนิสิต</span>,
-                                  value: "พนักงานฝ่ายคุณภาพนิสิต",
-                                },
-                                {
-                                  label: (
-                                    <span>
-                                      พนักงานฝ่ายยุทธศาสตร์และพัฒนาองค์กร
-                                    </span>
-                                  ),
-                                  value: "พนักงานฝ่ายยุทธศาสตร์และพัฒนาองค์กร",
+                                  value: "พนักงานฝ่ายพัฒนาทักษะดิจิทัล",
                                 },
                                 {
                                   label: <span>พนักงานฝ่ายวิชาการ</span>,
@@ -583,32 +573,40 @@ const AdminEdit: React.FC = () => {
                               ],
                             },
                             {
-                              label: <span>คณบดี</span>,
-                              title: "คณบดี",
+                              label: <span>หัวหน้างาน</span>,
+                              title: "หัวหน้างาน",
                               options: [
-                                { label: <span>คณบดี</span>, value: "คณบดี" },
                                 {
-                                  label: (
-                                    <span>
-                                      คณบดีฝ่ายยุทธศาสตร์และพัฒนาองค์กร
-                                    </span>
-                                  ),
-                                  value: "คณบดีฝ่ายยุทธศาสตร์และพัฒนาองค์กร",
-                                },
-                                {
-                                  label: <span>รองคณบดีฝ่ายวิชาการ</span>,
-                                  value: "รองคณบดีฝ่ายวิชาการ",
+                                  label: <span>หัวหน้าสำนักงาน</span>,
+                                  value: "หัวหน้าสำนักงาน",
                                 },
                                 {
                                   label: (
-                                    <span>รองคณบดีฝ่ายวิจัยและนวัตถกรรม</span>
+                                    <span>หัวหน้างานฝ่ายบริหารทั่วไป</span>
                                   ),
-                                  value: "รองคณบดีฝ่ายวิจัยและนวัตถกรรม",
+                                  value: "หัวหน้างานฝ่ายบริหารทั่วไป",
                                 },
                                 {
-                                  label: <span>รองคณบดีฝ่ายคุณภาพนิสิต</span>,
-                                  value: "รองคณบดีฝ่ายคุณภาพนิสิต",
+                                  label: <span>หัวหน้างานฝ่ายแผนงาน</span>,
+                                  value: "หัวหน้างานฝ่ายแผนงาน",
                                 },
+                                {
+                                  label: (
+                                    <span>หัวหน้างานฝ่ายพัฒนาทักษะดิจิทัล</span>
+                                  ),
+                                  value: "หัวหน้างานฝ่ายพัฒนาทักษะดิจิทัล",
+                                },
+                                {
+                                  label: <span>หัวหน้างานฝ่ายวิชาการ</span>,
+                                  value: "หัวหน้างานฝ่ายวิชาการ",
+                                },
+                              ],
+                            },
+                            {
+                              label: <span>admin</span>,
+                              title: "admin",
+                              options: [
+                                { label: <span>admin</span>, value: "admin" },
                               ],
                             },
                           ]}
