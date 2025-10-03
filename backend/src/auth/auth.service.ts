@@ -9,7 +9,6 @@ type UserResponse = {
   user_email: string;
   user_name: string;
   user_role: User['user_role'];
-  workloads: User['workloads'];
 };
 
 @Injectable()

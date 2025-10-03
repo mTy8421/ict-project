@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { WorkloadModule } from './workload/workload.module';
 import { WorkModule } from './work/work.module';
 import { OptionModule } from './option/option.module';
 import { UploadFileModule } from './upload-file/upload-file.module';
@@ -29,7 +28,6 @@ import { UploadFileModule } from './upload-file/upload-file.module';
     }),
     AuthModule,
     UserModule,
-    WorkloadModule,
     WorkModule,
     OptionModule,
     UploadFileModule,

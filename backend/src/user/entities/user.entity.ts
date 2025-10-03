@@ -8,7 +8,6 @@ import {
 } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
-import { Workload } from '../../workload/entities/workload.entity';
 import { Work } from '../../work/entities/work.entity';
 
 type UserRoleType =
@@ -58,9 +57,6 @@ export class User {
 
   @OneToMany(() => Work, (work) => work.user)
   works: Work[];
-
-  @OneToMany(() => Workload, (workload) => workload.assignedTo)
-  workloads: Workload[];
 
   // @BeforeInsert()
   // async hashPassword() {

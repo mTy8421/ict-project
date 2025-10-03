@@ -33,6 +33,7 @@ import PriorityEdit from "./pages/admin/setting/priority.edit";
 
 import UserChert from "./pages/user/chart/user.chart";
 import HeadChart from "./pages/head/chart/head.chart";
+import DeanHome from "./pages/dean/dean";
 
 export default function App() {
   return (
@@ -73,13 +74,6 @@ export default function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/user/new" element={<AdminWorkLoad />} />
         <Route path="/admin/user/edit/:id" element={<AdminEdit />} />
-        <Route path="/admin/config" element={<AdminConfig />} />
-        <Route path="/admin/config/priority" element={<PriorityView />} />
-        <Route path="/admin/config/priority/add" element={<Priority />} />
-        <Route
-          path="/admin/config/priority/edit/:id"
-          element={<PriorityEdit />}
-        />
         <Route path="/admin/work" element={<AdminWork />} />
         <Route path="/admin/work/user/:id" element={<AdminWorkUser />} />
         <Route
@@ -90,6 +84,16 @@ export default function App() {
           path="/admin/work/detail/:id"
           element={<AdminWorkStatusDetail />}
         />
+        <Route path="/admin/config" element={<AdminConfig />} />
+        <Route path="/admin/config/priority" element={<PriorityView />} />
+        <Route path="/admin/config/priority/add" element={<Priority />} />
+        <Route
+          path="/admin/config/priority/edit/:id"
+          element={<PriorityEdit />}
+        />
+        <Route path="/admin/chart" element={<HeadChart />} />
+
+        <Route path="/dean" element={<DeanHome />} />
       </Routes>
     </BrowserRouter>
   );

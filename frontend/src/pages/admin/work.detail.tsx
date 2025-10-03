@@ -66,6 +66,9 @@ const AdminWorkStatusDetail: React.FC = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [loadingSencond, setLoadingSencond] = useState(false);
+  const [buttonAction, setButtonAction] = useState("");
+
   const [users, setUsers] = useState<User[]>([]);
 
   const [profile, setProfile] = useState<User | undefined>();
@@ -156,11 +159,15 @@ const AdminWorkStatusDetail: React.FC = () => {
 
   const onFinish = async (values: WorkloadForm) => {
     try {
-      setLoading(true);
+      if (buttonAction === "completed") {
+        setLoading(true);
+      } else {
+        setLoadingSencond(true);
+      }
 
       const workloadData = {
         description: values.description,
-        status: "completed",
+        status: buttonAction,
       };
 
       // console.log("Sending data:", workloadData);
@@ -178,6 +185,7 @@ const AdminWorkStatusDetail: React.FC = () => {
       );
     } finally {
       setLoading(false);
+      setLoadingSencond(false);
     }
   };
 
@@ -361,7 +369,31 @@ const AdminWorkStatusDetail: React.FC = () => {
 
                   <Divider style={{ margin: `${theme.spacing.xl} 0` }} />
 
-                  <Form.Item style={{ textAlign: "right", marginBottom: 0 }}>
+                  <Form.Item style={{ marginBottom: 0 }}>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      loading={loadingSencond}
+                      icon={<SaveOutlined />}
+                      style={{
+                        height: 48,
+                        minWidth: 180,
+                        fontSize: theme.fontSize.md,
+                        borderRadius: theme.borderRadius.md,
+                        fontWeight: theme.fontWeight.semibold,
+                        boxShadow: theme.shadow,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: theme.spacing.sm,
+                        background: theme.danger,
+                        marginRight: theme.spacing.lg,
+                      }}
+                      onClick={() => setButtonAction("not_completed")}
+                    >
+                      ไม่อนุมัติภาระงาน
+                    </Button>
+
                     <Button
                       type="primary"
                       htmlType="submit"
@@ -379,7 +411,9 @@ const AdminWorkStatusDetail: React.FC = () => {
                         justifyContent: "center",
                         gap: theme.spacing.sm,
                         background: theme.success,
+                        marginLeft: theme.spacing.lg,
                       }}
+                      onClick={() => setButtonAction("completed")}
                     >
                       อนุมัติภาระงาน
                     </Button>

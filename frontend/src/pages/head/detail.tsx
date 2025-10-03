@@ -67,6 +67,7 @@ const DetailHeadWorkLoad: React.FC = () => {
   const [form] = Form.useForm();
   const [buttonAction, setButtonAction] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [loadingSencond, setLoadingSencond] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
 
   const [profile, setProfile] = useState<User | undefined>();
@@ -157,7 +158,11 @@ const DetailHeadWorkLoad: React.FC = () => {
 
   const onFinish = async (values: WorkloadForm) => {
     try {
-      setLoading(true);
+      if (buttonAction === "completed") {
+        setLoading(true);
+      } else {
+        setLoadingSencond(true);
+      }
 
       const workloadData = {
         description: values.description,
@@ -370,7 +375,7 @@ const DetailHeadWorkLoad: React.FC = () => {
                     <Button
                       type="primary"
                       htmlType="submit"
-                      // loading={loading}
+                      loading={loadingSencond}
                       icon={<SaveOutlined />}
                       style={{
                         height: 48,
@@ -394,7 +399,7 @@ const DetailHeadWorkLoad: React.FC = () => {
                     <Button
                       type="primary"
                       htmlType="submit"
-                      // loading={loading}
+                      loading={loading}
                       icon={<SaveOutlined />}
                       style={{
                         height: 48,

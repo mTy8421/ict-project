@@ -116,7 +116,7 @@ const AdminWorkUser: React.FC = () => {
       case "pending":
         return theme.warning;
       case "not_completed":
-        return theme.accent;
+        return theme.danger;
       case "completed":
         return theme.success;
       default:
