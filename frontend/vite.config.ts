@@ -13,7 +13,7 @@ export default defineConfig({
     },
     host: true,
     port: 5173,
-    allowedHosts: ["kit-reasoning-consequence-innovation.trycloudflare.com"],
+    allowedHosts: ["abilities-council-named-clearly.trycloudflare.com"],
   },
   css: {
     postcss: "./postcss.config.cjs",

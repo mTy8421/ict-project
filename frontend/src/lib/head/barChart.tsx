@@ -26,7 +26,7 @@ export function BarChart({ dataResponse }: Props) {
   const labels = Array.from(
     new Set(
       dataResponse.map((item: any) =>
-        new Date(item.dateTimeEnd).toLocaleString("th-TH", { month: "long" })
+        new Date(item.dateTimeNow).toLocaleString("th-TH", { month: "long" })
       )
     )
   );
@@ -37,10 +37,10 @@ export function BarChart({ dataResponse }: Props) {
       dataResponse.filter(
         (item: any) =>
           item.options.priority === "low" &&
-          new Date(item.dateTimeEnd).toLocaleString("th-TH", {
+          new Date(item.dateTimeNow).toLocaleString("th-TH", {
             month: "long",
           }) === month &&
-          new Date(item.dateTimeEnd).getFullYear() === new Date().getFullYear()
+          new Date(item.dateTimeNow).getFullYear() === new Date().getFullYear()
       ).length
   );
 
@@ -49,10 +49,10 @@ export function BarChart({ dataResponse }: Props) {
       dataResponse.filter(
         (item: any) =>
           item.options.priority === "medium" &&
-          new Date(item.dateTimeEnd).toLocaleString("th-TH", {
+          new Date(item.dateTimeNow).toLocaleString("th-TH", {
             month: "long",
           }) === month &&
-          new Date(item.dateTimeEnd).getFullYear() === new Date().getFullYear()
+          new Date(item.dateTimeNow).getFullYear() === new Date().getFullYear()
       ).length
   );
 
@@ -61,10 +61,10 @@ export function BarChart({ dataResponse }: Props) {
       dataResponse.filter(
         (item: any) =>
           item.options.priority === "high" &&
-          new Date(item.dateTimeEnd).toLocaleString("th-TH", {
+          new Date(item.dateTimeNow).toLocaleString("th-TH", {
             month: "long",
           }) === month &&
-          new Date(item.dateTimeEnd).getFullYear() === new Date().getFullYear()
+          new Date(item.dateTimeNow).getFullYear() === new Date().getFullYear()
       ).length
   );
 

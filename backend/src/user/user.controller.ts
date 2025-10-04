@@ -36,31 +36,6 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get('user')
-  findAllUser() {
-    return this.userService.findAllUser();
-  }
-
-  @Get('department/:role')
-  findAllDepartment(@Param('role') role: string) {
-    return this.userService.findAllDepartment(role);
-  }
-
-  @Get('head')
-  findAllHead() {
-    return this.userService.findAllHead();
-  }
-
-  @Get('search')
-  search(@Query('query') query: string) {
-    return this.userService.search(query);
-  }
-
-  @Get('filter')
-  filter(@Query('department') department: string) {
-    return this.userService.filterByDepartment(department);
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
@@ -74,5 +49,20 @@ export class UserController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
+  }
+
+  @Get('user')
+  findAllUser() {
+    return this.userService.findAllUser();
+  }
+
+  @Get('department/:role')
+  findAllDepartment(@Param('role') role: string) {
+    return this.userService.findAllDepartment(role);
+  }
+
+  @Get('head')
+  findAllHead() {
+    return this.userService.findAllHead();
   }
 }

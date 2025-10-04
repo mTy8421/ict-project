@@ -4,11 +4,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, Like } from 'typeorm';
 import { User } from './entities/user.entity';
+import { Work } from 'src/work/entities/work.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Work) private workRepository: Repository<Work>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -28,6 +30,9 @@ export class UserService {
   async findAllUser(): Promise<User[]> {
     const users = this.userRepository
       .createQueryBuilder('user')
+      .loadRelationCountAndMap('user.sum', 'user.works', 'work', (qb) =>
+        qb.where('work.status = :status', { status: 'pending' }),
+      )
       .where(
         'user.user_role != :user_role AND user.user_role != :user_role2 AND user.user_role NOT LIKE "พนักงาน%"',
         {
@@ -42,12 +47,12 @@ export class UserService {
   async findAllDepartment(role: string): Promise<User[]> {
     const users = this.userRepository
       .createQueryBuilder('user')
-      .where(
-        'user.user_role NOT LIKE "%admin%" AND user.user_role NOT LIKE "หัวหน้า%" AND user.user_role = :user_role',
-        {
-          user_role: role,
-        },
+      .loadRelationCountAndMap('user.sum', 'user.works', 'work', (qb) =>
+        qb.where('work.status = :status', { status: 'pending' }),
       )
+      .where('user.user_role = :user_role', {
+        user_role: role,
+      })
       .getMany();
     return users;
   }
@@ -78,31 +83,5 @@ export class UserService {
 
   async findByUsername(username: string): Promise<User | null> {
     return this.userRepository.findOne({ where: { user_name: username } });
-  }
-
-  async search(query: string): Promise<User[]> {
-    return this.userRepository.find({
-      where: [
-        { user_name: Like(`%${query}%`) },
-        { user_email: Like(`%${query}%`) },
-      ],
-    });
-  }
-
-  async filterByDepartment(department: string): Promise<User[]> {
-    const roles = [
-      'พนักงานฝ่ายวิจัยและนวัตถกรรม',
-      'พนักงานฝ่ายคุณภาพนิสิต',
-      'พนักงานฝ่ายยุทธศาสตร์และพัฒนาองค์กร',
-      'พนักงานฝ่ายวิชาการ',
-      'คณบดีฝ่ายยุทธศาสตร์และพัฒนาองค์กร',
-      'รองคณบดีฝ่ายวิชาการ',
-      'รองคณบดีฝ่ายวิจัยและนวัตถกรรม',
-      'รองคณบดีฝ่ายคุณภาพนิสิต',
-    ] as const;
-
-    return this.userRepository.find({
-      where: roles.map((role) => ({ user_role: role })),
-    });
   }
 }

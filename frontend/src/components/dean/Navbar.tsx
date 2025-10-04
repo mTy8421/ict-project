@@ -2,8 +2,10 @@ import React from "react";
 import { Layout, Menu } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import {
-  FileTextOutlined,
   BarChartOutlined,
+  CheckOutlined,
+  FileTextOutlined,
+  SettingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import theme from "../../theme";
@@ -14,9 +16,9 @@ const DeanNavbar: React.FC = () => {
   const location = useLocation();
 
   const getSelectedKey = () => {
-    if (location.pathname === "/dean") return "1";
-    if (location.pathname.startsWith("/dean/workload")) return "2";
-    if (location.pathname.startsWith("/dean/users")) return "3";
+    if (location.pathname === "/admin") return "1";
+    if (location.pathname.startsWith("/admin/work")) return "2";
+    if (location.pathname.startsWith("/admin/config/priority")) return "3";
     return "1";
   };
 
@@ -29,7 +31,7 @@ const DeanNavbar: React.FC = () => {
         top: 70,
         height: "calc(100vh - 70px)",
         boxShadow: theme.shadowLarge,
-        overflow: "auto",
+        overflow: "hidden",
       }}
     >
       <Menu
@@ -42,54 +44,81 @@ const DeanNavbar: React.FC = () => {
           background: theme.sidebarBg,
         }}
         theme="light"
-      >
-        <Menu.Item
-          key="1"
-          icon={
-            <BarChartOutlined
-              style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
-            />
-          }
-          style={{
-            margin: `${theme.spacing.sm} ${theme.spacing.md}`,
-            borderRadius: theme.borderRadius.md,
-            height: "48px",
-            lineHeight: "48px",
-            color: theme.primary,
-            background: getSelectedKey() === "1" ? "#5746b6" : "",
-          }}
-        >
-          <Link
-            to="/dean"
-            style={{ fontSize: theme.fontSize.md, color: "#fff" }}
-          >
-            ภาพรวม
-          </Link>
-        </Menu.Item>
-        <Menu.Item
-          key="2"
-          icon={
-            <FileTextOutlined
-              style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
-            />
-          }
-          style={{
-            margin: `${theme.spacing.sm} ${theme.spacing.md}`,
-            borderRadius: theme.borderRadius.md,
-            height: "48px",
-            lineHeight: "48px",
-            color: theme.primary,
-            background: getSelectedKey() === "2" ? "#5746b6" : "",
-          }}
-        >
-          <Link
-            to="/dean/workload"
-            style={{ fontSize: theme.fontSize.md, color: "#fff" }}
-          >
-            จัดการภาระงาน
-          </Link>
-        </Menu.Item>
-      </Menu>
+        items={[
+          {
+            key: "1",
+            icon: (
+              <UserOutlined
+                style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
+              />
+            ),
+            label: (
+              <Link
+                to="/admin"
+                style={{ fontSize: theme.fontSize.md, color: "#fff" }}
+              >
+                ภาพรวมภาระงาน
+              </Link>
+            ),
+            style: {
+              margin: `${theme.spacing.sm} ${theme.spacing.md}`,
+              borderRadius: theme.borderRadius.md,
+              height: "48px",
+              lineHeight: "48px",
+              color: theme.primary,
+              background: getSelectedKey() === "1" ? "#5746b6" : "",
+            },
+          },
+          {
+            key: "2",
+            icon: (
+              <CheckOutlined
+                style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
+              />
+            ),
+            label: (
+              <Link
+                to="/admin/work"
+                style={{ fontSize: theme.fontSize.md, color: "#fff" }}
+              >
+                อนุมัติภาระงาน
+              </Link>
+            ),
+            style: {
+              margin: `${theme.spacing.sm} ${theme.spacing.md}`,
+              borderRadius: theme.borderRadius.md,
+              height: "48px",
+              lineHeight: "48px",
+              color: theme.primary,
+              background: getSelectedKey() === "2" ? "#5746b6" : "",
+            },
+          },
+          {
+            key: "3",
+            icon: (
+              <SettingOutlined
+                style={{ fontSize: theme.fontSize.xl, color: "#fff" }}
+              />
+            ),
+            label: (
+              <Link
+                to="/admin/config/priority"
+                style={{ fontSize: theme.fontSize.md, color: "#fff" }}
+              >
+                ตั่งค่าระดับความเร่งด่วน
+              </Link>
+            ),
+            style: {
+              margin: `${theme.spacing.sm} ${theme.spacing.md}`,
+              borderRadius: theme.borderRadius.md,
+              height: "48px",
+              lineHeight: "48px",
+              color: theme.primary,
+              background: getSelectedKey() === "3" ? "#5746b6" : "",
+            },
+          },
+        ]}
+      />
     </Sider>
   );
 };

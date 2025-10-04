@@ -301,7 +301,7 @@ const HeadWorkLoadAdd: React.FC = () => {
                     <Col span={24}>
                       <Form.Item
                         name="fileUpload"
-                        label="Upload File"
+                        label="อัปโหลดไฟล์"
                         valuePropName="fileList"
                         getValueFromEvent={normFile}
                         rules={[
@@ -314,9 +314,7 @@ const HeadWorkLoadAdd: React.FC = () => {
                           listType="picture"
                           multiple
                         >
-                          <Button icon={<UploadOutlined />}>
-                            Click to upload
-                          </Button>
+                          <Button icon={<UploadOutlined />}>อัปโหลดไฟล์</Button>
                         </Upload>
                       </Form.Item>
                     </Col>
@@ -509,7 +507,7 @@ const HeadWorkLoadAdd: React.FC = () => {
                     <Col span={24}>
                       <Form.Item
                         name="fileUpload"
-                        label="Upload File"
+                        label="อัปโหลดไฟล์"
                         valuePropName="fileList"
                         getValueFromEvent={normFile}
                         rules={[
@@ -522,9 +520,7 @@ const HeadWorkLoadAdd: React.FC = () => {
                           listType="picture"
                           multiple
                         >
-                          <Button icon={<UploadOutlined />}>
-                            Click to upload
-                          </Button>
+                          <Button icon={<UploadOutlined />}>อัปโหลดไฟล์</Button>
                         </Upload>
                       </Form.Item>
                     </Col>

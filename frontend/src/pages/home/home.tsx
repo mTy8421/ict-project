@@ -126,10 +126,10 @@ export default function Home() {
           case "หัวหน้าสำนักงาน":
             navigate("/head");
             break;
-          case "หัวหน้างานฝ่ายวิชาการ":
+          case "หัวหน้างานฝ่ายบริหารทั่วไป":
             navigate("/head");
             break;
-          case "หัวหน้างานฝ่ายคุณภาพนิสิต":
+          case "หัวหน้างานฝ่ายวิชาการ":
             navigate("/head");
             break;
           case "หัวหน้างานฝ่ายแผนงาน":

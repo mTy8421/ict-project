@@ -198,9 +198,8 @@ const Head: React.FC = () => {
                   สถานะภาระงานทั้งหมดในระบบ
                 </Text>
               </div>
-              <div
+              {/* <div
                 style={{
-                  // margin: "24px 0"
                   marginBottom: theme.spacing.xl,
                   background: theme.white,
                   padding: theme.spacing.xl,
@@ -218,22 +217,6 @@ const Head: React.FC = () => {
                 >
                   วันที่
                 </Title>
-
-                {/* <Select */}
-                {/*   onChange={(dates) => setDateRange(dates)} */}
-                {/*   style={{ */}
-                {/*     maxWidth: "16rem", */}
-                {/*     margin: "auto", */}
-                {/*     marginTop: theme.spacing.sm, */}
-                {/*     width: "100%", */}
-                {/*   }} */}
-                {/* > */}
-                {/*   {workloads.map((val) => ( */}
-                {/*     <Select.Option value={val.dateTimeEnd}> */}
-                {/*       {new Date(val.dateTimeEnd).toLocaleDateString("th-TH")} */}
-                {/*     </Select.Option> */}
-                {/*   ))} */}
-                {/* </Select> */}
                 <DatePicker
                   style={{
                     width: "100%",
@@ -246,7 +229,7 @@ const Head: React.FC = () => {
                   format="YYYY-MM-DD"
                   placeholder="เลือกวันที่"
                 />
-              </div>
+              </div> */}
 
               <Row gutter={[24, 24]}>
                 <Col xs={24} sm={8}>
@@ -455,9 +438,9 @@ const Head: React.FC = () => {
                   สถานะภาระงานทั้งหมดในระบบ
                 </Text>
               </div>
-              <div
+
+              {/* <div
                 style={{
-                  // margin: "24px 0"
                   marginBottom: theme.spacing.xl,
                   background: theme.white,
                   padding: theme.spacing.xl,
@@ -475,22 +458,6 @@ const Head: React.FC = () => {
                 >
                   วันที่
                 </Title>
-
-                {/* <Select */}
-                {/*   onChange={(dates) => setDateRange(dates)} */}
-                {/*   style={{ */}
-                {/*     maxWidth: "16rem", */}
-                {/*     margin: "auto", */}
-                {/*     marginTop: theme.spacing.sm, */}
-                {/*     width: "100%", */}
-                {/*   }} */}
-                {/* > */}
-                {/*   {workloads.map((val) => ( */}
-                {/*     <Select.Option value={val.dateTimeEnd}> */}
-                {/*       {new Date(val.dateTimeEnd).toLocaleDateString("th-TH")} */}
-                {/*     </Select.Option> */}
-                {/*   ))} */}
-                {/* </Select> */}
                 <DatePicker
                   style={{
                     width: "100%",
@@ -503,7 +470,7 @@ const Head: React.FC = () => {
                   format="YYYY-MM-DD"
                   placeholder="เลือกวันที่"
                 />
-              </div>
+              </div> */}
 
               <Row gutter={[24, 24]}>
                 <Col xs={24} sm={8}>

@@ -331,6 +331,13 @@ const AdminWorkLoad: React.FC = () => {
                               ],
                             },
                             {
+                              label: <span>คณบดี</span>,
+                              title: "คณบดี",
+                              options: [
+                                { label: <span>คณบดี</span>, value: "คณบดี" },
+                              ],
+                            },
+                            {
                               label: <span>admin</span>,
                               title: "admin",
                               options: [
@@ -589,6 +596,13 @@ const AdminWorkLoad: React.FC = () => {
                                   label: <span>หัวหน้างานฝ่ายวิชาการ</span>,
                                   value: "หัวหน้างานฝ่ายวิชาการ",
                                 },
+                              ],
+                            },
+                            {
+                              label: <span>คณบดี</span>,
+                              title: "คณบดี",
+                              options: [
+                                { label: <span>คณบดี</span>, value: "คณบดี" },
                               ],
                             },
                             {

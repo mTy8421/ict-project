@@ -148,7 +148,10 @@ export class WorkService {
       .createQueryBuilder('work')
       .innerJoinAndSelect('work.options', 'option')
       .innerJoinAndSelect('work.user', 'user')
-      .where('user.user_role != :user_role', { user_role: 'หัวหน้าสำนักงาน' })
+      .where(
+        'user.user_role != :user_role AND user.user_role NOT LIKE "พนักงาน%"',
+        { user_role: 'หัวหน้าสำนักงาน' },
+      )
       .getMany();
     return works;
   }
@@ -185,7 +188,8 @@ export class WorkService {
         return `Invalid data for file: ${file?.originalname || 'unknown'}`;
       }
 
-      const resizedFilename = `resized-${Date.now()}-${file.originalname}${path.extname(file.originalname)}`;
+      // const resizedFilename = `resized-${Date.now()}-${file.originalname}${path.extname(file.originalname)}`;
+      const resizedFilename = `resized-${Date.now()}-${file.originalname}}`;
       const resizedFilePath = path.join(uploadDir, resizedFilename);
 
       try {

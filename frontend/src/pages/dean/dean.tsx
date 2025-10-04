@@ -21,9 +21,9 @@ import {
 } from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import theme from "../../theme";
-import DeanHeader from "../../components/user/Header";
-import DeanNavbar from "../../components/user/Navbar";
-import ReHeader from "../../components/user/NavbarHeader";
+import DeanHeader from "../../components/dean/Header";
+import DeanNavbar from "../../components/dean/Navbar";
+import ReHeader from "../../components/dean/NavbarHeader";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -144,13 +144,6 @@ const DeanHome: React.FC = () => {
 
     return recentWorkloads;
   });
-  // const recentWorkloads = workloads;
-  // .sort(
-  //   (a, b) =>
-  //     new Date(b.dateTimeStart).getTime() -
-  //     new Date(a.dateTimeStart).getTime(),
-  // )
-  // .slice(0, 5);
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
@@ -168,7 +161,7 @@ const DeanHome: React.FC = () => {
         </div>
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
           <div className="hidden md:block">
-            <Content style={{ maxWidth: "1200px", margin: "0 15%" }}>
+            <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
               <div
                 style={{
                   marginBottom: theme.spacing.xl,
@@ -231,22 +224,6 @@ const DeanHome: React.FC = () => {
                   format="YYYY-MM-DD"
                   placeholder="เลือกวันที่"
                 />
-
-                {/* <Select */}
-                {/*   onChange={(dates) => setDateRange(dates)} */}
-                {/*   style={{ */}
-                {/*     maxWidth: "16rem", */}
-                {/*     margin: "auto", */}
-                {/*     marginTop: theme.spacing.sm, */}
-                {/*     width: "100%", */}
-                {/*   }} */}
-                {/* > */}
-                {/*   {workloads.map((val) => ( */}
-                {/*     <Select.Option value={val.dateTimeEnd}> */}
-                {/*       {new Date(val.dateTimeEnd).toLocaleDateString("th-TH")} */}
-                {/*     </Select.Option> */}
-                {/*   ))} */}
-                {/* </Select> */}
               </div>
 
               <Row gutter={[24, 24]}>

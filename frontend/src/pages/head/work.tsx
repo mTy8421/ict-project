@@ -184,6 +184,16 @@ const HeadWork: React.FC = () => {
       ),
     },
     {
+      title: "จำานวนภาระงานรอดำเนินการ",
+      dataIndex: "sum",
+      key: "sum",
+      render: (text: any) => (
+        <Text strong style={{ color: theme.primary }}>
+          {text}
+        </Text>
+      ),
+    },
+    {
       title: "จัดการ",
       key: "action",
       render: (record: User) => (

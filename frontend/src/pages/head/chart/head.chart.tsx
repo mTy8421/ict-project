@@ -34,7 +34,7 @@ const HeadChart: React.FC = () => {
       // const userData = userProfile.data;
       // const textUser = userData.user_role.split("หัวหน้า");
       // if (userData.user_role === "หัวหน้าสำนักงาน") {
-      //   const response = await axiosInstance.get("/work/user");
+      //   const response = await axiosInstance.get("/work/head");
       //   setWorkloads(response.data);
       // } else {
       //   const response = await axiosInstance.get(
@@ -82,6 +82,50 @@ const HeadChart: React.FC = () => {
           // }}
           >
             <Content style={{ maxWidth: "70dvw", margin: "0 auto" }}>
+              <div
+                style={{
+                  marginBottom: theme.spacing.xl,
+                  background: theme.white,
+                  padding: theme.spacing.xl,
+                  borderRadius: theme.borderRadius.lg,
+                  boxShadow: theme.shadow,
+                }}
+              >
+                <Title
+                  level={3}
+                  style={{
+                    color: theme.primary,
+                    fontWeight: theme.fontWeight.semibold,
+                  }}
+                >
+                  เวลาเฉลี่ยที่ใช้ในการทำงาน
+                </Title>
+
+                <Text
+                  style={{
+                    display: "block",
+                    marginBottom: theme.spacing.sm,
+                    textAlign: "center",
+                    fontSize: "2rem",
+                  }}
+                >
+                  {workloads.length > 0
+                    ? (
+                        workloads.reduce((sum, work) => {
+                          const start = new Date(work.dateTimeStart);
+                          const end = new Date(work.dateTimeEnd);
+                          return (
+                            sum +
+                            (end.getTime() - start.getTime()) /
+                              (1000 * 60 * 60 * 24)
+                          );
+                        }, 0) / workloads.length
+                      ).toFixed(1)
+                    : 0}{" "}
+                  วัน
+                </Text>
+              </div>
+
               <div
                 style={{
                   marginBottom: theme.spacing.xl,
