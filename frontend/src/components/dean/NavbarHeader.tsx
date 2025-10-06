@@ -47,19 +47,7 @@ const ReHeader: React.FC = () => {
       key: "User",
       label: "ภาพรวม",
       icon: <HomeOutlined style={{ color: "#000" }} />,
-      onClick: () => navigate("/admin"),
-    },
-    {
-      key: "Work",
-      label: "จัดการภาระงาน",
-      icon: <SnippetsOutlined style={{ color: "#000" }} />,
-      onClick: () => navigate("/admin/work"),
-    },
-    {
-      key: "Config",
-      label: "ตั่งค่าระบบภาระงาน",
-      icon: <SettingOutlined style={{ color: "#000" }} />,
-      onClick: () => navigate("/admin/config/priority"),
+      onClick: () => navigate("/dean"),
     },
     {
       key: "Logout",

@@ -74,6 +74,7 @@ export class WorkService {
   findAll() {
     const works = this.workRepository
       .createQueryBuilder('work')
+      .orderBy('work.dateTimeNow', 'DESC')
       .innerJoinAndSelect('work.options', 'option')
       .innerJoinAndSelect('work.user', 'user')
       .getMany();
@@ -132,6 +133,7 @@ export class WorkService {
   async findByUser(userId: number) {
     const works = await this.workRepository
       .createQueryBuilder('work')
+      .orderBy('work.dateTimeNow', 'DESC')
       .innerJoinAndSelect('work.user', 'user')
       .innerJoinAndSelect('work.options', 'option')
       .where('user.user_id = :userId', { userId })
@@ -146,6 +148,7 @@ export class WorkService {
   findAllUser() {
     const works = this.workRepository
       .createQueryBuilder('work')
+      .orderBy('work.dateTimeNow', 'DESC')
       .innerJoinAndSelect('work.options', 'option')
       .innerJoinAndSelect('work.user', 'user')
       .where(
@@ -159,6 +162,7 @@ export class WorkService {
   findAllByUserRole(role: string) {
     const works = this.workRepository
       .createQueryBuilder('work')
+      .orderBy('work.dateTimeNow', 'DESC')
       .innerJoinAndSelect('work.options', 'option')
       .innerJoinAndSelect('work.user', 'user')
       .where('user.user_role = :user_role', {

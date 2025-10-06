@@ -34,7 +34,7 @@ export class UserService {
         qb.where('work.status = :status', { status: 'pending' }),
       )
       .where(
-        'user.user_role != :user_role AND user.user_role != :user_role2 AND user.user_role NOT LIKE "พนักงาน%"',
+        'user.user_role != :user_role AND user.user_role != :user_role2 AND user.user_role NOT LIKE "พนักงาน%" AND user.user_role NOT LIKE "%คณบดี%"',
         {
           user_role: 'หัวหน้าสำนักงาน',
           user_role2: 'admin',

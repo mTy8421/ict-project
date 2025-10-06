@@ -25,6 +25,10 @@ import DeanHeader from "../../components/dean/Header";
 import DeanNavbar from "../../components/dean/Navbar";
 import ReHeader from "../../components/dean/NavbarHeader";
 
+import { BarChart } from "../../lib/head/barChart";
+import { Doughnuts } from "../../lib/head/doughnutChart";
+import { Horizontal } from "../../lib/dean/horizontal";
+
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
@@ -48,7 +52,7 @@ const DeanHome: React.FC = () => {
 
   const fetchWorkloads = async () => {
     try {
-      const response = await axiosInstance.get("/work/user");
+      const response = await axiosInstance.get("/work");
       setWorkloads(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);
@@ -147,21 +151,33 @@ const DeanHome: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
-      <div className="hidden md:block">
+      <div
+        style={{
+          display: window.innerWidth >= 768 ? "block" : "none",
+        }}
+      >
         <DeanHeader />
       </div>
 
-      <div className="md:hidden">
+      <div style={{ display: window.innerWidth < 768 ? "block" : "none" }}>
         <ReHeader />
       </div>
 
       <Layout style={{ height: "calc(100vh - 70px)" }}>
-        <div className="hidden md:block">
+        <div
+          style={{
+            display: window.innerWidth >= 768 ? "block" : "none",
+          }}
+        >
           <DeanNavbar />
         </div>
         <Layout style={{ padding: theme.spacing.xl, overflow: "auto" }}>
-          <div className="hidden md:block">
-            <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <div
+          // style={{
+          //   display: window.innerWidth >= 768 ? "block" : "none",
+          // }}
+          >
+            <Content style={{ maxWidth: "70dvw", margin: "0 auto" }}>
               <div
                 style={{
                   marginBottom: theme.spacing.xl,
@@ -174,26 +190,40 @@ const DeanHome: React.FC = () => {
                 <Title
                   level={3}
                   style={{
-                    margin: 0,
                     color: theme.primary,
                     fontWeight: theme.fontWeight.semibold,
                   }}
                 >
-                  ภาพรวมภาระงาน
+                  เวลาเฉลี่ยที่ใช้ในการทำงาน
                 </Title>
+
                 <Text
                   style={{
-                    color: theme.textLight,
-                    marginTop: theme.spacing.sm,
                     display: "block",
+                    marginBottom: theme.spacing.sm,
+                    textAlign: "center",
+                    fontSize: "2rem",
                   }}
                 >
-                  สถานะภาระงานทั้งหมดในระบบ
+                  {workloads.length > 0
+                    ? (
+                        workloads.reduce((sum, work) => {
+                          const start = new Date(work.dateTimeStart);
+                          const end = new Date(work.dateTimeEnd);
+                          return (
+                            sum +
+                            (end.getTime() - start.getTime()) /
+                              (1000 * 60 * 60 * 24)
+                          );
+                        }, 0) / workloads.length
+                      ).toFixed(1)
+                    : 0}{" "}
+                  วัน
                 </Text>
               </div>
+
               <div
                 style={{
-                  // margin: "24px 0"
                   marginBottom: theme.spacing.xl,
                   background: theme.white,
                   padding: theme.spacing.xl,
@@ -204,206 +234,21 @@ const DeanHome: React.FC = () => {
                 <Title
                   level={3}
                   style={{
-                    margin: 0,
                     color: theme.primary,
                     fontWeight: theme.fontWeight.semibold,
                   }}
                 >
-                  วันที่
+                  {/* สรุปผลภาระงาน ( ประจำปี {new Date().getFullYear()} ) */}
+                  สรุปผลภาระงาน ประจำเดือน
                 </Title>
-                <DatePicker
-                  style={{
-                    width: "100%",
-                    marginTop: theme.spacing.sm,
-                    borderRadius: theme.borderRadius.md,
-                  }}
-                  onChange={(_date, dateString) =>
-                    setDateRange(dateString as any)
-                  }
-                  // format="DD-MM-YYYY"
-                  format="YYYY-MM-DD"
-                  placeholder="เลือกวันที่"
-                />
+                <div>
+                  <Horizontal dataResponse={workloads} />
+                </div>
+                <div>
+                  <BarChart dataResponse={workloads} />
+                </div>
               </div>
 
-              <Row gutter={[24, 24]}>
-                <Col xs={24} sm={8}>
-                  <Card
-                    style={{
-                      borderRadius: theme.borderRadius.lg,
-                      boxShadow: theme.shadow,
-                      background: theme.white,
-                    }}
-                    styles={{ body: { padding: theme.spacing.xl } }}
-                  >
-                    <Statistic
-                      title="ภาระงานทั้งหมด"
-                      value={totalWorkloads.length}
-                      prefix={
-                        <FileTextOutlined style={{ color: theme.primary }} />
-                      }
-                      valueStyle={{ color: theme.primary }}
-                    />
-                  </Card>
-                </Col>
-                <Col xs={24} sm={8}>
-                  <Card
-                    style={{
-                      borderRadius: theme.borderRadius.lg,
-                      boxShadow: theme.shadow,
-                      background: theme.white,
-                    }}
-                    styles={{ body: { padding: theme.spacing.xl } }}
-                  >
-                    <Statistic
-                      title="ไม่อนุมัติ"
-                      value={inProgressWorkloads}
-                      prefix={
-                        <ClockCircleOutlined style={{ color: theme.primary }} />
-                      }
-                      valueStyle={{ color: theme.primary }}
-                    />
-                  </Card>
-                </Col>
-                <Col xs={24} sm={8}>
-                  <Card
-                    style={{
-                      borderRadius: theme.borderRadius.lg,
-                      boxShadow: theme.shadow,
-                      background: theme.white,
-                    }}
-                    styles={{ body: { padding: theme.spacing.xl } }}
-                  >
-                    <Statistic
-                      title="อนุมัติ"
-                      value={completedWorkloads}
-                      prefix={
-                        <CheckCircleOutlined style={{ color: theme.primary }} />
-                      }
-                      valueStyle={{ color: theme.primary }}
-                    />
-                  </Card>
-                </Col>
-              </Row>
-
-              <div style={{ marginTop: theme.spacing.xl }}>
-                <Card
-                  title="อัตราการอนุมัติ"
-                  style={{
-                    borderRadius: theme.borderRadius.lg,
-                    boxShadow: theme.shadow,
-                    background: theme.white,
-                  }}
-                  styles={{ body: { padding: theme.spacing.xl } }}
-                >
-                  <Progress
-                    type="circle"
-                    percent={completionRate}
-                    format={(percent) => `${percent?.toFixed(1)}%`}
-                    size={200}
-                    strokeColor={theme.success}
-                  />
-                  <div style={{ marginTop: theme.spacing.lg }}>
-                    <Text
-                      strong
-                      style={{
-                        display: "block",
-                        marginBottom: theme.spacing.sm,
-                      }}
-                    >
-                      สรุปสถานะ
-                    </Text>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: theme.spacing.lg,
-                        justifyContent: "center",
-                      }}
-                    >
-                      <div>
-                        <Text type="secondary">รอดำเนินการ</Text>
-                        <Text
-                          strong
-                          style={{ display: "block", color: theme.warning }}
-                        >
-                          {pendingWorkloads} รายการ
-                        </Text>
-                      </div>
-                      <div>
-                        <Text type="secondary">ไม่อนุมัติ</Text>
-                        <Text
-                          strong
-                          style={{ display: "block", color: theme.danger }}
-                        >
-                          {inProgressWorkloads} รายการ
-                        </Text>
-                      </div>
-                      <div>
-                        <Text type="secondary">อนุมัติ</Text>
-                        <Text
-                          strong
-                          style={{ display: "block", color: theme.success }}
-                        >
-                          {completedWorkloads} รายการ
-                        </Text>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-
-              <div style={{ marginTop: theme.spacing.xl }}>
-                <Card
-                  title="ภาระงานล่าสุด"
-                  style={{
-                    borderRadius: theme.borderRadius.lg,
-                    boxShadow: theme.shadow,
-                    background: theme.white,
-                  }}
-                  styles={{ body: { padding: theme.spacing.xl } }}
-                >
-                  <List
-                    dataSource={filteredWorkloads}
-                    renderItem={(item) => (
-                      <List.Item>
-                        <div style={{ width: "100%" }}>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Text strong>{item.options.title}</Text>
-                            <Tag color={getStatusColor(item.status)}>
-                              {getStatusText(item.status)}
-                            </Tag>
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              marginTop: theme.spacing.sm,
-                            }}
-                          >
-                            <Text type="secondary">{item.description}</Text>
-                            <Tag
-                              color={getPriorityColor(item.options.priority)}
-                            >
-                              {getPriorityText(item.options.priority)}
-                            </Tag>
-                          </div>
-                        </div>
-                      </List.Item>
-                    )}
-                  />
-                </Card>
-              </div>
-            </Content>
-          </div>
-
-          <div className="md:hidden">
-            <Content style={{ maxWidth: "1200px", margin: "0 auto" }}>
               <div
                 style={{
                   marginBottom: theme.spacing.xl,
@@ -421,229 +266,18 @@ const DeanHome: React.FC = () => {
                     fontWeight: theme.fontWeight.semibold,
                   }}
                 >
-                  ภาพรวมภาระงาน
+                  สัดส่วนภาระงานตามระดับความเร่งด่วน
                 </Title>
-                <Text
+                <div
                   style={{
-                    color: theme.textLight,
-                    marginTop: theme.spacing.sm,
-                    display: "block",
+                    height: "50dvh",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  สถานะภาระงานทั้งหมดในระบบ
-                </Text>
-              </div>
-              <div
-                style={{
-                  // margin: "24px 0"
-                  marginBottom: theme.spacing.xl,
-                  background: theme.white,
-                  padding: theme.spacing.xl,
-                  borderRadius: theme.borderRadius.lg,
-                  boxShadow: theme.shadow,
-                }}
-              >
-                <Title
-                  level={3}
-                  style={{
-                    margin: 0,
-                    color: theme.primary,
-                    fontWeight: theme.fontWeight.semibold,
-                  }}
-                >
-                  วันที่
-                </Title>
-                <DatePicker
-                  style={{
-                    width: "100%",
-                    marginTop: theme.spacing.sm,
-                    borderRadius: theme.borderRadius.md,
-                  }}
-                  onChange={(_date, dateString) =>
-                    setDateRange(dateString as any)
-                  }
-                  // format="DD-MM-YYYY"
-                  format="YYYY-MM-DD"
-                  placeholder="เลือกวันที่"
-                />
-              </div>
-
-              <Row gutter={[24, 24]}>
-                <Col xs={24} sm={8}>
-                  <Card
-                    style={{
-                      borderRadius: theme.borderRadius.lg,
-                      boxShadow: theme.shadow,
-                      background: theme.white,
-                    }}
-                    styles={{ body: { padding: theme.spacing.xl } }}
-                  >
-                    <Statistic
-                      title="ภาระงานทั้งหมด"
-                      value={totalWorkloads.length}
-                      prefix={
-                        <FileTextOutlined style={{ color: theme.primary }} />
-                      }
-                      valueStyle={{ color: theme.primary }}
-                    />
-                  </Card>
-                </Col>
-                <Col xs={24} sm={8}>
-                  <Card
-                    style={{
-                      borderRadius: theme.borderRadius.lg,
-                      boxShadow: theme.shadow,
-                      background: theme.white,
-                    }}
-                    styles={{ body: { padding: theme.spacing.xl } }}
-                  >
-                    <Statistic
-                      title="ไม่อนุมัติ"
-                      value={inProgressWorkloads}
-                      prefix={
-                        <ClockCircleOutlined style={{ color: theme.primary }} />
-                      }
-                      valueStyle={{ color: theme.primary }}
-                    />
-                  </Card>
-                </Col>
-                <Col xs={24} sm={8}>
-                  <Card
-                    style={{
-                      borderRadius: theme.borderRadius.lg,
-                      boxShadow: theme.shadow,
-                      background: theme.white,
-                    }}
-                    styles={{ body: { padding: theme.spacing.xl } }}
-                  >
-                    <Statistic
-                      title="อนุมัติ"
-                      value={completedWorkloads}
-                      prefix={
-                        <CheckCircleOutlined style={{ color: theme.primary }} />
-                      }
-                      valueStyle={{ color: theme.primary }}
-                    />
-                  </Card>
-                </Col>
-              </Row>
-
-              <div style={{ marginTop: theme.spacing.xl }}>
-                <Card
-                  title="อัตราการอนุมัติ"
-                  style={{
-                    borderRadius: theme.borderRadius.lg,
-                    boxShadow: theme.shadow,
-                    background: theme.white,
-                  }}
-                  styles={{ body: { padding: theme.spacing.xl } }}
-                >
-                  <Progress
-                    type="circle"
-                    percent={completionRate}
-                    format={(percent) => `${percent?.toFixed(1)}%`}
-                    size={200}
-                    strokeColor={theme.success}
-                  />
-                  <div style={{ marginTop: theme.spacing.lg }}>
-                    <Text
-                      strong
-                      style={{
-                        display: "block",
-                        marginBottom: theme.spacing.sm,
-                      }}
-                    >
-                      สรุปสถานะ
-                    </Text>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: theme.spacing.lg,
-                        justifyContent: "center",
-                      }}
-                    >
-                      <div>
-                        <Text type="secondary">รอดำเนินการ</Text>
-                        <Text
-                          strong
-                          style={{ display: "block", color: theme.warning }}
-                        >
-                          {pendingWorkloads} รายการ
-                        </Text>
-                      </div>
-                      <div>
-                        <Text type="secondary">ไม่อนุมัติ</Text>
-                        <Text
-                          strong
-                          style={{ display: "block", color: theme.primary }}
-                        >
-                          {inProgressWorkloads} รายการ
-                        </Text>
-                      </div>
-                      <div>
-                        <Text type="secondary">อนุมัติ</Text>
-                        <Text
-                          strong
-                          style={{ display: "block", color: theme.success }}
-                        >
-                          {completedWorkloads} รายการ
-                        </Text>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-
-              <div style={{ marginTop: theme.spacing.xl }}>
-                <Card
-                  title="ภาระงานล่าสุด"
-                  style={{
-                    borderRadius: theme.borderRadius.lg,
-                    boxShadow: theme.shadow,
-                    background: theme.white,
-                  }}
-                  styles={{ body: { padding: theme.spacing.xl } }}
-                >
-                  <List
-                    dataSource={filteredWorkloads}
-                    renderItem={(item) => (
-                      <List.Item>
-                        <div style={{ width: "100%" }}>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Text strong>{item.options.title}</Text>
-                            <Tag color={getStatusColor(item.status)}>
-                              {getStatusText(item.status)}
-                            </Tag>
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              marginTop: theme.spacing.sm,
-                            }}
-                          >
-                            <Text type="secondary">{item.description}</Text>
-                            <Tag
-                              color={getPriorityColor(item.options.priority)}
-                            >
-                              {getPriorityText(item.options.priority)}
-                            </Tag>
-                          </div>
-                        </div>
-                      </List.Item>
-                    )}
-                  />
-                </Card>
-              </div>
-
-              <div style={{ marginTop: theme.spacing.xl }}>
-                <Card></Card>
+                  <Doughnuts dataResponse={workloads} />
+                </div>
               </div>
             </Content>
           </div>

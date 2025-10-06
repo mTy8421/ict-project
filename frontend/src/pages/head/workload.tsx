@@ -259,23 +259,26 @@ const HeadWorkload: React.FC = () => {
           {record.status == "completed" || record.status == "not_completed" ? (
             ""
           ) : (
-            <Tooltip title="แก้ไข">
-              <Button
-                type="text"
-                icon={<EditOutlined />}
-                onClick={() => navigate(`/head/_workload/edit/${record.id}`)}
-                style={{ color: theme.primary }}
-              />
-            </Tooltip>
+            <>
+              <Tooltip title="แก้ไข">
+                <Button
+                  type="text"
+                  icon={<EditOutlined />}
+                  onClick={() => navigate(`/head/_workload/edit/${record.id}`)}
+                  style={{ color: theme.primary }}
+                />
+              </Tooltip>
+
+              <Tooltip title="ลบ">
+                <Button
+                  type="text"
+                  danger
+                  icon={<DeleteOutlined />}
+                  onClick={() => handleDelete(record.id)}
+                />
+              </Tooltip>
+            </>
           )}
-          <Tooltip title="ลบ">
-            <Button
-              type="text"
-              danger
-              icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record.id)}
-            />
-          </Tooltip>
         </Space>
       ),
     },

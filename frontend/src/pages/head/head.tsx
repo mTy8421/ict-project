@@ -368,7 +368,7 @@ const Head: React.FC = () => {
                   styles={{ body: { padding: theme.spacing.xl } }}
                 >
                   <List
-                    dataSource={filteredWorkloads}
+                    dataSource={filteredWorkloads.slice(0, 5)}
                     renderItem={(item) => (
                       <List.Item>
                         <div style={{ width: "100%" }}>
@@ -609,7 +609,7 @@ const Head: React.FC = () => {
                   styles={{ body: { padding: theme.spacing.xl } }}
                 >
                   <List
-                    dataSource={filteredWorkloads}
+                    dataSource={filteredWorkloads.slice(0, 5)}
                     renderItem={(item) => (
                       <List.Item>
                         <div style={{ width: "100%" }}>

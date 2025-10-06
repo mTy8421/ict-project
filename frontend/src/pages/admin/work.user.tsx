@@ -209,12 +209,28 @@ const AdminWorkUser: React.FC = () => {
       ),
     },
     {
-      title: "วันที่สิ้นสุด",
-      dataIndex: "dateTimeEnd",
-      key: "dateTimeEnd",
-      // dataIndex: "end_date",
-      // key: "end_date",
-      render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
+      title: "ระยะเวลาที่ใช้",
+      key: "dateCount",
+      render: (record: Workload) => (
+        <span>
+          {Math.ceil(
+            (new Date(record.dateTimeEnd).getTime() -
+              new Date(record.dateTimeStart).getTime()) /
+              (1000 * 60 * 60 * 24)
+          )}{" "}
+          วัน
+        </span>
+      ),
+    },
+    {
+      title: "วันที่เริ่มต้น - สิ้นสุด",
+      key: "dateRange",
+      render: (record: Workload) => (
+        <span>
+          {new Date(record.dateTimeStart).toLocaleDateString("th-TH")} -{" "}
+          {new Date(record.dateTimeEnd).toLocaleDateString("th-TH")}
+        </span>
+      ),
     },
     {
       title: "จัดการ",
