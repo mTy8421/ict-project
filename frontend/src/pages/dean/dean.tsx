@@ -1,24 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  Typography,
-  Layout,
-  Row,
-  Col,
-  Statistic,
-  Progress,
-  List,
-  Tag,
-  Select,
-  DatePicker,
-} from "antd";
-import {
-  FileTextOutlined,
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
+import { Typography, Layout } from "antd";
 import axiosInstance from "../../utils/axios";
 import theme from "../../theme";
 import DeanHeader from "../../components/dean/Header";
@@ -45,10 +26,7 @@ interface Workload {
 }
 
 const DeanHome: React.FC = () => {
-  const navigate = useNavigate();
   const [workloads, setWorkloads] = useState<Workload[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [dateRange, setDateRange] = useState();
 
   const fetchWorkloads = async () => {
     try {
@@ -56,98 +34,12 @@ const DeanHome: React.FC = () => {
       setWorkloads(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchWorkloads();
   }, []);
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "warning";
-      case "not_completed":
-        return "error";
-      case "completed":
-        return "success";
-      default:
-        return "default";
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "รอดำเนินการ";
-      case "not_completed":
-        return "ไม่อนุมัติ";
-      case "completed":
-        return "อนุมัติ";
-      default:
-        return status;
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "red";
-      case "medium":
-        return "orange";
-      case "low":
-        return "green";
-      default:
-        return "default";
-    }
-  };
-
-  const getPriorityText = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "สูง";
-      case "medium":
-        return "ปานกลาง";
-      case "low":
-        return "ต่ำ";
-      default:
-        return priority;
-    }
-  };
-
-  // const totalWorkloads = workloads.length;
-  const totalWorkloads = workloads.filter((workloads) => {
-    const recentWorkloads =
-      !dateRange ||
-      (workloads.dateTimeEnd?.toString() || "").includes(dateRange).toString();
-
-    return recentWorkloads;
-  });
-
-  const completedWorkloads = workloads.filter(
-    (w) => w.status === "completed"
-  ).length;
-  const inProgressWorkloads = workloads.filter(
-    (w) => w.status === "not_completed"
-  ).length;
-  const pendingWorkloads = workloads.filter(
-    (w) => w.status === "pending"
-  ).length;
-
-  const completionRate =
-    totalWorkloads.length > 0
-      ? (completedWorkloads / totalWorkloads.length) * 100
-      : 0;
-
-  const filteredWorkloads = workloads.filter((workloads) => {
-    const recentWorkloads =
-      !dateRange ||
-      (workloads.dateTimeEnd?.toString() || "").includes(dateRange);
-
-    return recentWorkloads;
-  });
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>
@@ -271,12 +163,13 @@ const DeanHome: React.FC = () => {
                 <div
                   style={{
                     height: "50dvh",
-                    display: "flex",
+                    display: window.innerWidth >= 768 ? "flex" : "block",
                     justifyContent: "center",
                     alignItems: "center",
                   }}
                 >
                   <Doughnuts dataResponse={workloads} />
+                  {/* <Doughnuts dataResponse={workloads} /> */}
                 </div>
               </div>
             </Content>

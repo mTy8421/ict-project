@@ -34,6 +34,7 @@ import PriorityEdit from "./pages/admin/setting/priority.edit";
 import UserChert from "./pages/user/chart/user.chart";
 import HeadChart from "./pages/head/chart/head.chart";
 import DeanHome from "./pages/dean/dean";
+import AdminChart from "./pages/admin/chart/admin.chart";
 
 export default function App() {
   return (
@@ -91,9 +92,10 @@ export default function App() {
           path="/admin/config/priority/edit/:id"
           element={<PriorityEdit />}
         />
-        <Route path="/admin/chart" element={<HeadChart />} />
+        <Route path="/admin/chart" element={<AdminChart />} />
 
         <Route path="/dean" element={<DeanHome />} />
+        <Route path="/dean/user" element={<DeanHome />} />
       </Routes>
     </BrowserRouter>
   );
