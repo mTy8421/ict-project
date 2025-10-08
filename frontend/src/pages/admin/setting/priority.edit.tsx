@@ -4,7 +4,6 @@ import {
   Form,
   Input,
   Select,
-  DatePicker,
   Button,
   Card,
   Typography,
@@ -23,8 +22,6 @@ import ReHeader from "../../../components/admin/NavbarHeader";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
-const { TextArea } = Input;
-const { RangePicker } = DatePicker;
 
 interface WorkloadForm {
   title: string;
@@ -36,8 +33,6 @@ const PriorityEdit: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
-
-  //   const [option, setOptions] = useState<WorkloadForm | null>(null);
 
   const fetchUser = async () => {
     try {
@@ -94,7 +89,7 @@ const PriorityEdit: React.FC = () => {
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้"
+        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้",
       );
     } finally {
       setLoading(false);

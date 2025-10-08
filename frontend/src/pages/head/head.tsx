@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Card,
   Typography,
@@ -10,14 +9,12 @@ import {
   Progress,
   List,
   Tag,
-  Select,
   DatePicker,
 } from "antd";
 import {
   FileTextOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
-  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import theme from "../../theme";
@@ -41,9 +38,7 @@ interface Workload {
 }
 
 const Head: React.FC = () => {
-  const navigate = useNavigate();
   const [workloads, setWorkloads] = useState<Workload[]>([]);
-  const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState();
 
   const fetchWorkloads = async () => {
@@ -52,8 +47,6 @@ const Head: React.FC = () => {
       setWorkloads(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);
-    } finally {
-      setLoading(false);
     }
   };
 

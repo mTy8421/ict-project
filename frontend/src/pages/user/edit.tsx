@@ -88,7 +88,7 @@ const EditUserWorkLoad: React.FC = () => {
       const workload = response.data;
 
       const imagesResponse = await axiosInstance.get(
-        `upload-file/show/id/${id}`
+        `upload-file/show/id/${id}`,
       );
       setImages(imagesResponse.data);
 
@@ -141,7 +141,7 @@ const EditUserWorkLoad: React.FC = () => {
     } catch (error: any) {
       console.error("Error updating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถแก้ไขภาระงานได้"
+        error.response?.data?.message || "ไม่สามารถแก้ไขภาระงานได้",
       );
     } finally {
       setLoading(false);

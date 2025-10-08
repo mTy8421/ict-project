@@ -15,7 +15,7 @@ export class CreateWorkDto {
 
   @IsString()
   dateTimeNow?: string;
-  
+
   @IsString()
   dateTimeStart?: string;
 
