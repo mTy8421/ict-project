@@ -15,7 +15,7 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 interface Props {
@@ -45,9 +45,9 @@ export function Horizontal({ dataResponse }: Props) {
   const labels = Array.from(
     new Set(
       dataResponse.map((item: any) =>
-        new Date(item.dateTimeNow).toLocaleString("th-TH", { month: "long" })
-      )
-    )
+        new Date(item.dateTimeNow).toLocaleString("th-TH", { month: "long" }),
+      ),
+    ),
   );
 
   const datasGeneralAdministration = labels.map(
@@ -60,8 +60,8 @@ export function Horizontal({ dataResponse }: Props) {
               month: "long",
             }) === month &&
             new Date(item.dateTimeNow).getFullYear() ===
-              new Date().getFullYear())
-      ).length
+            new Date().getFullYear()),
+      ).length,
   );
 
   const datasAcademic = labels.map(
@@ -74,8 +74,8 @@ export function Horizontal({ dataResponse }: Props) {
               month: "long",
             }) === month &&
             new Date(item.dateTimeNow).getFullYear() ===
-              new Date().getFullYear())
-      ).length
+            new Date().getFullYear()),
+      ).length,
   );
 
   const datasPlan = labels.map(
@@ -88,8 +88,8 @@ export function Horizontal({ dataResponse }: Props) {
               month: "long",
             }) === month &&
             new Date(item.dateTimeNow).getFullYear() ===
-              new Date().getFullYear())
-      ).length
+            new Date().getFullYear()),
+      ).length,
   );
 
   const datasDevelopDigitalSkills = labels.map(
@@ -102,8 +102,8 @@ export function Horizontal({ dataResponse }: Props) {
               month: "long",
             }) === month &&
             new Date(item.dateTimeNow).getFullYear() ===
-              new Date().getFullYear())
-      ).length
+            new Date().getFullYear()),
+      ).length,
   );
 
   const data = {
