@@ -228,7 +228,7 @@ const UserWork: React.FC = () => {
           {Math.ceil(
             (new Date(record.dateTimeEnd).getTime() -
               new Date(record.dateTimeStart).getTime()) /
-            (1000 * 60 * 60 * 24),
+              (1000 * 60 * 60 * 24)
           )}{" "}
           วัน
         </span>
@@ -285,13 +285,13 @@ const UserWork: React.FC = () => {
   const filteredWorkloads = workloads.filter((workload) => {
     const matchesSearch =
       (workload.options.title?.toLowerCase() || "").includes(
-        searchText.toLowerCase(),
+        searchText.toLowerCase()
       ) ||
       (workload.department?.toLowerCase() || "").includes(
-        searchText.toLowerCase(),
+        searchText.toLowerCase()
       ) ||
       (workload.assignee?.toLowerCase() || "").includes(
-        searchText.toLowerCase(),
+        searchText.toLowerCase()
       );
 
     const matchesDate =
