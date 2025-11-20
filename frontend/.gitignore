@@ -5,6 +5,8 @@
 /.react-router/
 /build/
 
+/opencodetmp
+
 .env
 
 yarn.lock

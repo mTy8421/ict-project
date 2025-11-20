@@ -247,13 +247,37 @@ const DetailUserWorkLoad: React.FC = () => {
 
                     <Col span={24}>
                       <div>
-                        {images.map((item, index) => (
-                          <Image
-                            key={index}
-                            width={200}
-                            src={`/api/upload-file/show/${item.file_name}`}
-                          />
-                        ))}
+                        {images
+                          .filter((item) => !item.file_name.endsWith(".pdf"))
+                          .map((item, index) => (
+                            <Image
+                              key={index}
+                              width={200}
+                              src={`/api/upload-file/show/${item.file_name}`}
+                            />
+                          ))}
+                      </div>
+                    </Col>
+
+                    <Col span={24}>
+                      <div>
+                        {images.map((item, index) =>
+                          item.file_name.endsWith(".pdf") ? (
+                            <div
+                              key={index}
+                              style={{ marginBottom: theme.spacing.md }}
+                            >
+                              <a
+                                href={`/api/upload-file/showPdf/${item.file_name}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{ color: theme.primary }}
+                              >
+                                {item.file_name}
+                              </a>
+                            </div>
+                          ) : null
+                        )}
                       </div>
                     </Col>
                   </Row>
@@ -414,13 +438,15 @@ const DetailUserWorkLoad: React.FC = () => {
 
                     <Col span={24}>
                       <div>
-                        {images.map((item, index) => (
-                          <Image
-                            key={index}
-                            width={200}
-                            src={`/api/upload-file/show/${item.file_name}`}
-                          />
-                        ))}
+                        {images
+                          .filter((item) => !item.file_name.endsWith(".pdf"))
+                          .map((item, index) => (
+                            <Image
+                              key={index}
+                              width={200}
+                              src={`/api/upload-file/show/${item.file_name}`}
+                            />
+                          ))}
                       </div>
                     </Col>
                   </Row>

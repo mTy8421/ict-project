@@ -33,6 +33,12 @@ export class UploadFileController {
     return this.uploadFileService.uploadMultiFile(files);
   }
 
+  @Post('pdf')
+  @UseInterceptors(FileInterceptor('fileUpload'))
+  uploadPdfFile(@UploadedFile() file: Express.Multer.File) {
+    return this.uploadFileService.uploadPdfFile(file);
+  }
+
   @Get('show/id/:id')
   show(@Param('id') id: string) {
     return this.uploadFileService.showImages(+id);
@@ -41,6 +47,11 @@ export class UploadFileController {
   @Get('show/:filename')
   showFileName(@Param('filename') filename: string, @Res() res: Response) {
     return res.sendFile(filename, { root: 'images' });
+  }
+
+  @Get('showPdf/:filename')
+  showPdfFileName(@Param('filename') filename: string, @Res() res: Response) {
+    return res.sendFile(filename, { root: 'pdfs' });
   }
 
   @Post()

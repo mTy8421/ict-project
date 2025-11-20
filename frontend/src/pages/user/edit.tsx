@@ -88,7 +88,7 @@ const EditUserWorkLoad: React.FC = () => {
       const workload = response.data;
 
       const imagesResponse = await axiosInstance.get(
-        `upload-file/show/id/${id}`,
+        `upload-file/show/id/${id}`
       );
       setImages(imagesResponse.data);
 
@@ -141,7 +141,7 @@ const EditUserWorkLoad: React.FC = () => {
     } catch (error: any) {
       console.error("Error updating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถแก้ไขภาระงานได้",
+        error.response?.data?.message || "ไม่สามารถแก้ไขภาระงานได้"
       );
     } finally {
       setLoading(false);
@@ -317,13 +317,15 @@ const EditUserWorkLoad: React.FC = () => {
 
                     <Col span={24}>
                       <div>
-                        {images.map((item, index) => (
-                          <Image
-                            key={index}
-                            width={200}
-                            src={`/api/upload-file/show/${item.file_name}`}
-                          />
-                        ))}
+                        {images
+                          .filter((item) => !item.file_name.endsWith(".pdf"))
+                          .map((item, index) => (
+                            <Image
+                              key={index}
+                              width={200}
+                              src={`/api/upload-file/show/${item.file_name}`}
+                            />
+                          ))}
                       </div>
                     </Col>
                   </Row>
@@ -513,13 +515,15 @@ const EditUserWorkLoad: React.FC = () => {
 
                     <Col span={24}>
                       <div>
-                        {images.map((item, index) => (
-                          <Image
-                            key={index}
-                            width={200}
-                            src={`/api/upload-file/show/${item.file_name}`}
-                          />
-                        ))}
+                        {images
+                          .filter((item) => !item.file_name.endsWith(".pdf"))
+                          .map((item, index) => (
+                            <Image
+                              key={index}
+                              width={200}
+                              src={`/api/upload-file/show/${item.file_name}`}
+                            />
+                          ))}
                       </div>
                     </Col>
                   </Row>

@@ -317,13 +317,15 @@ const HeadWorkLoadEdit: React.FC = () => {
 
                     <Col span={24}>
                       <div>
-                        {images.map((item, index) => (
-                          <Image
-                            key={index}
-                            width={200}
-                            src={`/api/upload-file/show/${item.file_name}`}
-                          />
-                        ))}
+                        {images
+                          .filter((item) => !item.file_name.endsWith(".pdf"))
+                          .map((item, index) => (
+                            <Image
+                              key={index}
+                              width={200}
+                              src={`/api/upload-file/show/${item.file_name}`}
+                            />
+                          ))}
                       </div>
                     </Col>
                   </Row>
@@ -513,13 +515,15 @@ const HeadWorkLoadEdit: React.FC = () => {
 
                     <Col span={24}>
                       <div>
-                        {images.map((item, index) => (
-                          <Image
-                            key={index}
-                            width={200}
-                            src={`/api/upload-file/show/${item.file_name}`}
-                          />
-                        ))}
+                        {images
+                          .filter((item) => !item.file_name.endsWith(".pdf"))
+                          .map((item, index) => (
+                            <Image
+                              key={index}
+                              width={200}
+                              src={`/api/upload-file/show/${item.file_name}`}
+                            />
+                          ))}
                       </div>
                     </Col>
                   </Row>

@@ -47,11 +47,17 @@ export class UploadFileService {
     }
 
     const uploadDir = path.join(__dirname, '..', '..', 'images');
+    const uploadDirPdfs = path.join(__dirname, '..', '..', 'pdfs');
     const deletedFileNames: string[] = [];
     const errors: string[] = [];
 
     for (const fileToDelete of filesToDelete) {
-      const filePath = path.join(uploadDir, fileToDelete.file_name);
+      // Check if file is a PDF based on extension
+      const isPdf =
+        path.extname(fileToDelete.file_name).toLowerCase() === '.pdf';
+      const filePath = isPdf
+        ? path.join(uploadDirPdfs, fileToDelete.file_name)
+        : path.join(uploadDir, fileToDelete.file_name);
 
       try {
         if (fs.existsSync(filePath)) {
@@ -170,5 +176,36 @@ export class UploadFileService {
     });
 
     return Promise.all(promises);
+  }
+
+  async uploadPdfFile(file: Express.Multer.File): Promise<any> {
+    if (
+      !file ||
+      typeof file.originalname !== 'string' ||
+      !Buffer.isBuffer(file.buffer)
+    ) {
+      throw new Error('Invalid file upload');
+    }
+
+    const uploadDir = path.join(__dirname, '..', '..', 'pdfs');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const pdfFilename = `uploaded-${Date.now()}-${file.originalname}`;
+    const pdfFilePath = path.join(uploadDir, pdfFilename);
+
+    try {
+      fs.writeFileSync(pdfFilePath, file.buffer);
+
+      const newFile = await this.upload_fileRepsitory.save({
+        file_name: pdfFilename,
+      });
+
+      return { success: true, data: newFile };
+    } catch (error) {
+      console.error(`Error saving PDF file ${file.originalname}:`, error);
+      return `Failed to upload ${file.originalname}.`;
+    }
   }
 }

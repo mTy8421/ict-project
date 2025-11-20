@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Typography, Button, message } from "antd";
-import { LogoutOutlined } from "@ant-design/icons";
+import {
+  Layout,
+  Typography,
+  Button,
+  message,
+  Space,
+  Badge,
+  Avatar,
+  Modal,
+  Table,
+  Tag,
+} from "antd";
+import { LogoutOutlined, MailOutlined } from "@ant-design/icons";
 import { logout } from "../../pages/home/home";
 import theme from "../../theme";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axios";
 
 const { Header } = Layout;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 interface User {
   user_id: number;
@@ -15,9 +26,36 @@ interface User {
   user_role: string;
 }
 
+interface Workload {
+  id: number;
+  department: string;
+  assignee: string;
+  status: "pending" | "not_completed" | "completed";
+  dateTimeStart: string;
+  dateTimeEnd: string;
+  dateTimeNow: string;
+  options: any;
+}
+
 const DeanHeader: React.FC = () => {
   const [profile, setProfile] = useState<User | undefined>();
+  const [isMailHovered, setIsMailHovered] = useState(false);
   const navigate = useNavigate();
+  const [workloads, setWorkloads] = useState<Workload[]>([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   const fetchUsers = async () => {
     try {
@@ -34,9 +72,80 @@ const DeanHeader: React.FC = () => {
     }
   };
 
+  const fetchWorkloads = async () => {
+    try {
+      const response = await axiosInstance.get(`/work/user`);
+      setWorkloads(response.data);
+    } catch (error) {
+      console.error("Error fetching workloads:", error);
+      message.error("ไม่สามารถดึงข้อมูลภาระงานได้");
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
+    fetchWorkloads();
   }, []);
+
+  const getPriorityText = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return "สูง";
+      case "medium":
+        return "ปานกลาง";
+      case "low":
+        return "ต่ำ";
+      default:
+        return priority;
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return theme.danger;
+      case "medium":
+        return theme.warning;
+      case "low":
+        return theme.success;
+      default:
+        return theme.textLight;
+    }
+  };
+
+  const notCompletedWorkloads = workloads.filter(
+    (workload) => workload.status === "not_completed"
+  );
+
+  const columns = [
+    {
+      title: "หัวข้อ",
+      dataIndex: "options",
+      key: "options",
+      render: (text: any) => (
+        <Text strong style={{ color: theme.primary }}>
+          {text.title}
+        </Text>
+      ),
+    },
+    {
+      title: "ระดับความเร่งด่วน",
+      dataIndex: "options",
+      key: "options",
+      render: (priority: any) => (
+        <Tag
+          color={getPriorityColor(priority.priority)}
+          style={{
+            padding: "4px 8px",
+            borderRadius: theme.borderRadius.sm,
+            fontSize: theme.fontSize.sm,
+          }}
+        >
+          {getPriorityText(priority.priority)}
+        </Tag>
+      ),
+    },
+  ];
 
   return (
     <Header
@@ -70,7 +179,6 @@ const DeanHeader: React.FC = () => {
           level={4}
           style={{
             margin: 0,
-            // color: theme.white,
             color: "#000",
             fontWeight: theme.fontWeight.semibold,
           }}
@@ -83,20 +191,64 @@ const DeanHeader: React.FC = () => {
       >
         <span
           style={{
-            // color: theme.white,
             color: "#000",
             fontSize: theme.fontSize.md,
           }}
         >
           {profile?.user_name} : {profile?.user_role}
         </span>
+
+        <Space>
+          <Badge
+            count={notCompletedWorkloads ? notCompletedWorkloads.length : 0}
+            size="small"
+            offset={[-2, 2]}
+          >
+            <div
+              onMouseEnter={() => setIsMailHovered(true)}
+              onMouseLeave={() => setIsMailHovered(false)}
+              style={{ display: "inline-block" }}
+            >
+              <Avatar
+                onClick={showModal}
+                style={{
+                  backgroundColor: isMailHovered ? "#f0f0f0" : "#fff",
+                  color: "#000",
+                  cursor: "pointer",
+                  transition: "background-color 0.3s ease",
+                }}
+                icon={<MailOutlined />}
+              />
+            </div>
+          </Badge>
+        </Space>
+
+        <Modal
+          title="ภาระงานที่ไม่อนุมัติ"
+          closable={{ "aria-label": "Custom Close Button" }}
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          footer={null}
+        >
+          <Table
+            dataSource={notCompletedWorkloads}
+            columns={columns}
+            pagination={{
+              pageSize: 10,
+              // showSizeChanger: true,
+              showTotal: (total) => `ทั้งหมด ${total} รายการ`,
+            }}
+            scroll={{ x: "max-content" }}
+          />
+        </Modal>
+
         <Button
           type="text"
           icon={<LogoutOutlined style={{ color: "#000" }} />}
           onClick={logout}
           style={{
             fontSize: theme.fontSize.md,
-            // color: theme.white,
             color: "#000",
             height: "40px",
             padding: `0 ${theme.spacing.md}`,

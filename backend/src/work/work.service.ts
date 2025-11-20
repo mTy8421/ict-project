@@ -179,8 +179,14 @@ export class WorkService {
     }
 
     const uploadDir = path.join(__dirname, '..', '..', 'images');
+    const uploadDirPdfs = path.join(__dirname, '..', '..', 'pdfs');
+
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    if (!fs.existsSync(uploadDirPdfs)) {
+      fs.mkdirSync(uploadDirPdfs, { recursive: true });
     }
 
     const promises = files.map(async (file) => {
@@ -192,16 +198,24 @@ export class WorkService {
         return `Invalid data for file: ${file?.originalname || 'unknown'}`;
       }
 
-      // const resizedFilename = `resized-${Date.now()}-${file.originalname}${path.extname(file.originalname)}`;
-      const resizedFilename = `resized-${Date.now()}-${file.originalname}}`;
-      const resizedFilePath = path.join(uploadDir, resizedFilename);
+      const resizedFilename = `resized-${Date.now()}-${file.originalname}`;
+      const isPdf = path.extname(file.originalname).toLowerCase() === '.pdf';
+      const resizedFilePath = isPdf
+        ? path.join(uploadDirPdfs, resizedFilename)
+        : path.join(uploadDir, resizedFilename);
 
       try {
-        await sharp(file.buffer)
-          .resize(800)
-          .jpeg({ quality: 70 })
-          .png({ quality: 70 })
-          .toFile(resizedFilePath);
+        if (isPdf) {
+          // For PDF files, save directly without processing
+          await fs.promises.writeFile(resizedFilePath, file.buffer);
+        } else {
+          // For image files, process with Sharp
+          await sharp(file.buffer)
+            .resize(800)
+            .jpeg({ quality: 70 })
+            .png({ quality: 70 })
+            .toFile(resizedFilePath);
+        }
 
         // This is Function Upload File
         await this.upload_fileRepsitory
