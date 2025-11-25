@@ -59,4 +59,9 @@ export class UploadFileController {
   remove(@Param('id') id: string) {
     return this.uploadFileService.remove(+id);
   }
+
+  @Delete('file/:id')
+  removeFile(@Param('id') id: string) {
+    return this.uploadFileService.removeFile(+id);
+  }
 }

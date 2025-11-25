@@ -93,7 +93,11 @@ export class WorkService {
     return works;
   }
 
-  async update(id: number, updateWorkDto: UpdateWorkDto) {
+  async update(
+    id: number,
+    updateWorkDto: UpdateWorkDto,
+    files?: Express.Multer.File[],
+  ) {
     const option = await this.optionRepsitory.findOne({
       where: { id: updateWorkDto.options },
     });
@@ -115,6 +119,11 @@ export class WorkService {
       })
       .where('id = :id', { id })
       .execute();
+
+    if (files && files.length > 0) {
+      await this.uploadMultiFile(files, id);
+    }
+
     return works;
   }
 

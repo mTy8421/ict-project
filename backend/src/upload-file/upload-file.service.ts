@@ -86,6 +86,35 @@ export class UploadFileService {
     return message.trim();
   }
 
+  async removeFile(id: number) {
+    const fileToDelete = await this.upload_fileRepsitory.findOne({
+      where: { id: id },
+    });
+
+    if (!fileToDelete) {
+      throw new Error('File not found');
+    }
+
+    const uploadDir = path.join(__dirname, '..', '..', 'images');
+    const uploadDirPdfs = path.join(__dirname, '..', '..', 'pdfs');
+
+    const isPdf = path.extname(fileToDelete.file_name).toLowerCase() === '.pdf';
+    const filePath = isPdf
+      ? path.join(uploadDirPdfs, fileToDelete.file_name)
+      : path.join(uploadDir, fileToDelete.file_name);
+
+    try {
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+      await this.upload_fileRepsitory.delete(id);
+      return `File ${fileToDelete.file_name} deleted successfully`;
+    } catch (error) {
+      console.error(`Error deleting file ${fileToDelete.file_name}:`, error);
+      throw new Error(`Failed to delete ${fileToDelete.file_name}`);
+    }
+  }
+
   async showImages(id: number) {
     const findImages = await this.upload_fileRepsitory
       .createQueryBuilder('upload_file')

@@ -6,7 +6,7 @@
 /build/
 
 /opencodetmp
-
+/dist
 .env
 
 yarn.lock

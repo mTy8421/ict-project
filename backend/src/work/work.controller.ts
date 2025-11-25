@@ -60,8 +60,13 @@ export class WorkController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWorkDto: UpdateWorkDto) {
-    return this.workService.update(+id, updateWorkDto);
+  @UseInterceptors(FilesInterceptor('fileUpload'))
+  update(
+    @Param('id') id: string,
+    @Body() updateWorkDto: UpdateWorkDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    return this.workService.update(+id, updateWorkDto, files);
   }
 
   @Delete(':id')
