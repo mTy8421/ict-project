@@ -31,20 +31,7 @@ export class UserController {
     return this.userService.findByEmail(req.user.user_email);
   }
 
-  @Get('user')
-  findAllUser() {
-    return this.userService.findAllUser();
-  }
 
-  @Get('department/:role')
-  findAllDepartment(@Param('role') role: string) {
-    return this.userService.findAllDepartment(role);
-  }
-
-  @Get('head')
-  findAllHead() {
-    return this.userService.findAllHead();
-  }
 
   @Get()
   findAll() {

@@ -21,28 +21,7 @@ import { Response } from 'express';
 export class UploadFileController {
   constructor(private readonly uploadFileService: UploadFileService) {}
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('fileUpload'))
-  uploadMapFile(@UploadedFile() file: Express.Multer.File) {
-    return this.uploadFileService.uploadFile(file);
-  }
 
-  @Post('multi')
-  @UseInterceptors(FilesInterceptor('fileUpload'))
-  uploadMapFileMulti(@UploadedFiles() files: Express.Multer.File[]) {
-    return this.uploadFileService.uploadMultiFile(files);
-  }
-
-  @Post('pdf')
-  @UseInterceptors(FileInterceptor('fileUpload'))
-  uploadPdfFile(@UploadedFile() file: Express.Multer.File) {
-    return this.uploadFileService.uploadPdfFile(file);
-  }
-
-  @Get('show/id/:id')
-  show(@Param('id') id: string) {
-    return this.uploadFileService.showImages(+id);
-  }
 
   @Get('show/:filename')
   showFileName(@Param('filename') filename: string, @Res() res: Response) {
@@ -54,28 +33,7 @@ export class UploadFileController {
     return res.sendFile(filename, { root: 'pdfs' });
   }
 
-  @Post()
-  create(@Body() createUploadFileDto: CreateUploadFileDto) {
-    return this.uploadFileService.create(createUploadFileDto);
-  }
 
-  @Get()
-  findAll() {
-    return this.uploadFileService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.uploadFileService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateUploadFileDto: UpdateUploadFileDto,
-  ) {
-    return this.uploadFileService.update(+id, updateUploadFileDto);
-  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
