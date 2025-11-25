@@ -47,13 +47,10 @@ const { RangePicker } = DatePicker;
 
 interface Workload {
   id: number;
-  // title: string;
   department: string;
   assignee: string;
   status: "pending" | "not_completed" | "completed";
-  // priority: "low" | "medium" | "high";
-  dateTimeStart: string;
-  dateTimeEnd: string;
+  startTime: string;
   options: any;
 }
 
@@ -64,7 +61,6 @@ const UserHistory: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState();
 
   const fetchWorkloads = async () => {
     try {
@@ -199,41 +195,16 @@ const UserHistory: React.FC = () => {
         </Tag>
       ),
     },
-    // {
-    //   title: "วันที่เริ่มต้น",
-    //   dataIndex: "dateTimeStart",
-    //   key: "dateTimeStart",
-    //   render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
-    // },
-    // {
-    //   title: "วันที่สิ้นสุด",
-    //   dataIndex: "dateTimeEnd",
-    //   key: "dateTimeEnd",
-    //   render: (date: string) => new Date(date).toLocaleDateString("th-TH"),
-    // },
-    {
+   {
       title: "ระยะเวลาที่ใช้",
+      dataIndex: "startTime",
       key: "dateCount",
-      render: (record: Workload) => (
-        <span>
-          {Math.ceil(
-            (new Date(record.dateTimeEnd).getTime() -
-              new Date(record.dateTimeStart).getTime()) /
-              (1000 * 60 * 60 * 24)
-          )}{" "}
-          วัน
-        </span>
-      ),
-    },
-    {
-      title: "วันที่เริ่มต้น - สิ้นสุด",
-      key: "dateRange",
-      render: (record: Workload) => (
-        <span>
-          {new Date(record.dateTimeStart).toLocaleDateString("th-TH")} -{" "}
-          {new Date(record.dateTimeEnd).toLocaleDateString("th-TH")}
-        </span>
-      ),
+      render: (startTime: string) => {
+        if (!startTime) return "-";
+        const [hours, minutes] = startTime.split(":").map(Number);
+        if (minutes > 0) return `${hours} ชั่วโมง ${minutes} นาที`;
+        return `${hours} ชั่วโมง`;
+      },
     },
     {
       title: "จัดการ",
@@ -287,11 +258,7 @@ const UserHistory: React.FC = () => {
       priorityFilter.length === 0 ||
       priorityFilter.includes(workload.options.priority);
 
-    const matchesDate =
-      !dateRange ||
-      (workload.dateTimeEnd?.toString() || "").includes(dateRange);
-
-    return matchesSearch && matchesStatus && matchesPriority && matchesDate;
+    return matchesSearch && matchesStatus && matchesPriority;
   });
 
   // if (loading) {
@@ -437,37 +404,6 @@ const UserHistory: React.FC = () => {
                       ]}
                     />
                   </Col>
-                  <Col
-                    xs={24}
-                    sm={12}
-                    style={{ paddingBottom: theme.spacing.md }}
-                  >
-                    {/* <Select */}
-                    {/*   style={{ width: "100%" }} */}
-                    {/*   placeholder="กรองตามวันที่" */}
-                    {/*   onChange={(dates) => setDateRange(dates)} */}
-                    {/* > */}
-                    {/*   {workloads.map((val) => ( */}
-                    {/*     <Select.Option value={val.dateTimeEnd}> */}
-                    {/*       {new Date(val.dateTimeEnd).toLocaleDateString( */}
-                    {/*         "th-TH", */}
-                    {/*       )} */}
-                    {/*     </Select.Option> */}
-                    {/*   ))} */}
-                    {/* </Select> */}
-                    <DatePicker
-                      style={{
-                        width: "100%",
-                        marginTop: theme.spacing.sm,
-                        borderRadius: theme.borderRadius.md,
-                      }}
-                      onChange={(_date, dateString) =>
-                        setDateRange(dateString.toString() as any)
-                      }
-                      format="YYYY-MM-DD"
-                      placeholder="กรองตามวันที่สิ้นสุด"
-                    />
-                  </Col>
                 </Row>
               </Card>
 
@@ -591,37 +527,6 @@ const UserHistory: React.FC = () => {
                         { label: "ปานกลาง", value: "medium" },
                         { label: "ต่ำ", value: "low" },
                       ]}
-                    />
-                  </Col>
-                  <Col
-                    xs={24}
-                    sm={12}
-                    style={{ paddingBottom: theme.spacing.md }}
-                  >
-                    {/* <Select */}
-                    {/*   style={{ width: "100%" }} */}
-                    {/*   placeholder="กรองตามวันที่" */}
-                    {/*   onChange={(dates) => setDateRange(dates)} */}
-                    {/* > */}
-                    {/*   {workloads.map((val) => ( */}
-                    {/*     <Select.Option value={val.dateTimeEnd}> */}
-                    {/*       {new Date(val.dateTimeEnd).toLocaleDateString( */}
-                    {/*         "th-TH", */}
-                    {/*       )} */}
-                    {/*     </Select.Option> */}
-                    {/*   ))} */}
-                    {/* </Select> */}
-                    <DatePicker
-                      style={{
-                        width: "100%",
-                        marginTop: theme.spacing.sm,
-                        borderRadius: theme.borderRadius.md,
-                      }}
-                      onChange={(_date, dateString) =>
-                        setDateRange(dateString.toString() as any)
-                      }
-                      format="YYYY-MM-DD"
-                      placeholder="กรองตามวันที่สิ้นสุด"
                     />
                   </Col>
                 </Row>

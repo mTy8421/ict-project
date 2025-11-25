@@ -301,11 +301,11 @@ const UserWorkLoad: React.FC = () => {
                     <Col span={24}>
                       <Form.Item
                         name="fileUpload"
-                        label="อัปโหลดไฟล์"
+                        label="อัพโหลดรูปภาพ / PDF"
                         valuePropName="fileList"
                         getValueFromEvent={normFile}
                         rules={[
-                          { required: true, message: "กรุณาอัปโหลดไฟล์" },
+                          { required: true, message: "กรุณาอัปโหลดรูปภาพ / PDF" },
                         ]}
                       >
                         <Upload
@@ -506,11 +506,11 @@ const UserWorkLoad: React.FC = () => {
                     <Col span={24}>
                       <Form.Item
                         name="fileUpload"
-                        label="อัปโหลดไฟล์"
+                        label="อัพโหลดรูปภาพ / PDF"
                         valuePropName="fileList"
                         getValueFromEvent={normFile}
                         rules={[
-                          { required: true, message: "กรุณาอัปโหลดไฟล์" },
+                          { required: true, message: "กรุณาอัปโหลดรูปภาพ / PDF" },
                         ]}
                       >
                         <Upload

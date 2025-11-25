@@ -67,7 +67,6 @@ const UserWork: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState();
 
   const fetchWorkloads = async () => {
     try {
