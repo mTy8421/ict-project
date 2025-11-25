@@ -30,7 +30,15 @@ export class WorkController {
     return this.workService.findByUser(user.user_id);
   }
 
+  @Get('head')
+  findAllUser() {
+    return this.workService.findAllUser();
+  }
 
+  @Get('head/:id')
+  findByUserHead(@Param('id') id: string) {
+    return this.workService.findByUser(+id);
+  }
 
   @Post()
   @UseInterceptors(FilesInterceptor('fileUpload'))

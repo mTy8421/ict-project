@@ -31,7 +31,15 @@ export class UserController {
     return this.userService.findByEmail(req.user.user_email);
   }
 
+  @Get('user')
+  findAllUser() {
+    return this.userService.findAllUser();
+  }
 
+  @Get('head')
+  findAllHead() {
+    return this.userService.findAllHead();
+  }
 
   @Get()
   findAll() {

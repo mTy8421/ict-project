@@ -187,7 +187,7 @@ const AdminEdit: React.FC = () => {
 
               <Card
                 style={{
-                  maxWidth: 800,
+                  // maxWidth: 800,
                   margin: `${theme.spacing.xl} auto`,
                   borderRadius: theme.borderRadius.lg,
                   boxShadow: theme.shadow,
@@ -342,6 +342,13 @@ const AdminEdit: React.FC = () => {
                                   label: <span>หัวหน้างานฝ่ายวิชาการ</span>,
                                   value: "หัวหน้างานฝ่ายวิชาการ",
                                 },
+                              ],
+                            },
+                            {
+                              label: <span>คณบดี</span>,
+                              title: "คณบดี",
+                              options: [
+                                { label: <span>คณบดี</span>, value: "คณบดี" },
                               ],
                             },
                             {
@@ -600,6 +607,13 @@ const AdminEdit: React.FC = () => {
                                   label: <span>หัวหน้างานฝ่ายวิชาการ</span>,
                                   value: "หัวหน้างานฝ่ายวิชาการ",
                                 },
+                              ],
+                            },
+                            {
+                              label: <span>คณบดี</span>,
+                              title: "คณบดี",
+                              options: [
+                                { label: <span>คณบดี</span>, value: "คณบดี" },
                               ],
                             },
                             {
