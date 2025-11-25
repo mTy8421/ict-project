@@ -17,11 +17,7 @@ export class CreateWorkDto {
   dateTimeNow?: string;
 
   @IsString()
-  dateTimeStart?: string;
-
-  @IsNotEmpty()
-  @IsString()
-  dateTimeEnd: string;
+  startTime?: string;
 
   @IsNotEmpty()
   @IsNumber()

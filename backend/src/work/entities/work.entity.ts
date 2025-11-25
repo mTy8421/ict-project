@@ -26,12 +26,9 @@ export class Work {
   @Column({ type: 'date', nullable: true })
   dateTimeNow: string;
 
-  @Column({ type: 'date', nullable: true })
-  dateTimeStart: string;
-
-  @Column({ type: 'date', nullable: true })
-  dateTimeEnd: string;
-
+  @Column({ type: 'time', nullable: true })
+  startTime: string;
+  
   @ManyToOne(() => User, (user) => user.works)
   user: User;
 

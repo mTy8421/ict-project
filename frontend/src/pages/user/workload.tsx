@@ -14,6 +14,7 @@ import {
   Divider,
   message,
   Upload,
+  TimePicker,
 } from "antd";
 import {
   ArrowLeftOutlined,
@@ -37,7 +38,7 @@ interface WorkloadForm {
   department: string;
   assignee: string;
   description: string;
-  dateRange: [any, any];
+  startTime: any;
   fileUpload: any;
 }
 
@@ -99,15 +100,13 @@ const UserWorkLoad: React.FC = () => {
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
-      const [dateStart, dateEnd] = values.dateRange;
-
+      const { startTime } = values;
       const formData = new FormData();
       formData.append("description", values.description);
       formData.append("department", profile?.user_role || "unknown");
       formData.append("user", String(profile?.user_id || 0));
       formData.append("options", String(values.title));
-      formData.append("dateTimeStart", dateStart.format("YYYY-MM-DD"));
-      formData.append("dateTimeEnd", dateEnd.format("YYYY-MM-DD"));
+      formData.append("startTime", startTime.format("HH:mm"));
       formData.append("status", "pending");
 
       if (values.fileUpload && values.fileUpload.length > 0) {
@@ -227,7 +226,7 @@ const UserWorkLoad: React.FC = () => {
                   style={{ width: "100%" }}
                 >
                   <Row gutter={[32, 24]}>
-                    <Col span={24}>
+                    <Col span={16}>
                       <Form.Item
                         name="title"
                         label="หัวข้อภาระงาน"
@@ -255,15 +254,15 @@ const UserWorkLoad: React.FC = () => {
                       </Form.Item>
                     </Col>
 
-                    <Col span={24}>
+                    <Col span={8}>
                       <Form.Item
-                        name="dateRange"
-                        label="ระยะเวลา"
+                        name="startTime"
+                        label="ระยะเวลาที่ใช้"
                         rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลา" },
+                          { required: true, message: "กรุณาเลือกระยะเวลาที่ใช้" },
                         ]}
                       >
-                        <RangePicker
+                        <TimePicker
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,
@@ -272,7 +271,8 @@ const UserWorkLoad: React.FC = () => {
                             borderColor: theme.textLight,
                             width: "100%",
                           }}
-                          format="YYYY-MM-DD"
+                          format="HH:mm"
+                          placeholder="เลือกระยะเวลาที่ใช้"
                         />
                       </Form.Item>
                     </Col>
@@ -431,7 +431,7 @@ const UserWorkLoad: React.FC = () => {
                   style={{ width: "100%" }}
                 >
                   <Row gutter={[32, 24]}>
-                    <Col span={24}>
+                    <Col span={16}>
                       <Form.Item
                         name="title"
                         label="หัวข้อภาระงาน"
@@ -460,15 +460,15 @@ const UserWorkLoad: React.FC = () => {
                       </Form.Item>
                     </Col>
 
-                    <Col span={24}>
+                    <Col span={8}>
                       <Form.Item
-                        name="dateRange"
-                        label="ระยะเวลา"
+                        name="startTime"
+                        label="ระยะเวลาที่ใช้"
                         rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลา" },
+                          { required: true, message: "กรุณาเลือกระยะเวลาที่ใช้" },
                         ]}
                       >
-                        <RangePicker
+                        <TimePicker
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,
@@ -476,10 +476,9 @@ const UserWorkLoad: React.FC = () => {
                             padding: `0 ${theme.spacing.md}`,
                             borderColor: theme.textLight,
                             width: "100%",
-                            minWidth: 160,
-                            maxWidth: "100%",
                           }}
-                          format="YYYY-MM-DD"
+                          format="HH:mm"
+                          placeholder="เลือกระยะเวลาที่ใช้"
                         />
                       </Form.Item>
                     </Col>

@@ -13,10 +13,7 @@ export class UpdateWorkDto extends PartialType(CreateWorkDto) {
   dateTimeNow: string;
 
   @IsObject()
-  dateTimeStart: string;
-
-  @IsObject()
-  dateTimeEnd: string;
+  startTime: string;
 
   @IsObject()
   options: number;

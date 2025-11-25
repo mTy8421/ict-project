@@ -14,6 +14,7 @@ import {
   Divider,
   message,
   Image,
+  TimePicker,
 } from "antd";
 import {
   ArrowLeftOutlined,
@@ -27,6 +28,7 @@ import DeanNavbar from "../../components/user/Navbar";
 import ReHeader from "../../components/user/NavbarHeader";
 import "./workload-new.override.css";
 
+import dayjs from "dayjs";
 import moment from "moment";
 
 const { Content } = Layout;
@@ -39,7 +41,7 @@ interface WorkloadForm {
   department: string;
   assignee: string;
   description: string;
-  dateRange: [any, any];
+  startTime: string;
   fileUpload: any;
 }
 
@@ -100,10 +102,7 @@ const EditUserWorkLoad: React.FC = () => {
         title: workload.options.id,
         department: workload.department,
         description: workload.description,
-        dateRange:
-          workload.dateTimeStart && workload.dateTimeEnd
-            ? [moment(workload.dateTimeStart), moment(workload.dateTimeEnd)]
-            : undefined,
+        startTime: workload.startTime ? dayjs(workload.startTime, "HH:mm") : null,
       });
     } catch (error: any) {
       console.error("Error, fetching workload ", error);
@@ -119,13 +118,14 @@ const EditUserWorkLoad: React.FC = () => {
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
-      const [dateStart, dateEnd] = values.dateRange;
+      const startTime = values.startTime
+        ? dayjs(values.startTime).format("HH:mm")
+        : null;
 
       const payload = {
         description: values.description,
         options: String(values.title),
-        dateTimeStart: dateStart.format("YYYY-MM-DD"),
-        dateTimeEnd: dateEnd.format("YYYY-MM-DD"),
+        startTime: startTime,
         status: "pending",
       };
 
@@ -248,7 +248,7 @@ const EditUserWorkLoad: React.FC = () => {
                   style={{ width: "100%" }}
                 >
                   <Row gutter={[32, 24]}>
-                    <Col span={24}>
+                    <Col span={16}>
                       <Form.Item
                         name="title"
                         label="หัวข้อภาระงาน"
@@ -277,15 +277,15 @@ const EditUserWorkLoad: React.FC = () => {
                       </Form.Item>
                     </Col>
 
-                    <Col span={24}>
+                    <Col span={8}>
                       <Form.Item
-                        name="dateRange"
-                        label="ระยะเวลา"
+                        name="startTime"
+                        label="ระยะเวลาที่ใช้"
                         rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลา" },
+                          { required: true, message: "กรุณาเลือกระยะเวลาที่ใช้" },
                         ]}
                       >
-                        <RangePicker
+                        <TimePicker
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,
@@ -294,7 +294,8 @@ const EditUserWorkLoad: React.FC = () => {
                             borderColor: theme.textLight,
                             width: "100%",
                           }}
-                          format="YYYY-MM-DD"
+                          format="HH:mm"
+                          placeholder="เลือกระยะเวลาที่ใช้"
                         />
                       </Form.Item>
                     </Col>
@@ -507,13 +508,13 @@ const EditUserWorkLoad: React.FC = () => {
 
                     <Col span={24}>
                       <Form.Item
-                        name="dateRange"
-                        label="ระยะเวลา"
+                        name="startTime"
+                        label="ระยะเวลาที่ใช้"
                         rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลา" },
+                          { required: true, message: "กรุณาเลือกระยะเวลาที่ใช้" },
                         ]}
                       >
-                        <RangePicker
+                        <TimePicker
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,
@@ -522,7 +523,8 @@ const EditUserWorkLoad: React.FC = () => {
                             borderColor: theme.textLight,
                             width: "100%",
                           }}
-                          format="YYYY-MM-DD"
+                          format="HH:mm"
+                          placeholder="เลือกระยะเวลาที่ใช้"
                         />
                       </Form.Item>
                     </Col>

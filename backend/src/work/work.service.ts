@@ -56,8 +56,7 @@ export class WorkService {
           (new Date().getMonth() + 1).toString() +
           '-' +
           new Date().getDate().toString(),
-        dateTimeStart: createWorkDto.dateTimeStart,
-        dateTimeEnd: createWorkDto.dateTimeEnd,
+        startTime: createWorkDto.startTime,
         user: user ?? undefined,
         options: option ?? undefined,
       })
@@ -111,8 +110,7 @@ export class WorkService {
       .set({
         status: updateWorkDto.status,
         description: updateWorkDto.description,
-        dateTimeStart: updateWorkDto.dateTimeStart,
-        dateTimeEnd: updateWorkDto.dateTimeEnd,
+        startTime: updateWorkDto.startTime,
         options: option,
       })
       .where('id = :id', { id })

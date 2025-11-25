@@ -13,6 +13,7 @@ import {
   Divider,
   message,
   Image,
+  TimePicker,
 } from "antd";
 import { ArrowLeftOutlined, FilePdfOutlined } from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
@@ -21,7 +22,10 @@ import DeanHeader from "../../components/user/Header";
 import DeanNavbar from "../../components/user/Navbar";
 import ReHeader from "../../components/user/NavbarHeader";
 import "./workload-new.override.css";
-import moment from "moment";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -68,10 +72,7 @@ const UserHistoryDetail: React.FC = () => {
           title: workload.options.title,
           department: workload.department,
           description: workload.description,
-          dateRange: [
-            moment(workload.dateTimeStart),
-            moment(workload.dateTimeEnd),
-          ],
+          startTime: workload.startTime ? dayjs(workload.startTime, "HH:mm") : null,
         });
       } catch (error: any) {
         console.error("Error fetching workload:", error);
@@ -178,7 +179,7 @@ const UserHistoryDetail: React.FC = () => {
                   style={{ width: "100%" }}
                 >
                   <Row gutter={[32, 24]}>
-                    <Col span={24}>
+                    <Col span={16}>
                       <Form.Item
                         name="title"
                         label="หัวข้อภาระงาน"
@@ -202,15 +203,15 @@ const UserHistoryDetail: React.FC = () => {
                       </Form.Item>
                     </Col>
 
-                    <Col span={24}>
+                    <Col span={8}>
                       <Form.Item
-                        name="dateRange"
+                        name="startTime"
                         label="ระยะเวลา"
                         rules={[
                           { required: true, message: "กรุณาเลือกระยะเวลา" },
                         ]}
                       >
-                        <RangePicker
+                        <TimePicker
                           disabled
                           style={{
                             width: "100%",
@@ -218,7 +219,7 @@ const UserHistoryDetail: React.FC = () => {
                             borderRadius: theme.borderRadius.md,
                             fontSize: theme.fontSize.md,
                           }}
-                          format="YYYY-MM-DD"
+                          format="HH:mm"
                         />
                       </Form.Item>
                     </Col>
@@ -403,13 +404,13 @@ const UserHistoryDetail: React.FC = () => {
 
                     <Col span={24}>
                       <Form.Item
-                        name="dateRange"
+                        name="startTime"
                         label="ระยะเวลา"
                         rules={[
                           { required: true, message: "กรุณาเลือกระยะเวลา" },
                         ]}
                       >
-                        <RangePicker
+                        <TimePicker
                           disabled
                           style={{
                             width: "100%",
@@ -417,7 +418,7 @@ const UserHistoryDetail: React.FC = () => {
                             borderRadius: theme.borderRadius.md,
                             fontSize: theme.fontSize.md,
                           }}
-                          format="YYYY-MM-DD"
+                          format="HH:mm"
                         />
                       </Form.Item>
                     </Col>
