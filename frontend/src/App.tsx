@@ -35,6 +35,7 @@ import UserChert from "./pages/user/chart/user.chart";
 import HeadChart from "./pages/head/chart/head.chart";
 import DeanHome from "./pages/dean/dean";
 import AdminChart from "./pages/admin/chart/admin.chart";
+import DeanUser from "./pages/dean/deanUser";
 
 export default function App() {
   return (
@@ -95,7 +96,7 @@ export default function App() {
         <Route path="/admin/chart" element={<AdminChart />} />
 
         <Route path="/dean" element={<DeanHome />} />
-        <Route path="/dean/user" element={<DeanHome />} />
+        <Route path="/dean/user" element={<DeanUser />} />
       </Routes>
     </BrowserRouter>
   );
