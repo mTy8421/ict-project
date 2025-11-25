@@ -1,63 +1,69 @@
 # ICT-Project
 
-Project สำหรับการศึกษา
+Project สำหรับการศึกษา เป็นเว็บแอปพลิเคชัน Full Stack ที่พัฒนาด้วยเทคโนโลยีสมัยใหม่
 
-## สิ่งที่ต้องเตรียม
+## Tech Stack
 
-- [docker](https://docs.docker.com/desktop/) สำหรับจัดการ Database
+**Frontend:**
+- React (Vite)
+- TypeScript
+- Tailwind CSS
+- Ant Design (AntD)
 
-สร้างไฟล์ docker-compose.yml สำหรับจัดการ Database
+**Backend:**
+- NestJS
+- TypeORM
+- MySQL
+- Passport (JWT Authentication)
 
-### linux
+**Infrastructure:**
+- Docker & Docker Compose
+- Nginx
 
-```bash
-touch docker-compose.yml
-```
+## สิ่งที่ต้องเตรียม (Prerequisites)
 
-### windows
+- [Docker Desktop](https://docs.docker.com/desktop/) สำหรับจัดการ Container และ Database
 
-ใช้ Powershell
+## การติดตั้งและเริ่มต้นใช้งาน (Installation)
 
-```powershell
-New-Item docker-compose.yml
-```
+โปรเจกต์นี้ถูกตั้งค่าให้รันด้วย Docker Compose เพื่อความสะดวกในการติดตั้ง
 
-### docker compose
-
-นำไปวางที่ docker-compose.yml โดยนะที่นี้จะใช้เป็น mysql
-
-```yml
-services:
-  mysql:
-    container_name: mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=1234 # เป็น Password ของ root
-      - MYSQL_DATABASE=project # ชื่อ database
-    ports:
-      - 3306:3306
-    image: mysql
-  phpmyadmin:
-    container_name: phpmyadmin
-    links:
-      - mysql:db
-    ports:
-      - 8080:80 # สามารถแก้ใข Port จาก 8080 เป็นอย่างอื่นได้ เช่น 8765
-    image: phpmyadmin/phpmyadmin
-networks: {}
-```
-
-จากนั้น run บน terminal
-
-```bash
-docker compose up -d
-```
-
-หรือ
+1. Clone repository
+2. เปิด Terminal ในโฟลเดอร์โปรเจกต์
+3. รันคำสั่งเพื่อเริ่มระบบ:
 
 ```bash
 docker-compose up -d
 ```
 
-> เปิด localhost:8765 (ตามที่ตั้ง Port เอาไว้)  
-> User : root  
-> password : 1234
+คำสั่งนี้จะทำการ build และ start services ทั้งหมด (Frontend, Backend, Database, phpMyAdmin, Nginx)
+
+## การใช้งาน (Usage)
+
+เมื่อ Container เริ่มทำงานเสร็จสมบูรณ์ สามารถเข้าใช้งานได้ผ่าน URL ดังนี้:
+
+- **Frontend:** [http://localhost:8080](http://localhost:8080)
+- **Backend API:** [http://localhost:3001](http://localhost:3001)
+- **phpMyAdmin:** [http://localhost:8081](http://localhost:8081)
+
+## ข้อมูล Database (Database Credentials)
+
+**MySQL Connection:**
+- **Host:** localhost
+- **Port:** 3306
+- **Username:** root
+- **Password:** root
+- **Database:** project
+
+**phpMyAdmin Login:**
+- **Server:** db
+- **Username:** root
+- **Password:** root
+
+## การหยุดการทำงาน
+
+หากต้องการหยุด Container ทั้งหมด ให้รันคำสั่ง:
+
+```bash
+docker-compose down
+```
