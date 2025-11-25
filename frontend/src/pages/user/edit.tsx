@@ -15,7 +15,11 @@ import {
   message,
   Image,
 } from "antd";
-import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  FilePdfOutlined,
+  SaveOutlined,
+} from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import theme from "../../theme";
 import DeanHeader from "../../components/user/Header";
@@ -122,6 +126,7 @@ const EditUserWorkLoad: React.FC = () => {
         options: String(values.title),
         dateTimeStart: dateStart.format("YYYY-MM-DD"),
         dateTimeEnd: dateEnd.format("YYYY-MM-DD"),
+        status: "pending",
       };
 
       const formData = new FormData();
@@ -221,7 +226,7 @@ const EditUserWorkLoad: React.FC = () => {
 
               <Card
                 style={{
-                  maxWidth: 800,
+                  // maxWidth: 800,
                   margin: `${theme.spacing.xl} auto`,
                   borderRadius: theme.borderRadius.lg,
                   boxShadow: theme.shadow,
@@ -326,6 +331,36 @@ const EditUserWorkLoad: React.FC = () => {
                               src={`/api/upload-file/show/${item.file_name}`}
                             />
                           ))}
+                      </div>
+                    </Col>
+
+                    <Col span={24}>
+                      <div>
+                        {images.map((item, index) =>
+                          item.file_name.endsWith(".pdf") ? (
+                            <div
+                              key={index}
+                              style={{ marginBottom: theme.spacing.md }}
+                            >
+                              <a
+                                href={`/api/upload-file/showPdf/${item.file_name}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                  color: theme.primary,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: theme.spacing.sm,
+                                }}
+                              >
+                                <FilePdfOutlined
+                                  style={{ fontSize: theme.fontSize.lg }}
+                                />
+                                {item.file_name}
+                              </a>
+                            </div>
+                          ) : null
+                        )}
                       </div>
                     </Col>
                   </Row>
@@ -524,6 +559,36 @@ const EditUserWorkLoad: React.FC = () => {
                               src={`/api/upload-file/show/${item.file_name}`}
                             />
                           ))}
+                      </div>
+                    </Col>
+
+                    <Col span={24}>
+                      <div>
+                        {images.map((item, index) =>
+                          item.file_name.endsWith(".pdf") ? (
+                            <div
+                              key={index}
+                              style={{ marginBottom: theme.spacing.md }}
+                            >
+                              <a
+                                href={`/api/upload-file/showPdf/${item.file_name}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                  color: theme.primary,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: theme.spacing.sm,
+                                }}
+                              >
+                                <FilePdfOutlined
+                                  style={{ fontSize: theme.fontSize.lg }}
+                                />
+                                {item.file_name}
+                              </a>
+                            </div>
+                          ) : null
+                        )}
                       </div>
                     </Col>
                   </Row>

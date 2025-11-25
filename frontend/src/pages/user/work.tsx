@@ -257,7 +257,7 @@ const UserWork: React.FC = () => {
               style={{ color: theme.primary }}
             />
           </Tooltip>
-          {record.status == "completed" || record.status == "not_completed" ? (
+          {record.status == "completed" ? (
             ""
           ) : (
             <Tooltip title="แก้ไข">

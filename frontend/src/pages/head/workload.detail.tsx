@@ -157,7 +157,7 @@ const HeadWorkLoadDetail: React.FC = () => {
 
               <Card
                 style={{
-                  maxWidth: 800,
+                  // maxWidth: 800,
                   margin: `${theme.spacing.xl} auto`,
                   borderRadius: theme.borderRadius.lg,
                   boxShadow: theme.shadow,

@@ -198,7 +198,8 @@ export class WorkService {
         return `Invalid data for file: ${file?.originalname || 'unknown'}`;
       }
 
-      const resizedFilename = `resized-${Date.now()}-${file.originalname}`;
+      // const resizedFilename = `resized-${Date.now()}-${file.originalname}`;
+      const resizedFilename = `${Date.now()}-${file.originalname}`;
       const isPdf = path.extname(file.originalname).toLowerCase() === '.pdf';
       const resizedFilePath = isPdf
         ? path.join(uploadDirPdfs, resizedFilename)

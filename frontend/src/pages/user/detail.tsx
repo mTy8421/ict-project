@@ -14,7 +14,7 @@ import {
   message,
   Image,
 } from "antd";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, FilePdfOutlined } from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import theme from "../../theme";
 import DeanHeader from "../../components/user/Header";
@@ -271,8 +271,16 @@ const DetailUserWorkLoad: React.FC = () => {
                                 href={`/api/upload-file/showPdf/${item.file_name}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                style={{ color: theme.primary }}
+                                style={{
+                                  color: theme.primary,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: theme.spacing.sm,
+                                }}
                               >
+                                <FilePdfOutlined
+                                  style={{ fontSize: theme.fontSize.lg }}
+                                />
                                 {item.file_name}
                               </a>
                             </div>
@@ -447,6 +455,36 @@ const DetailUserWorkLoad: React.FC = () => {
                               src={`/api/upload-file/show/${item.file_name}`}
                             />
                           ))}
+                      </div>
+                    </Col>
+
+                    <Col span={24}>
+                      <div>
+                        {images.map((item, index) =>
+                          item.file_name.endsWith(".pdf") ? (
+                            <div
+                              key={index}
+                              style={{ marginBottom: theme.spacing.md }}
+                            >
+                              <a
+                                href={`/api/upload-file/showPdf/${item.file_name}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                  color: theme.primary,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: theme.spacing.sm,
+                                }}
+                              >
+                                <FilePdfOutlined
+                                  style={{ fontSize: theme.fontSize.lg }}
+                                />
+                                {item.file_name}
+                              </a>
+                            </div>
+                          ) : null
+                        )}
                       </div>
                     </Col>
                   </Row>
