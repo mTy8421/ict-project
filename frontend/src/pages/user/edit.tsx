@@ -4,7 +4,6 @@ import {
   Form,
   Input,
   Select,
-  DatePicker,
   Button,
   Card,
   Typography,
@@ -33,12 +32,10 @@ import ReHeader from "../../components/user/NavbarHeader";
 import "./workload-new.override.css";
 
 import dayjs from "dayjs";
-import moment from "moment";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
 const { TextArea } = Input;
-const { RangePicker } = DatePicker;
 
 interface WorkloadForm {
   title: number;
@@ -98,7 +95,7 @@ const EditUserWorkLoad: React.FC = () => {
       const workload = response.data;
 
       const imagesResponse = await axiosInstance.get(
-        `upload-file/show/id/${id}`
+        `upload-file/show/id/${id}`,
       );
       setImages(imagesResponse.data);
 
@@ -106,7 +103,9 @@ const EditUserWorkLoad: React.FC = () => {
         title: workload.options.id,
         department: workload.department,
         description: workload.description,
-        startTime: workload.startTime ? dayjs(workload.startTime, "HH:mm") : null,
+        startTime: workload.startTime
+          ? dayjs(workload.startTime, "HH:mm")
+          : null,
       });
     } catch (error: any) {
       console.error("Error, fetching workload ", error);
@@ -167,7 +166,7 @@ const EditUserWorkLoad: React.FC = () => {
     } catch (error: any) {
       console.error("Error updating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถแก้ไขภาระงานได้"
+        error.response?.data?.message || "ไม่สามารถแก้ไขภาระงานได้",
       );
     } finally {
       setLoading(false);
@@ -303,7 +302,10 @@ const EditUserWorkLoad: React.FC = () => {
                         name="startTime"
                         label="ระยะเวลาที่ใช้"
                         rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลาที่ใช้" },
+                          {
+                            required: true,
+                            message: "กรุณาเลือกระยะเวลาที่ใช้",
+                          },
                         ]}
                       >
                         <TimePicker
@@ -359,15 +361,15 @@ const EditUserWorkLoad: React.FC = () => {
                           multiple
                           listType="picture"
                         >
-                          <Button icon={<UploadOutlined />}>
-                            เลือกไฟล์
-                          </Button>
+                          <Button icon={<UploadOutlined />}>เลือกไฟล์</Button>
                         </Upload>
                       </Form.Item>
                     </Col>
 
                     <Col span={24}>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
+                      <div
+                        style={{ display: "flex", flexWrap: "wrap", gap: 16 }}
+                      >
                         {images
                           .filter((item) => !item.file_name.endsWith(".pdf"))
                           .map((item, index) => (
@@ -432,7 +434,7 @@ const EditUserWorkLoad: React.FC = () => {
                                 ลบ
                               </Button>
                             </div>
-                          ) : null
+                          ) : null,
                         )}
                       </div>
                     </Col>
@@ -583,7 +585,10 @@ const EditUserWorkLoad: React.FC = () => {
                         name="startTime"
                         label="ระยะเวลาที่ใช้"
                         rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลาที่ใช้" },
+                          {
+                            required: true,
+                            message: "กรุณาเลือกระยะเวลาที่ใช้",
+                          },
                         ]}
                       >
                         <TimePicker
@@ -639,15 +644,15 @@ const EditUserWorkLoad: React.FC = () => {
                           multiple
                           listType="picture"
                         >
-                          <Button icon={<UploadOutlined />}>
-                            เลือกไฟล์
-                          </Button>
+                          <Button icon={<UploadOutlined />}>เลือกไฟล์</Button>
                         </Upload>
                       </Form.Item>
                     </Col>
 
                     <Col span={24}>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
+                      <div
+                        style={{ display: "flex", flexWrap: "wrap", gap: 16 }}
+                      >
                         {images
                           .filter((item) => !item.file_name.endsWith(".pdf"))
                           .map((item, index) => (
@@ -712,7 +717,7 @@ const EditUserWorkLoad: React.FC = () => {
                                 ลบ
                               </Button>
                             </div>
-                          ) : null
+                          ) : null,
                         )}
                       </div>
                     </Col>

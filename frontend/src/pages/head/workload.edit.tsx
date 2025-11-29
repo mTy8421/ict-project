@@ -4,7 +4,6 @@ import {
   Form,
   Input,
   Select,
-  DatePicker,
   Button,
   Card,
   Typography,
@@ -14,8 +13,16 @@ import {
   Divider,
   message,
   Image,
+  TimePicker,
+  Upload,
 } from "antd";
-import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  DeleteOutlined,
+  FilePdfOutlined,
+  SaveOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
 import theme from "../../theme";
 import DeanHeader from "../../components/head/Header";
@@ -23,19 +30,18 @@ import DeanNavbar from "../../components/head/Navbar";
 import ReHeader from "../../components/head/NavbarHeader";
 import "./workload-new.override.css";
 
-import moment from "moment";
+import dayjs from "dayjs";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
 const { TextArea } = Input;
-const { RangePicker } = DatePicker;
 
 interface WorkloadForm {
   title: number;
   department: string;
   assignee: string;
   description: string;
-  dateRange: [any, any];
+  startTime: string;
   fileUpload: any;
 }
 
@@ -88,7 +94,7 @@ const HeadWorkLoadEdit: React.FC = () => {
       const workload = response.data;
 
       const imagesResponse = await axiosInstance.get(
-        `upload-file/show/id/${id}`
+        `upload-file/show/id/${id}`,
       );
       setImages(imagesResponse.data);
 
@@ -96,10 +102,9 @@ const HeadWorkLoadEdit: React.FC = () => {
         title: workload.options.id,
         department: workload.department,
         description: workload.description,
-        dateRange:
-          workload.dateTimeStart && workload.dateTimeEnd
-            ? [moment(workload.dateTimeStart), moment(workload.dateTimeEnd)]
-            : undefined,
+        startTime: workload.startTime
+          ? dayjs(workload.startTime, "HH:mm")
+          : null,
       });
     } catch (error: any) {
       console.error("Error, fetching workload ", error);
@@ -112,28 +117,47 @@ const HeadWorkLoadEdit: React.FC = () => {
     fetchOptions();
   }, [navigate]);
 
+  const handleDeleteFile = async (fileId: number) => {
+    try {
+      await axiosInstance.delete(`/upload-file/file/${fileId}`);
+      message.success("ลบไฟล์สำเร็จ");
+      fetchWorkload(); // Refresh list
+    } catch (error) {
+      console.error("Error deleting file:", error);
+      message.error("ไม่สามารถลบไฟล์ได้");
+    }
+  };
+
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
-      const [dateStart, dateEnd] = values.dateRange;
+      const startTime = values.startTime
+        ? dayjs(values.startTime).format("HH:mm")
+        : null;
 
       const payload = {
         description: values.description,
         options: String(values.title),
-        dateTimeStart: dateStart.format("YYYY-MM-DD"),
-        dateTimeEnd: dateEnd.format("YYYY-MM-DD"),
+        startTime: startTime,
+        status: "pending",
       };
 
       const formData = new FormData();
+      formData.append("description", payload.description);
+      formData.append("options", payload.options);
+      if (payload.startTime) formData.append("startTime", payload.startTime);
+      formData.append("status", payload.status);
+
       if (values.fileUpload && values.fileUpload.length > 0) {
         for (const file of values.fileUpload) {
           formData.append("fileUpload", file.originFileObj);
         }
       }
 
-      console.log("Sending data:", payload);
-
-      const response = await axiosInstance.patch(`/work/${id}`, payload);
+      // Use formData instead of payload JSON
+      const response = await axiosInstance.patch(`/work/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       console.log("Response:", response.data);
 
       message.success("แก้ไขภาระงานสำเร็จ");
@@ -141,7 +165,7 @@ const HeadWorkLoadEdit: React.FC = () => {
     } catch (error: any) {
       console.error("Error updating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถแก้ไขภาระงานได้"
+        error.response?.data?.message || "ไม่สามารถแก้ไขภาระงานได้",
       );
     } finally {
       setLoading(false);
@@ -243,7 +267,7 @@ const HeadWorkLoadEdit: React.FC = () => {
                   style={{ width: "100%" }}
                 >
                   <Row gutter={[32, 24]}>
-                    <Col span={24}>
+                    <Col span={16}>
                       <Form.Item
                         name="title"
                         label="หัวข้อภาระงาน"
@@ -272,15 +296,18 @@ const HeadWorkLoadEdit: React.FC = () => {
                       </Form.Item>
                     </Col>
 
-                    <Col span={24}>
+                    <Col span={8}>
                       <Form.Item
-                        name="dateRange"
-                        label="ระยะเวลา"
+                        name="startTime"
+                        label="ระยะเวลาที่ใช้"
                         rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลา" },
+                          {
+                            required: true,
+                            message: "กรุณาเลือกระยะเวลาที่ใช้",
+                          },
                         ]}
                       >
-                        <RangePicker
+                        <TimePicker
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,
@@ -289,7 +316,8 @@ const HeadWorkLoadEdit: React.FC = () => {
                             borderColor: theme.textLight,
                             width: "100%",
                           }}
-                          format="YYYY-MM-DD"
+                          format="HH:mm"
+                          placeholder="เลือกระยะเวลาที่ใช้"
                         />
                       </Form.Item>
                     </Col>
@@ -316,16 +344,97 @@ const HeadWorkLoadEdit: React.FC = () => {
                     </Col>
 
                     <Col span={24}>
-                      <div>
+                      <Form.Item
+                        name="fileUpload"
+                        label="อัพโหลดรูปภาพ / PDF (เพิ่มเติม)"
+                        valuePropName="fileList"
+                        getValueFromEvent={(e: any) => {
+                          if (Array.isArray(e)) {
+                            return e;
+                          }
+                          return e?.fileList;
+                        }}
+                      >
+                        <Upload
+                          beforeUpload={() => false}
+                          multiple
+                          listType="picture"
+                        >
+                          <Button icon={<UploadOutlined />}>เลือกไฟล์</Button>
+                        </Upload>
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <div
+                        style={{ display: "flex", flexWrap: "wrap", gap: 16 }}
+                      >
                         {images
                           .filter((item) => !item.file_name.endsWith(".pdf"))
                           .map((item, index) => (
-                            <Image
-                              key={index}
-                              width={200}
-                              src={`/api/upload-file/show/${item.file_name}`}
-                            />
+                            <div key={index} style={{ position: "relative" }}>
+                              <Image
+                                width={200}
+                                src={`/api/upload-file/show/${item.file_name}`}
+                              />
+                              <Button
+                                type="primary"
+                                danger
+                                icon={<DeleteOutlined />}
+                                size="small"
+                                style={{
+                                  position: "absolute",
+                                  top: 5,
+                                  right: 5,
+                                  zIndex: 10,
+                                }}
+                                onClick={() => handleDeleteFile(item.id)}
+                              />
+                            </div>
                           ))}
+                      </div>
+                    </Col>
+
+                    <Col span={24}>
+                      <div>
+                        {images.map((item, index) =>
+                          item.file_name.endsWith(".pdf") ? (
+                            <div
+                              key={index}
+                              style={{
+                                marginBottom: theme.spacing.md,
+                                display: "flex",
+                                alignItems: "center",
+                                gap: theme.spacing.md,
+                              }}
+                            >
+                              <a
+                                href={`/api/upload-file/showPdf/${item.file_name}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                  color: theme.primary,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: theme.spacing.sm,
+                                }}
+                              >
+                                <FilePdfOutlined
+                                  style={{ fontSize: theme.fontSize.lg }}
+                                />
+                                {item.file_name}
+                              </a>
+                              <Button
+                                type="text"
+                                danger
+                                icon={<DeleteOutlined />}
+                                onClick={() => handleDeleteFile(item.id)}
+                              >
+                                ลบ
+                              </Button>
+                            </div>
+                          ) : null,
+                        )}
                       </div>
                     </Col>
                   </Row>
@@ -472,13 +581,16 @@ const HeadWorkLoadEdit: React.FC = () => {
 
                     <Col span={24}>
                       <Form.Item
-                        name="dateRange"
-                        label="ระยะเวลา"
+                        name="startTime"
+                        label="ระยะเวลาที่ใช้"
                         rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลา" },
+                          {
+                            required: true,
+                            message: "กรุณาเลือกระยะเวลาที่ใช้",
+                          },
                         ]}
                       >
-                        <RangePicker
+                        <TimePicker
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,
@@ -487,7 +599,8 @@ const HeadWorkLoadEdit: React.FC = () => {
                             borderColor: theme.textLight,
                             width: "100%",
                           }}
-                          format="YYYY-MM-DD"
+                          format="HH:mm"
+                          placeholder="เลือกระยะเวลาที่ใช้"
                         />
                       </Form.Item>
                     </Col>
@@ -514,16 +627,97 @@ const HeadWorkLoadEdit: React.FC = () => {
                     </Col>
 
                     <Col span={24}>
-                      <div>
+                      <Form.Item
+                        name="fileUpload"
+                        label="อัพโหลดรูปภาพ / PDF (เพิ่มเติม)"
+                        valuePropName="fileList"
+                        getValueFromEvent={(e: any) => {
+                          if (Array.isArray(e)) {
+                            return e;
+                          }
+                          return e?.fileList;
+                        }}
+                      >
+                        <Upload
+                          beforeUpload={() => false}
+                          multiple
+                          listType="picture"
+                        >
+                          <Button icon={<UploadOutlined />}>เลือกไฟล์</Button>
+                        </Upload>
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <div
+                        style={{ display: "flex", flexWrap: "wrap", gap: 16 }}
+                      >
                         {images
                           .filter((item) => !item.file_name.endsWith(".pdf"))
                           .map((item, index) => (
-                            <Image
-                              key={index}
-                              width={200}
-                              src={`/api/upload-file/show/${item.file_name}`}
-                            />
+                            <div key={index} style={{ position: "relative" }}>
+                              <Image
+                                width={200}
+                                src={`/api/upload-file/show/${item.file_name}`}
+                              />
+                              <Button
+                                type="primary"
+                                danger
+                                icon={<DeleteOutlined />}
+                                size="small"
+                                style={{
+                                  position: "absolute",
+                                  top: 5,
+                                  right: 5,
+                                  zIndex: 10,
+                                }}
+                                onClick={() => handleDeleteFile(item.id)}
+                              />
+                            </div>
                           ))}
+                      </div>
+                    </Col>
+
+                    <Col span={24}>
+                      <div>
+                        {images.map((item, index) =>
+                          item.file_name.endsWith(".pdf") ? (
+                            <div
+                              key={index}
+                              style={{
+                                marginBottom: theme.spacing.md,
+                                display: "flex",
+                                alignItems: "center",
+                                gap: theme.spacing.md,
+                              }}
+                            >
+                              <a
+                                href={`/api/upload-file/showPdf/${item.file_name}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                  color: theme.primary,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: theme.spacing.sm,
+                                }}
+                              >
+                                <FilePdfOutlined
+                                  style={{ fontSize: theme.fontSize.lg }}
+                                />
+                                {item.file_name}
+                              </a>
+                              <Button
+                                type="text"
+                                danger
+                                icon={<DeleteOutlined />}
+                                onClick={() => handleDeleteFile(item.id)}
+                              >
+                                ลบ
+                              </Button>
+                            </div>
+                          ) : null,
+                        )}
                       </div>
                     </Col>
                   </Row>
