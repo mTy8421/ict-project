@@ -4,7 +4,6 @@ import {
   Form,
   Input,
   Select,
-  DatePicker,
   Button,
   Card,
   Typography,
@@ -14,6 +13,7 @@ import {
   Divider,
   message,
   Upload,
+  TimePicker,
 } from "antd";
 import {
   ArrowLeftOutlined,
@@ -30,14 +30,13 @@ import "./workload-new.override.css";
 const { Content } = Layout;
 const { Title, Text } = Typography;
 const { TextArea } = Input;
-const { RangePicker } = DatePicker;
 
 interface WorkloadForm {
   title: number;
   department: string;
   assignee: string;
   description: string;
-  dateRange: [any, any];
+  startTime: any;
   fileUpload: any;
 }
 
@@ -99,15 +98,13 @@ const HeadWorkLoadAdd: React.FC = () => {
   const onFinish = async (values: WorkloadForm) => {
     try {
       setLoading(true);
-      const [dateStart, dateEnd] = values.dateRange;
-
+      const { startTime } = values;
       const formData = new FormData();
       formData.append("description", values.description);
       formData.append("department", profile?.user_role || "unknown");
       formData.append("user", String(profile?.user_id || 0));
       formData.append("options", String(values.title));
-      formData.append("dateTimeStart", dateStart.format("YYYY-MM-DD"));
-      formData.append("dateTimeEnd", dateEnd.format("YYYY-MM-DD"));
+      formData.append("startTime", startTime.format("HH:mm"));
       formData.append("status", "pending");
 
       if (values.fileUpload && values.fileUpload.length > 0) {
@@ -125,7 +122,7 @@ const HeadWorkLoadAdd: React.FC = () => {
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้"
+        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้",
       );
     } finally {
       setLoading(false);
@@ -227,7 +224,7 @@ const HeadWorkLoadAdd: React.FC = () => {
                   style={{ width: "100%" }}
                 >
                   <Row gutter={[32, 24]}>
-                    <Col span={24}>
+                    <Col span={16}>
                       <Form.Item
                         name="title"
                         label="หัวข้อภาระงาน"
@@ -255,15 +252,18 @@ const HeadWorkLoadAdd: React.FC = () => {
                       </Form.Item>
                     </Col>
 
-                    <Col span={24}>
+                    <Col span={8}>
                       <Form.Item
-                        name="dateRange"
-                        label="ระยะเวลา"
+                        name="startTime"
+                        label="ระยะเวลาที่ใช้"
                         rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลา" },
+                          {
+                            required: true,
+                            message: "กรุณาเลือกระยะเวลาที่ใช้",
+                          },
                         ]}
                       >
-                        <RangePicker
+                        <TimePicker
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,
@@ -272,7 +272,8 @@ const HeadWorkLoadAdd: React.FC = () => {
                             borderColor: theme.textLight,
                             width: "100%",
                           }}
-                          format="YYYY-MM-DD"
+                          format="HH:mm"
+                          placeholder="เลือกระยะเวลาที่ใช้"
                         />
                       </Form.Item>
                     </Col>
@@ -301,11 +302,14 @@ const HeadWorkLoadAdd: React.FC = () => {
                     <Col span={24}>
                       <Form.Item
                         name="fileUpload"
-                        label="อัปโหลดไฟล์"
+                        label="อัพโหลดรูปภาพ / PDF"
                         valuePropName="fileList"
                         getValueFromEvent={normFile}
                         rules={[
-                          { required: true, message: "กรุณาอัปโหลดไฟล์" },
+                          {
+                            required: true,
+                            message: "กรุณาอัปโหลดรูปภาพ / PDF",
+                          },
                         ]}
                       >
                         <Upload
@@ -431,7 +435,7 @@ const HeadWorkLoadAdd: React.FC = () => {
                   style={{ width: "100%" }}
                 >
                   <Row gutter={[32, 24]}>
-                    <Col span={24}>
+                    <Col span={16}>
                       <Form.Item
                         name="title"
                         label="หัวข้อภาระงาน"
@@ -460,15 +464,18 @@ const HeadWorkLoadAdd: React.FC = () => {
                       </Form.Item>
                     </Col>
 
-                    <Col span={24}>
+                    <Col span={8}>
                       <Form.Item
-                        name="dateRange"
-                        label="ระยะเวลา"
+                        name="startTime"
+                        label="ระยะเวลาที่ใช้"
                         rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลา" },
+                          {
+                            required: true,
+                            message: "กรุณาเลือกระยะเวลาที่ใช้",
+                          },
                         ]}
                       >
-                        <RangePicker
+                        <TimePicker
                           style={{
                             height: 48,
                             borderRadius: theme.borderRadius.md,
@@ -476,10 +483,9 @@ const HeadWorkLoadAdd: React.FC = () => {
                             padding: `0 ${theme.spacing.md}`,
                             borderColor: theme.textLight,
                             width: "100%",
-                            minWidth: 160,
-                            maxWidth: "100%",
                           }}
-                          format="YYYY-MM-DD"
+                          format="HH:mm"
+                          placeholder="เลือกระยะเวลาที่ใช้"
                         />
                       </Form.Item>
                     </Col>
@@ -504,14 +510,18 @@ const HeadWorkLoadAdd: React.FC = () => {
                         />
                       </Form.Item>
                     </Col>
+
                     <Col span={24}>
                       <Form.Item
                         name="fileUpload"
-                        label="อัปโหลดไฟล์"
+                        label="อัพโหลดรูปภาพ / PDF"
                         valuePropName="fileList"
                         getValueFromEvent={normFile}
                         rules={[
-                          { required: true, message: "กรุณาอัปโหลดไฟล์" },
+                          {
+                            required: true,
+                            message: "กรุณาอัปโหลดรูปภาพ / PDF",
+                          },
                         ]}
                       >
                         <Upload

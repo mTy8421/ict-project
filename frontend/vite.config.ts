@@ -13,7 +13,7 @@ export default defineConfig({
     },
     host: true,
     port: 5173,
-    // allowedHosts: ["delight-pamela-terminology-enjoy.trycloudflare.com"],
+    allowedHosts: ["purchasing-truck-existence-walt.trycloudflare.com"],
   },
   css: {
     postcss: "./postcss.config.cjs",

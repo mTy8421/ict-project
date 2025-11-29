@@ -4,7 +4,6 @@ import {
   Form,
   Input,
   Select,
-  DatePicker,
   Button,
   Card,
   Typography,
@@ -31,7 +30,6 @@ import "./workload-new.override.css";
 const { Content } = Layout;
 const { Title, Text } = Typography;
 const { TextArea } = Input;
-const { RangePicker } = DatePicker;
 
 interface WorkloadForm {
   title: number;
@@ -124,7 +122,7 @@ const UserWorkLoad: React.FC = () => {
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้"
+        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้",
       );
     } finally {
       setLoading(false);
@@ -259,7 +257,10 @@ const UserWorkLoad: React.FC = () => {
                         name="startTime"
                         label="ระยะเวลาที่ใช้"
                         rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลาที่ใช้" },
+                          {
+                            required: true,
+                            message: "กรุณาเลือกระยะเวลาที่ใช้",
+                          },
                         ]}
                       >
                         <TimePicker
@@ -305,7 +306,10 @@ const UserWorkLoad: React.FC = () => {
                         valuePropName="fileList"
                         getValueFromEvent={normFile}
                         rules={[
-                          { required: true, message: "กรุณาอัปโหลดรูปภาพ / PDF" },
+                          {
+                            required: true,
+                            message: "กรุณาอัปโหลดรูปภาพ / PDF",
+                          },
                         ]}
                       >
                         <Upload
@@ -465,7 +469,10 @@ const UserWorkLoad: React.FC = () => {
                         name="startTime"
                         label="ระยะเวลาที่ใช้"
                         rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลาที่ใช้" },
+                          {
+                            required: true,
+                            message: "กรุณาเลือกระยะเวลาที่ใช้",
+                          },
                         ]}
                       >
                         <TimePicker
@@ -510,7 +517,10 @@ const UserWorkLoad: React.FC = () => {
                         valuePropName="fileList"
                         getValueFromEvent={normFile}
                         rules={[
-                          { required: true, message: "กรุณาอัปโหลดรูปภาพ / PDF" },
+                          {
+                            required: true,
+                            message: "กรุณาอัปโหลดรูปภาพ / PDF",
+                          },
                         ]}
                       >
                         <Upload
