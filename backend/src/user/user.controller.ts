@@ -8,7 +8,6 @@ import {
   Delete,
   UseGuards,
   Request,
-  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -19,7 +18,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 @Controller('user')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -39,6 +38,11 @@ export class UserController {
   @Get('head')
   findAllHead() {
     return this.userService.findAllHead();
+  }
+
+  @Get('department/:role')
+  findAllDepartment(@Param('role') role: string) {
+    return this.userService.findAllDepartment(role);
   }
 
   @Get()

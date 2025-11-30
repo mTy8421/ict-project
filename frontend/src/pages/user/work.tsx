@@ -255,13 +255,13 @@ const UserWork: React.FC = () => {
   const filteredWorkloads = workloads.filter((workload) => {
     const matchesSearch =
       (workload.options.title?.toLowerCase() || "").includes(
-        searchText.toLowerCase()
+        searchText.toLowerCase(),
       ) ||
       (workload.department?.toLowerCase() || "").includes(
-        searchText.toLowerCase()
+        searchText.toLowerCase(),
       ) ||
       (workload.assignee?.toLowerCase() || "").includes(
-        searchText.toLowerCase()
+        searchText.toLowerCase(),
       );
 
     const matchesStatus =
@@ -434,7 +434,6 @@ const UserWork: React.FC = () => {
                       ]}
                     />
                   </Col>
-
                 </Row>
               </Card>
 
@@ -576,7 +575,6 @@ const UserWork: React.FC = () => {
                       ]}
                     />
                   </Col>
-                  
                 </Row>
               </Card>
 
