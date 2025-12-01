@@ -13,7 +13,7 @@ export default defineConfig({
     },
     host: true,
     port: 5173,
-    allowedHosts: ["purchasing-truck-existence-walt.trycloudflare.com"],
+    allowedHosts: ["pen-hardcover-reduction-investigate.trycloudflare.com"],
   },
   css: {
     postcss: "./postcss.config.cjs",

@@ -96,3 +96,88 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Project Structure
+
+```
+/home/mt/Desktop/hello/backend/
+├───.dockerignore
+├───.gitignore
+├───.prettierrc
+├───Dockerfile
+├───eslint.config.mjs
+├───nest-cli.json
+├───package-lock.json
+├───package.json
+├───README.md
+├───tsconfig.build.json
+├───tsconfig.json
+├───dist/...
+├───images/
+├───node_modules/...
+├───pdfs/
+├───src/
+│   ├───app.controller.spec.ts
+│   ├───app.controller.ts
+│   ├───app.module.ts
+│   ├───app.service.ts
+│   ├───main.ts
+│   ├───auth/
+│   │   ├───auth.controller.spec.ts
+│   │   ├───auth.controller.ts
+│   │   ├───auth.module.ts
+│   │   ├───auth.service.spec.ts
+│   │   ├───auth.service.ts
+│   │   ├───jwt-auth.guard.ts
+│   │   ├───local-auth.guard.ts
+│   │   ├───decorators/
+│   │   │   └───roles.decorator.ts
+│   │   ├───guards/
+│   │   │   ├───jwt-auth.guard.ts
+│   │   │   └───roles.guard.ts
+│   │   └───strategies/
+│   │       ├───jwt.strategy.ts
+│   │       └───local.strategy.ts
+│   ├───option/
+│   │   ├───option.controller.ts
+│   │   ├───option.module.ts
+│   │   ├───option.service.ts
+│   │   ├───dto/
+│   │   │   ├───create-option.dto.ts
+│   │   │   └───update-option.dto.ts
+│   │   └───entities/
+│   │       └───option.entity.ts
+│   ├───upload-file/
+│   │   ├───upload-file.controller.ts
+│   │   ├───upload-file.module.ts
+│   │   ├───upload-file.service.ts
+│   │   ├───dto/
+│   │   │   ├───create-upload-file.dto.ts
+│   │   │   └───update-upload-file.dto.ts
+│   │   └───entities/
+│   │       └───upload-file.entity.ts
+│   ├───user/
+│   │   ├───user.controller.spec.ts
+│   │   ├───user.controller.ts
+│   │   ├───user.module.ts
+│   │   ├───user.service.spec.ts
+│   │   ├───user.service.ts
+│   │   ├───dto/
+│   │   │   ├───create-user.dto.ts
+│   │   │   └───update-user.dto.ts
+│   │   └───entities/
+│   │       └───user.entity.ts
+│   └───work/
+│       ├───work.controller.ts
+│       ├───work.module.ts
+│       ├───work.service.ts
+│       ├───dto/
+│       │   ├───create-work.dto.ts
+│       │   └───update-work.dto.ts
+│       └───entities/
+│           └───work.entity.ts
+└───test/
+    ├───app.e2e-spec.ts
+    └───jest-e2e.json
+```
+
