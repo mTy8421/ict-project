@@ -16,9 +16,11 @@ import {
   Upload,
   type UploadProps,
   Image,
+  TimePicker,
 } from "antd";
 import {
   ArrowLeftOutlined,
+  FilePdfOutlined,
   SaveOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
@@ -28,7 +30,10 @@ import DeanHeader from "../../components/head/Header";
 import DeanNavbar from "../../components/head/Navbar";
 import ReHeader from "../../components/head/NavbarHeader";
 import "./workload-new.override.css";
-import moment from "moment";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -40,7 +45,6 @@ interface WorkloadForm {
   department: string;
   assignee: string;
   description: string;
-  dateRange: [any, any];
 }
 
 interface User {
@@ -132,7 +136,7 @@ const DetailHeadWorkLoad: React.FC = () => {
       const workload = response.data;
 
       const imagesResponse = await axiosInstance.get(
-        `upload-file/show/id/${id}`
+        `upload-file/show/id/${id}`,
       );
       setImages(imagesResponse.data);
 
@@ -140,10 +144,9 @@ const DetailHeadWorkLoad: React.FC = () => {
         title: workload.options.title,
         department: workload.department,
         description: workload.description,
-        dateRange: [
-          moment(workload.dateTimeStart),
-          moment(workload.dateTimeEnd),
-        ],
+        startTime: workload.startTime
+          ? dayjs(workload.startTime, "HH:mm")
+          : null,
       });
     } catch (error: any) {
       console.error("Error fetching workload:", error);
@@ -176,7 +179,7 @@ const DetailHeadWorkLoad: React.FC = () => {
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้"
+        error.response?.data?.message || "ไม่สามารถเพิ่มภาระงานได้",
       );
     } finally {
       setLoading(false);
@@ -282,7 +285,7 @@ const DetailHeadWorkLoad: React.FC = () => {
                   style={{ width: "100%" }}
                 >
                   <Row gutter={[32, 24]}>
-                    <Col span={24}>
+                    <Col span={16}>
                       <Form.Item
                         name="title"
                         label="หัวข้อภาระงาน"
@@ -306,15 +309,15 @@ const DetailHeadWorkLoad: React.FC = () => {
                       </Form.Item>
                     </Col>
 
-                    <Col span={24}>
+                    <Col span={8}>
                       <Form.Item
-                        name="dateRange"
+                        name="startTime"
                         label="ระยะเวลา"
                         rules={[
                           { required: true, message: "กรุณาเลือกระยะเวลา" },
                         ]}
                       >
-                        <RangePicker
+                        <TimePicker
                           disabled
                           style={{
                             width: "100%",
@@ -322,8 +325,7 @@ const DetailHeadWorkLoad: React.FC = () => {
                             borderRadius: theme.borderRadius.md,
                             fontSize: theme.fontSize.md,
                           }}
-                          // format="YYYY-MM-DD"
-                          format="DD-MM-YYYY"
+                          format="HH:mm"
                         />
                       </Form.Item>
                     </Col>
@@ -361,6 +363,36 @@ const DetailHeadWorkLoad: React.FC = () => {
                               src={`/api/upload-file/show/${item.file_name}`}
                             />
                           ))}
+                      </div>
+                    </Col>
+
+                    <Col span={24}>
+                      <div>
+                        {images.map((item, index) =>
+                          item.file_name.endsWith(".pdf") ? (
+                            <div
+                              key={index}
+                              style={{ marginBottom: theme.spacing.md }}
+                            >
+                              <a
+                                href={`/api/upload-file/showPdf/${item.file_name}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                  color: theme.primary,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: theme.spacing.sm,
+                                }}
+                              >
+                                <FilePdfOutlined
+                                  style={{ fontSize: theme.fontSize.lg }}
+                                />
+                                {item.file_name}
+                              </a>
+                            </div>
+                          ) : null,
+                        )}
                       </div>
                     </Col>
                   </Row>
@@ -537,21 +569,22 @@ const DetailHeadWorkLoad: React.FC = () => {
 
                     <Col span={24}>
                       <Form.Item
-                        name="dateRange"
-                        label="ระยะเวลา"
+                        name="description"
+                        label="รายละเอียด"
                         rules={[
-                          { required: true, message: "กรุณาเลือกระยะเวลา" },
+                          { required: true, message: "กรุณากรอกรายละเอียด" },
                         ]}
                       >
-                        <RangePicker
+                        <TextArea
                           disabled
+                          placeholder="กรอกรายละเอียดภาระงาน"
+                          rows={4}
                           style={{
-                            width: "100%",
-                            height: 48,
                             borderRadius: theme.borderRadius.md,
                             fontSize: theme.fontSize.md,
+                            padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+                            resize: "none",
                           }}
-                          format="YYYY-MM-DD"
                         />
                       </Form.Item>
                     </Col>
@@ -591,11 +624,71 @@ const DetailHeadWorkLoad: React.FC = () => {
                           ))}
                       </div>
                     </Col>
+
+                    <Col span={24}>
+                      <div>
+                        {images.map((item, index) =>
+                          item.file_name.endsWith(".pdf") ? (
+                            <div
+                              key={index}
+                              style={{ marginBottom: theme.spacing.md }}
+                            >
+                              <a
+                                href={`/api/upload-file/showPdf/${item.file_name}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                  color: theme.primary,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: theme.spacing.sm,
+                                }}
+                              >
+                                <FilePdfOutlined
+                                  style={{ fontSize: theme.fontSize.lg }}
+                                />
+                                {item.file_name}
+                              </a>
+                            </div>
+                          ) : null,
+                        )}
+                      </div>
+                    </Col>
                   </Row>
 
                   <Divider style={{ margin: `${theme.spacing.xl} 0` }} />
 
-                  <Form.Item style={{ textAlign: "right", marginBottom: 0 }}>
+                  <Form.Item
+                    style={{
+                      marginBottom: 0,
+                      display: "flex",
+                      justifyContent: "space-around",
+                    }}
+                  >
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      loading={loadingSencond}
+                      icon={<SaveOutlined />}
+                      style={{
+                        height: 48,
+                        minWidth: 180,
+                        fontSize: theme.fontSize.md,
+                        borderRadius: theme.borderRadius.md,
+                        fontWeight: theme.fontWeight.semibold,
+                        boxShadow: theme.shadow,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: theme.spacing.sm,
+                        background: theme.danger,
+                        marginRight: theme.spacing.lg,
+                      }}
+                      onClick={() => setButtonAction("not_completed")}
+                    >
+                      ไม่อนุมัติภาระงาน
+                    </Button>
+
                     <Button
                       type="primary"
                       htmlType="submit"
@@ -613,7 +706,9 @@ const DetailHeadWorkLoad: React.FC = () => {
                         justifyContent: "center",
                         gap: theme.spacing.sm,
                         background: theme.success,
+                        marginLeft: theme.spacing.lg,
                       }}
+                      onClick={() => setButtonAction("completed")}
                     >
                       อนุมัติภาระงาน
                     </Button>
