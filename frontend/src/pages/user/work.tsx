@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   Typography,
   Layout,
-  Menu,
   Button,
   Row,
   Col,
@@ -13,37 +12,25 @@ import {
   Space,
   Input,
   Select,
-  DatePicker,
   Tooltip,
   Modal,
   message,
 } from "antd";
 import {
-  SearchOutlined,
-  FilterOutlined,
   PlusOutlined,
-  SyncOutlined,
   EditOutlined,
   DeleteOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
-import { logout } from "../home/home";
 import theme from "../../theme";
-import {
-  UserOutlined,
-  FileTextOutlined,
-  BarChartOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
 import DeanHeader from "../../components/user/Header";
 import DeanNavbar from "../../components/user/Navbar";
 import ReHeader from "../../components/user/NavbarHeader";
 
-const { Header, Content, Sider } = Layout;
+const { Content } = Layout;
 const { Title, Text } = Typography;
 const { Search } = Input;
-const { RangePicker } = DatePicker;
 
 interface Workload {
   id: number;
@@ -52,12 +39,6 @@ interface Workload {
   status: "pending" | "not_completed" | "completed";
   startTime: string;
   options: any;
-}
-
-interface User {
-  user_id: number;
-  user_name: string;
-  user_role: string;
 }
 
 const UserWork: React.FC = () => {

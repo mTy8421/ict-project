@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Card,
   Typography,
   Layout,
-  Menu,
   Button,
   Row,
   Col,
@@ -13,56 +12,28 @@ import {
   Space,
   Input,
   Select,
-  DatePicker,
   Tooltip,
-  Modal,
   message,
 } from "antd";
-import {
-  SearchOutlined,
-  FilterOutlined,
-  PlusOutlined,
-  SyncOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  EyeOutlined,
-  ArrowLeftOutlined,
-} from "@ant-design/icons";
+import { EyeOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import axiosInstance from "../../utils/axios";
-import { logout } from "../home/home";
 import theme from "../../theme";
-import {
-  UserOutlined,
-  FileTextOutlined,
-  BarChartOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
+
 import DeanHeader from "../../components/head/Header";
 import DeanNavbar from "../../components/head/Navbar";
 import ReHeader from "../../components/head/NavbarHeader";
 
-const { Header, Content, Sider } = Layout;
+const { Content } = Layout;
 const { Title, Text } = Typography;
 const { Search } = Input;
-const { RangePicker } = DatePicker;
 
 interface Workload {
   id: number;
-  // title: string;
   department: string;
   assignee: string;
   status: "pending" | "not_completed" | "completed";
-  // priority: "low" | "medium" | "high";
-  dateTimeStart: string;
-  dateTimeEnd: string;
+  startTime: string;
   options: any;
-  user: any;
-}
-
-interface User {
-  user_id: number;
-  user_name: string;
-  user_role: string;
 }
 
 const HeadWorkUser: React.FC = () => {
@@ -73,7 +44,6 @@ const HeadWorkUser: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState();
 
   const fetchWorkloads = async () => {
     try {
@@ -90,26 +60,6 @@ const HeadWorkUser: React.FC = () => {
   useEffect(() => {
     fetchWorkloads();
   }, []);
-
-  const handleDelete = async (id: number) => {
-    Modal.confirm({
-      title: "ยืนยันการลบ",
-      content: "คุณต้องการลบภาระงานนี้ใช่หรือไม่?",
-      okText: "ยืนยัน",
-      cancelText: "ยกเลิก",
-      centered: true,
-      onOk: async () => {
-        try {
-          await axiosInstance.delete(`/work/${id}`);
-          message.success("ลบภาระงานสำเร็จ");
-          fetchWorkloads();
-        } catch (error) {
-          console.error("Error deleting workload:", error);
-          message.error("ไม่สามารถลบภาระงานได้");
-        }
-      },
-    });
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -210,27 +160,14 @@ const HeadWorkUser: React.FC = () => {
     },
     {
       title: "ระยะเวลาที่ใช้",
+      dataIndex: "startTime",
       key: "dateCount",
-      render: (record: Workload) => (
-        <span>
-          {Math.ceil(
-            (new Date(record.dateTimeEnd).getTime() -
-              new Date(record.dateTimeStart).getTime()) /
-              (1000 * 60 * 60 * 24)
-          )}{" "}
-          วัน
-        </span>
-      ),
-    },
-    {
-      title: "วันที่เริ่มต้น - สิ้นสุด",
-      key: "dateRange",
-      render: (record: Workload) => (
-        <span>
-          {new Date(record.dateTimeStart).toLocaleDateString("th-TH")} -{" "}
-          {new Date(record.dateTimeEnd).toLocaleDateString("th-TH")}
-        </span>
-      ),
+      render: (startTime: string) => {
+        if (!startTime) return "-";
+        const [hours, minutes] = startTime.split(":").map(Number);
+        if (minutes > 0) return `${hours} ชั่วโมง ${minutes} นาที`;
+        return `${hours} ชั่วโมง`;
+      },
     },
     {
       title: "จัดการ",
@@ -255,18 +192,14 @@ const HeadWorkUser: React.FC = () => {
   const filteredWorkloads = workloads.filter((workload) => {
     const matchesSearch =
       (workload.options.title?.toLowerCase() || "").includes(
-        searchText.toLowerCase()
+        searchText.toLowerCase(),
       ) ||
       (workload.department?.toLowerCase() || "").includes(
-        searchText.toLowerCase()
+        searchText.toLowerCase(),
       ) ||
       (workload.assignee?.toLowerCase() || "").includes(
-        searchText.toLowerCase()
+        searchText.toLowerCase(),
       );
-
-    const matchesDate =
-      !dateRange ||
-      (workload.dateTimeEnd?.toString() || "").includes(dateRange as any);
 
     const matchesStatus =
       statusFilter.length === 0 || statusFilter.includes(workload.status);
@@ -274,9 +207,7 @@ const HeadWorkUser: React.FC = () => {
       priorityFilter.length === 0 ||
       priorityFilter.includes(workload.options.priority);
 
-    // const matchesDate =
-    //   !dateRange || new Date(workload.dateTimeEnd) == new Date(dateRange);
-    return matchesSearch && matchesStatus && matchesPriority && matchesDate;
+    return matchesSearch && matchesStatus && matchesPriority;
   });
 
   // if (loading) {
@@ -432,35 +363,6 @@ const HeadWorkUser: React.FC = () => {
                       ]}
                     />
                   </Col>
-                  <Col
-                    xs={24}
-                    sm={12}
-                    style={{ paddingBottom: theme.spacing.md }}
-                  >
-                    {/* <Select */}
-                    {/*   style={{ width: "100%" }} */}
-                    {/*   placeholder="กรองตามวันที่" */}
-                    {/*   onChange={(dates) => setDateRange(dates)} */}
-                    {/* > */}
-                    {/*   {workloads.map((val) => ( */}
-                    {/*     <Select.Option value={val.dateTimeEnd}> */}
-                    {/*       {val.dateTimeEnd} */}
-                    {/*     </Select.Option> */}
-                    {/*   ))} */}
-                    {/* </Select> */}
-                    <DatePicker
-                      style={{
-                        width: "100%",
-                        marginTop: theme.spacing.sm,
-                        borderRadius: theme.borderRadius.md,
-                      }}
-                      onChange={(_date, dateString) =>
-                        setDateRange(dateString.toString() as any)
-                      }
-                      format="YYYY-MM-DD"
-                      placeholder="กรองตามวันที่สิ้นสุด"
-                    />
-                  </Col>
                 </Row>
               </Card>
 
@@ -573,35 +475,6 @@ const HeadWorkUser: React.FC = () => {
                         { label: "ปานกลาง", value: "medium" },
                         { label: "ต่ำ", value: "low" },
                       ]}
-                    />
-                  </Col>
-                  <Col
-                    xs={24}
-                    sm={12}
-                    style={{ paddingBottom: theme.spacing.md }}
-                  >
-                    {/* <Select */}
-                    {/*   style={{ width: "100%" }} */}
-                    {/*   placeholder="กรองตามวันที่" */}
-                    {/*   onChange={(dates) => setDateRange(dates)} */}
-                    {/* > */}
-                    {/*   {workloads.map((val) => ( */}
-                    {/*     <Select.Option value={val.dateTimeEnd}> */}
-                    {/*       {val.dateTimeEnd} */}
-                    {/*     </Select.Option> */}
-                    {/*   ))} */}
-                    {/* </Select> */}
-                    <DatePicker
-                      style={{
-                        width: "100%",
-                        marginTop: theme.spacing.sm,
-                        borderRadius: theme.borderRadius.md,
-                      }}
-                      onChange={(_date, dateString) =>
-                        setDateRange(dateString.toString() as any)
-                      }
-                      format="YYYY-MM-DD"
-                      placeholder="กรองตามวันที่สิ้นสุด"
                     />
                   </Col>
                 </Row>

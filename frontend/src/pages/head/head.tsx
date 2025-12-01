@@ -9,7 +9,6 @@ import {
   Progress,
   List,
   Tag,
-  DatePicker,
 } from "antd";
 import {
   FileTextOutlined,
@@ -39,7 +38,7 @@ interface Workload {
 
 const Head: React.FC = () => {
   const [workloads, setWorkloads] = useState<Workload[]>([]);
-  const [dateRange, setDateRange] = useState();
+  const [dateRange] = useState();
 
   const fetchWorkloads = async () => {
     try {
@@ -116,13 +115,13 @@ const Head: React.FC = () => {
   });
 
   const completedWorkloads = workloads.filter(
-    (w) => w.status === "completed"
+    (w) => w.status === "completed",
   ).length;
   const inProgressWorkloads = workloads.filter(
-    (w) => w.status === "not_completed"
+    (w) => w.status === "not_completed",
   ).length;
   const pendingWorkloads = workloads.filter(
-    (w) => w.status === "pending"
+    (w) => w.status === "pending",
   ).length;
 
   const completionRate =
