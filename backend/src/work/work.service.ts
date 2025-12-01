@@ -205,9 +205,13 @@ export class WorkService {
         return `Invalid data for file: ${file?.originalname || 'unknown'}`;
       }
 
-      // const resizedFilename = `resized-${Date.now()}-${file.originalname}`;
-      const resizedFilename = `${Date.now()}-${file.originalname}`;
-      const isPdf = path.extname(file.originalname).toLowerCase() === '.pdf';
+      const originalname = Buffer.from(file.originalname, 'latin1').toString(
+        'utf8',
+      );
+
+      // const resizedFilename = `resized-${Date.now()}-${originalname}`;
+      const resizedFilename = `${Date.now()}-${originalname}`;
+      const isPdf = path.extname(originalname).toLowerCase() === '.pdf';
       const resizedFilePath = isPdf
         ? path.join(uploadDirPdfs, resizedFilename)
         : path.join(uploadDir, resizedFilename);
@@ -236,10 +240,10 @@ export class WorkService {
           })
           .execute();
 
-        return `File ${file.originalname} uploaded successfully as ${resizedFilename}`;
+        return `File ${originalname} uploaded successfully as ${resizedFilename}`;
       } catch (error) {
-        console.error(`Error processing file ${file.originalname}:`, error);
-        return `Failed to upload ${file.originalname}.`;
+        console.error(`Error processing file ${originalname}:`, error);
+        return `Failed to upload ${originalname}.`;
       }
     });
 

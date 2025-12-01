@@ -137,7 +137,10 @@ export class UploadFileService {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
 
-    const resizedFilename = `resized-${Date.now()}-${file.originalname}${path.extname(file.originalname)}`;
+    const originalname = Buffer.from(file.originalname, 'latin1').toString(
+      'utf8',
+    );
+    const resizedFilename = `resized-${Date.now()}-${originalname}`;
     const resizedFilePath = path.join(uploadDir, resizedFilename);
 
     try {
@@ -153,8 +156,8 @@ export class UploadFileService {
 
       return { success: true, data: newFile };
     } catch (error) {
-      console.error(`Error processing file ${file.originalname}:`, error);
-      return `Failed to upload ${file.originalname}.`;
+      console.error(`Error processing file ${originalname}:`, error);
+      return `Failed to upload ${originalname}.`;
     }
   }
 
@@ -177,7 +180,10 @@ export class UploadFileService {
         return `Invalid data for file: ${file?.originalname || 'unknown'}`;
       }
 
-      const resizedFilename = `resized-${Date.now()}-${file.originalname}${path.extname(file.originalname)}`;
+      const originalname = Buffer.from(file.originalname, 'latin1').toString(
+        'utf8',
+      );
+      const resizedFilename = `resized-${Date.now()}-${originalname}`;
       const resizedFilePath = path.join(uploadDir, resizedFilename);
 
       try {
@@ -197,10 +203,10 @@ export class UploadFileService {
           .execute();
 
         console.log(UploadFiles);
-        return `File ${file.originalname} uploaded successfully as ${resizedFilename}`;
+        return `File ${originalname} uploaded successfully as ${resizedFilename}`;
       } catch (error) {
-        console.error(`Error processing file ${file.originalname}:`, error);
-        return `Failed to upload ${file.originalname}.`;
+        console.error(`Error processing file ${originalname}:`, error);
+        return `Failed to upload ${originalname}.`;
       }
     });
 
@@ -221,7 +227,10 @@ export class UploadFileService {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
 
-    const pdfFilename = `uploaded-${Date.now()}-${file.originalname}`;
+    const originalname = Buffer.from(file.originalname, 'latin1').toString(
+      'utf8',
+    );
+    const pdfFilename = `uploaded-${Date.now()}-${originalname}`;
     const pdfFilePath = path.join(uploadDir, pdfFilename);
 
     try {
@@ -233,8 +242,8 @@ export class UploadFileService {
 
       return { success: true, data: newFile };
     } catch (error) {
-      console.error(`Error saving PDF file ${file.originalname}:`, error);
-      return `Failed to upload ${file.originalname}.`;
+      console.error(`Error saving PDF file ${originalname}:`, error);
+      return `Failed to upload ${originalname}.`;
     }
   }
 }
