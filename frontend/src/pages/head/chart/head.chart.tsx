@@ -30,18 +30,6 @@ const HeadChart: React.FC = () => {
 
   const fetchWorkloads = async () => {
     try {
-      // const userProfile = await axiosInstance.get("/user/profile");
-      // const userData = userProfile.data;
-      // const textUser = userData.user_role.split("หัวหน้า");
-      // if (userData.user_role === "หัวหน้าสำนักงาน") {
-      //   const response = await axiosInstance.get("/work/head");
-      //   setWorkloads(response.data);
-      // } else {
-      //   const response = await axiosInstance.get(
-      //     `/work/role/พนัก${textUser[1]}`
-      //   );
-      //   setWorkloads(response.data);
-      // }
       const response = await axiosInstance.get("/work/user");
       setWorkloads(response.data);
     } catch (error) {
