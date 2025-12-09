@@ -19,8 +19,7 @@ interface Workload {
   description: string;
   department: string;
   status: "pending" | "not_completed" | "completed";
-  dateTimeStart: string;
-  dateTimeEnd: string;
+  startTime: string;
   options: any;
 }
 
@@ -112,17 +111,19 @@ const AdminChart: React.FC = () => {
                   {workloads.length > 0
                     ? (
                         workloads.reduce((sum, work) => {
-                          const start = new Date(work.dateTimeStart);
-                          const end = new Date(work.dateTimeEnd);
+                          const [hours, minutes, seconds] = work.startTime
+                            .split(":")
+                            .map(Number);
                           return (
                             sum +
-                            (end.getTime() - start.getTime()) /
-                              (1000 * 60 * 60 * 24)
+                            (hours || 0) +
+                            (minutes || 0) / 60 +
+                            (seconds || 0) / 3600
                           );
                         }, 0) / workloads.length
                       ).toFixed(1)
                     : 0}{" "}
-                  วัน
+                  ชั่วโมง
                 </Text>
               </div>
 
