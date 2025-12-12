@@ -15,10 +15,8 @@ const { Title, Text } = Typography;
 
 interface Workload {
   id: number;
-  // title: string;
   description: string;
   department: string;
-  // priority: "low" | "medium" | "high";
   status: "pending" | "not_completed" | "completed";
   startTime: string;
   options: any;
@@ -98,18 +96,18 @@ const DeanHome: React.FC = () => {
                 >
                   {workloads.length > 0
                     ? (
-                        workloads.reduce((sum, work) => {
-                          const [hours, minutes, seconds] = work.startTime
-                            .split(":")
-                            .map(Number);
-                          return (
-                            sum +
-                            (hours || 0) +
-                            (minutes || 0) / 60 +
-                            (seconds || 0) / 3600
-                          );
-                        }, 0) / workloads.length
-                      ).toFixed(1)
+                      workloads.reduce((sum, work) => {
+                        const [hours, minutes, seconds] = work.startTime
+                          .split(":")
+                          .map(Number);
+                        return (
+                          sum +
+                          (hours || 0) +
+                          (minutes || 0) / 60 +
+                          (seconds || 0) / 3600
+                        );
+                      }, 0) / workloads.length
+                    ).toFixed(1)
                     : 0}{" "}
                   ชั่วโมง
                 </Text>

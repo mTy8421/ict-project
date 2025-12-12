@@ -37,17 +37,17 @@ export default function Home() {
             case "คณบดี":
               navigate("/dean");
               break;
-            case "รองคณบดีฝ่ายวิชาการ":
-              navigate("/vice-dean/academic");
+            case "คณบดีฝ่ายบริหารทั่วไป":
+              navigate("/dean");
               break;
-            case "รองคณบดีฝ่ายยุทธศาสตร์และพัฒนาองค์กร":
-              navigate("/vice-dean/strategy");
+            case "คณบดีฝ่ายแผนงาน":
+              navigate("/dean");
               break;
-            case "รองคณบดีฝ่ายวิจัยและนวัตกรรม":
-              navigate("/vice-dean/discipline");
+            case "คณบดีฝ่ายพัฒนาทักษะดิจิทัล":
+              navigate("/dean");
               break;
-            case "รองคณบดีฝ่ายคุณภาพนิสิต":
-              navigate("/vice-dean/student-quality");
+            case "คณบดีฝ่ายวิชาการ":
+              navigate("/dean");
               break;
             case "หัวหน้าสำนักงาน":
               navigate("/head");
@@ -111,17 +111,17 @@ export default function Home() {
           case "คณบดี":
             navigate("/dean");
             break;
-          case "รองคณบดีฝ่ายวิชาการ":
-            navigate("/vice-dean/academic");
+          case "คณบดีฝ่ายบริหารทั่วไป":
+            navigate("/dean");
             break;
-          case "รองคณบดีฝ่ายยุทธศาสตร์และพัฒนาองค์กร":
-            navigate("/vice-dean/strategy");
+          case "คณบดีฝ่ายแผนงาน":
+            navigate("/dean");
             break;
-          case "รองคณบดีฝ่ายวิจัยและนวัตกรรม":
-            navigate("/vice-dean/discipline");
+          case "คณบดีฝ่ายพัฒนาทักษะดิจิทัล":
+            navigate("/dean");
             break;
-          case "รองคณบดีฝ่ายคุณภาพนิสิต":
-            navigate("/vice-dean/student-quality");
+          case "คณบดีฝ่ายวิชาการ":
+            navigate("/dean");
             break;
           case "หัวหน้าสำนักงาน":
             navigate("/head");

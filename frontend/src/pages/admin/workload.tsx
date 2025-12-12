@@ -88,7 +88,7 @@ const AdminWorkLoad: React.FC = () => {
     } catch (error: any) {
       console.error("Error creating workload:", error);
       message.error(
-        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้"
+        error.response?.data?.message || "ไม่สามารถเพิ่มผู้ใช้งานได้",
       );
     } finally {
       setLoading(false);
@@ -335,6 +335,24 @@ const AdminWorkLoad: React.FC = () => {
                               title: "คณบดี",
                               options: [
                                 { label: <span>คณบดี</span>, value: "คณบดี" },
+                                {
+                                  label: <span>คณบดีฝ่ายบริหารทั่วไป</span>,
+                                  value: "คณบดีฝ่ายบริหารทั่วไป",
+                                },
+                                {
+                                  label: <span>คณบดีฝ่ายแผนงาน</span>,
+                                  value: "คณบดีฝ่ายแผนงาน",
+                                },
+                                {
+                                  label: (
+                                    <span>คณบดีฝ่ายพัฒนาทักษะดิจิทัล</span>
+                                  ),
+                                  value: "คณบดีฝ่ายพัฒนาทักษะดิจิทัล",
+                                },
+                                {
+                                  label: <span>คณบดีฝ่ายวิชาการ</span>,
+                                  value: "คณบดีฝ่ายวิชาการ",
+                                },
                               ],
                             },
                             {
@@ -603,6 +621,24 @@ const AdminWorkLoad: React.FC = () => {
                               title: "คณบดี",
                               options: [
                                 { label: <span>คณบดี</span>, value: "คณบดี" },
+                                {
+                                  label: <span>คณบดีฝ่ายบริหารทั่วไป</span>,
+                                  value: "คณบดีฝ่ายบริหารทั่วไป",
+                                },
+                                {
+                                  label: <span>คณบดีฝ่ายแผนงาน</span>,
+                                  value: "คณบดีฝ่ายแผนงาน",
+                                },
+                                {
+                                  label: (
+                                    <span>คณบดีฝ่ายพัฒนาทักษะดิจิทัล</span>
+                                  ),
+                                  value: "คณบดีฝ่ายพัฒนาทักษะดิจิทัล",
+                                },
+                                {
+                                  label: <span>คณบดีฝ่ายวิชาการ</span>,
+                                  value: "คณบดีฝ่ายวิชาการ",
+                                },
                               ],
                             },
                             {
