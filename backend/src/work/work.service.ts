@@ -20,7 +20,7 @@ export class WorkService {
     @InjectRepository(Option) private optionRepsitory: Repository<Option>,
     @InjectRepository(UploadFile)
     private upload_fileRepsitory: Repository<UploadFile>,
-  ) {}
+  ) { }
 
   async create(createWorkDto: CreateWorkDto, files: Express.Multer.File[]) {
     const user = await this.userRepository.findOne({
@@ -115,7 +115,7 @@ export class WorkService {
         status: updateWorkDto.status,
         description: updateWorkDto.description,
         startTime: updateWorkDto.startTime,
-        options: option,
+        // options: option,
       })
       .where('id = :id', { id })
       .execute();
