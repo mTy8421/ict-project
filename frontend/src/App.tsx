@@ -33,9 +33,10 @@ import PriorityEdit from "./pages/admin/setting/priority.edit";
 
 import UserChert from "./pages/user/chart/user.chart";
 import HeadChart from "./pages/head/chart/head.chart";
-import DeanHome from "./pages/dean/dean";
 import AdminChart from "./pages/admin/chart/admin.chart";
+import DeanHome from "./pages/dean/dean";
 import DeanUser from "./pages/dean/deanUser";
+import ChartDean from "./pages/dean/chartdean";
 
 export default function App() {
   return (
@@ -95,8 +96,7 @@ export default function App() {
         />
         <Route path="/admin/chart" element={<AdminChart />} />
 
-        <Route path="/dean" element={<DeanHome />} />
-        <Route path="/dean/user" element={<DeanUser />} />
+        <Route path="/dean" element={<ChartDean />} />
       </Routes>
     </BrowserRouter>
   );
