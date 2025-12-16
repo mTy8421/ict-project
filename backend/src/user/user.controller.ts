@@ -45,6 +45,16 @@ export class UserController {
     return this.userService.findAllDepartment(role);
   }
 
+  @Get('roles/:role')
+  findAllRole(@Param('role') role: string) {
+    return this.userService.findAllRole(role);
+  }
+
+  @Get('userAll')
+  findAllUserAll() {
+    return this.userService.findAllUserAll();
+  }
+
   @Get()
   findAll() {
     return this.userService.findAll();

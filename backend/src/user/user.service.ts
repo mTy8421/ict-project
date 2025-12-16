@@ -2,15 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository, Like } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { Work } from 'src/work/entities/work.entity';
+import { Option } from 'src/option/entities/option.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Work) private workRepository: Repository<Work>,
+    @InjectRepository(Option) private optionRepsitory: Repository<Option>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -53,6 +55,37 @@ export class UserService {
       .where('user.user_role = :user_role', {
         user_role: role,
       })
+      .getMany();
+    return users;
+  }
+
+  async findAllRole(role: string): Promise<User[]> {
+    const users = this.userRepository
+      .createQueryBuilder('user')
+      .select(['user.user_name', 'user.user_role', 'user.user_id'])
+      .leftJoinAndSelect('user.works', 'work')
+      .leftJoinAndSelect('work.options', 'option')
+      .where('user.user_role = :user_role', {
+        user_role: role,
+      })
+      .orderBy('work.dateTimeNow', 'DESC')
+      .getMany();
+    return users;
+  }
+
+  async findAllUserAll(): Promise<User[]> {
+    const users = this.userRepository
+      .createQueryBuilder('user')
+      .select(['user.user_name', 'user.user_role', 'user.user_id'])
+      .leftJoinAndSelect('user.works', 'work')
+      .leftJoinAndSelect('work.options', 'option')
+      .where(
+        'user.user_role != :user_role AND user.user_role != :user_role2 AND user.user_role NOT LIKE "พนักงาน%" AND user.user_role NOT LIKE "%คณบดี%"',
+        {
+          user_role: 'หัวหน้าสำนักงาน',
+          user_role2: 'admin',
+        },
+      )
       .getMany();
     return users;
   }

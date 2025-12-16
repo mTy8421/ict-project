@@ -16,12 +16,12 @@ import {
   FieldTimeOutlined,
   FireOutlined,
 } from "@ant-design/icons";
+import moment from "moment";
 import axiosInstance from "../../../utils/axios";
 import theme from "../../../theme";
 import DeanHeader from "../../../components/user/Header";
 import DeanNavbar from "../../../components/user/Navbar";
 import ReHeader from "../../../components/user/NavbarHeader";
-import moment from "moment";
 
 // Register ChartJS components
 ChartJS.register(
@@ -30,7 +30,7 @@ ChartJS.register(
   Legend,
   CategoryScale,
   LinearScale,
-  BarElement
+  BarElement,
 );
 
 interface Workload {
@@ -46,7 +46,7 @@ interface Workload {
 const UserChart: React.FC = () => {
   const [workloads, setWorkloads] = useState<Workload[]>([]);
   // const [loading, setLoading] = useState(true); // Keeping state if needed for loading UI
-  // const [dateRange, setDateRange] = useState(); // Unused in new design for now
+  const [dateFilter, setDateFilter] = useState<'thisMonth' | 'lastMonth' | 'thisYear'>('thisMonth');
 
   const fetchWorkloads = async () => {
     try {
@@ -65,8 +65,26 @@ const UserChart: React.FC = () => {
 
   // --- Data Processing & Metrics ---
   const metrics = useMemo(() => {
+    // Filter by Date Range
+    const filteredByDate = workloads.filter((w) => {
+      if (!w.dateTimeNow) return false;
+      const date = moment(w.dateTimeNow);
+      const now = moment();
+
+      if (dateFilter === "thisMonth") {
+        return date.isSame(now, "month");
+      }
+      if (dateFilter === "lastMonth") {
+        return date.isSame(now.clone().subtract(1, "months"), "month");
+      }
+      if (dateFilter === "thisYear") {
+        return date.isSame(now, "year");
+      }
+      return true;
+    });
+
     // Filter for completed tasks as per design "Completed Tasks" label
-    const completedTasks = workloads.filter((w) => w.status === "completed");
+    const completedTasks = filteredByDate.filter((w) => w.status === "completed");
 
     let totalMinutes = 0;
     const urgencyCounts = { high: 0, medium: 0, low: 0 };
@@ -89,20 +107,19 @@ const UserChart: React.FC = () => {
       else urgencyCounts.low++;
 
       // Topic Time (Group by description)
-      const topic = task.description || "Unspecified";
+      const topic = task.options?.title || "Unspecified";
       topicTimeMap[topic] = (topicTimeMap[topic] || 0) + minutes;
     });
 
     const totalTasks = completedTasks.length;
-    const avgMinutes = totalTasks > 0 ? Math.round(totalMinutes / totalTasks) : 0;
+    const avgMinutes =
+      totalTasks > 0 ? Math.round(totalMinutes / totalTasks) : 0;
     const highUrgencyPct =
-      totalTasks > 0
-        ? Math.round((urgencyCounts.high / totalTasks) * 100)
-        : 0;
+      totalTasks > 0 ? Math.round((urgencyCounts.high / totalTasks) * 100) : 0;
 
     // Sort topics by time descending
     const sortedTopics = Object.keys(topicTimeMap).sort(
-      (a, b) => topicTimeMap[b] - topicTimeMap[a]
+      (a, b) => topicTimeMap[b] - topicTimeMap[a],
     );
 
     return {
@@ -115,7 +132,7 @@ const UserChart: React.FC = () => {
       topicTimeMap,
       sortedTopics,
     };
-  }, [workloads]);
+  }, [workloads, dateFilter]);
 
   // --- Helper Functions ---
   const formatTime = (totalMin: number) => {
@@ -240,13 +257,34 @@ const UserChart: React.FC = () => {
                 </p>
               </div>
               <div className="flex bg-white rounded-lg shadow-sm p-1 border border-gray-200">
-                <button className="px-4 py-1.5 text-sm font-medium rounded-md bg-blue-50 text-blue-700 border-none cursor-pointer">
+                <button
+                  onClick={() => setDateFilter("thisMonth")}
+                  className={`px-4 py-1.5 text-sm font-medium rounded-md border-none cursor-pointer transition-colors ${
+                    dateFilter === "thisMonth"
+                      ? "bg-blue-50 text-blue-700"
+                      : "text-gray-500 hover:text-gray-700 bg-transparent"
+                  }`}
+                >
                   เดือนนี้
                 </button>
-                <button className="px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 bg-transparent border-none cursor-pointer">
+                <button
+                  onClick={() => setDateFilter("lastMonth")}
+                  className={`px-4 py-1.5 text-sm font-medium rounded-md border-none cursor-pointer transition-colors ${
+                    dateFilter === "lastMonth"
+                      ? "bg-blue-50 text-blue-700"
+                      : "text-gray-500 hover:text-gray-700 bg-transparent"
+                  }`}
+                >
                   เดือนที่แล้ว
                 </button>
-                <button className="px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 bg-transparent border-none cursor-pointer">
+                <button
+                  onClick={() => setDateFilter("thisYear")}
+                  className={`px-4 py-1.5 text-sm font-medium rounded-md border-none cursor-pointer transition-colors ${
+                    dateFilter === "thisYear"
+                      ? "bg-blue-50 text-blue-700"
+                      : "text-gray-500 hover:text-gray-700 bg-transparent"
+                  }`}
+                >
                   ปีนี้
                 </button>
               </div>
@@ -287,7 +325,9 @@ const UserChart: React.FC = () => {
                     {formatTime(metrics.totalMinutes)}
                   </span>
                 </div>
-                <p className="text-xs text-gray-400 mt-1 m-0">คำนวณจาก ชม. + นาที</p>
+                <p className="text-xs text-gray-400 mt-1 m-0">
+                  คำนวณจาก ชม. + นาที
+                </p>
               </div>
 
               {/* Card 3: Avg Time */}
@@ -339,7 +379,10 @@ const UserChart: React.FC = () => {
                   ความเร่งด่วนของงาน (Urgency)
                 </h3>
                 <div className="relative h-64">
-                  <Doughnut data={urgencyChartData} options={urgencyChartOptions} />
+                  <Doughnut
+                    data={urgencyChartData}
+                    options={urgencyChartOptions}
+                  />
                 </div>
                 <div className="mt-4 text-center text-sm text-gray-500">
                   แสดงสัดส่วนจำนวนงานตามความเร่งด่วน
@@ -371,15 +414,24 @@ const UserChart: React.FC = () => {
                 </button>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse table-fixed">
                   <thead>
                     <tr className="text-sm text-gray-500 border-b border-gray-100">
-                      <th className="px-6 py-3 font-medium bg-white">หัวข้อ (Topic)</th>
-                      <th className="px-6 py-3 font-medium bg-white">ความเร่งด่วน</th>
+                      <th className="px-6 py-3 font-medium bg-white">
+                        หัวข้อ (Topic)
+                      </th>
+                      <th className="px-6 py-3 font-medium bg-white">
+                        รายระเอียด
+                      </th>
+                      <th className="px-6 py-3 font-medium bg-white">
+                        ระดับความเร่งด่วน
+                      </th>
                       <th className="px-6 py-3 font-medium text-right bg-white">
                         เวลาที่ใช้ (ชม : นาที)
                       </th>
-                      <th className="px-6 py-3 font-medium text-right bg-white">รวมนาที</th>
+                      <th className="px-6 py-3 font-medium text-right bg-white">
+                        รวมนาที
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="text-sm text-gray-700">
@@ -400,7 +452,10 @@ const UserChart: React.FC = () => {
                           key={task.id}
                           className="hover:bg-gray-50 border-b border-gray-50 last:border-0"
                         >
-                          <td className="px-6 py-4 font-medium text-gray-900">
+                          <td className="px-6 py-4 font-medium text-gray-900 truncate">
+                            {task.options?.title || "-"}
+                          </td>
+                          <td className="px-6 py-4 font-medium text-gray-900 truncate">
                             {task.description || "-"}
                           </td>
                           <td className="px-6 py-4">
@@ -417,7 +472,10 @@ const UserChart: React.FC = () => {
                     })}
                     {metrics.completedTasks.length === 0 && (
                       <tr>
-                        <td colSpan={4} className="px-6 py-4 text-center text-gray-500">
+                        <td
+                          colSpan={4}
+                          className="px-6 py-4 text-center text-gray-500"
+                        >
                           ไม่มีข้อมูลงานที่เสร็จสิ้น
                         </td>
                       </tr>

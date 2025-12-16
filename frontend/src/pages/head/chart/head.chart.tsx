@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Typography, Layout } from "antd";
+import { Typography, Layout, message } from "antd";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -44,32 +44,51 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 );
 
 const { Content } = Layout;
 
+// interface Workload {
+//   id: number;
+//   description: string;
+//   department: string;
+//   status: "pending" | "not_completed" | "completed";
+//   startTime: string; // Duration in HH:mm:ss format
+//   dateTimeNow: string; // Date of the record
+//   options: any;
+// }
+
 interface Workload {
-  id: number;
-  description: string;
-  department: string;
-  status: "pending" | "not_completed" | "completed";
-  startTime: string;
-  options: any;
+  user_id: number;
+  user_name: string;
+  user_role: string;
+  works: any;
 }
 
 const HeadChart: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const navigate = useNavigate();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [workloads, setWorkloads] = useState<Workload[]>([]);
+  const [teamName, setTeamName] = useState("");
 
   const fetchWorkloads = async () => {
     try {
-      const response = await axiosInstance.get("/work/user");
-      setWorkloads(response.data);
+      const userProfile = await axiosInstance.get("/user/profile");
+      const userData = userProfile.data;
+      const textUser = userData.user_role.split("หัวหน้า");
+      setTeamName(textUser[1]);
+      if (userData.user_role !== "หัวหน้าสำนักงาน") {
+        const response = await axiosInstance.get(
+          `/user/roles/พนัก${textUser[1]}`,
+        );
+        setWorkloads(response.data);
+      } else {
+        const response = await axiosInstance.get(`/user/userAll`);
+        setWorkloads(response.data);
+      }
     } catch (error) {
       console.error("Error fetching workloads:", error);
+      message.error("ไม่สามารถดึงข้อมูลภาระงานได้");
     }
   };
 
@@ -77,37 +96,128 @@ const HeadChart: React.FC = () => {
     fetchWorkloads();
   }, []);
 
-  // --- Mock Data Generation (matching design.html) ---
-  const agents = Array.from({ length: 20 }, (_, i) => `Agent ${i + 1}`);
+  console.table(workloads);
 
-  // Random data for efficiency (Time vs Volume)
-  // Use stable random for hydration consistency in React (optional, but good for demo)
-  // For this implementation, simple generation is fine as it renders client-side.
-  const efficiencyData = agents.map((agent) => {
-    return {
-      x: Math.floor(Math.random() * 8) + 1, // Avg Time (1-8 hours)
-      y: Math.floor(Math.random() * 50) + 10, // Total Tickets (10-60)
-      name: agent,
+  // --- Data Processing ---
+  const {
+    efficiencyData,
+    workloadLabels,
+    workloadValues,
+    teamAvgWorkload,
+    topics,
+    topicTime,
+    kpiStats,
+  } = React.useMemo(() => {
+    // 1. Agent Efficiency & Workload
+    const agentStats = new Map<string, { count: number; totalHours: number }>();
+    // 2. Topic Insights
+    const topicStats = new Map<string, number>();
+    // 3. KPIs (Avg Time by Urgency)
+    const urgencyStats = {
+      high: { totalHours: 0, count: 0 },
+      medium: { totalHours: 0, count: 0 },
+      low: { totalHours: 0, count: 0 },
     };
-  });
 
-  // Sorted workload data (for bar chart)
-  const workloadData = [...efficiencyData].sort((a, b) => b.y - a.y); // Sort by volume descending
-  const workloadLabels = workloadData.map((d) => d.name);
-  const workloadValues = workloadData.map((d) => d.y);
-  const teamAvgWorkload = workloadValues.reduce((a, b) => a + b, 0) / 20;
+    let totalCompletedCount = 0;
 
-  // Topics Data
-  const topics = [
-    "Login Issues",
-    "Payment Error",
-    "Bug Report",
-    "Feature Request",
-    "Account Recovery",
-    "API Integration",
-    "Data Import",
-  ];
-  const topicTime = [120, 95, 80, 60, 45, 150, 30]; // Total hours
+    const parseDurationToHours = (timeStr: string) => {
+      if (!timeStr) return 0;
+      const parts = timeStr.split(":").map(Number);
+      let hours = 0;
+      if (parts.length >= 2) {
+        hours = (parts[0] || 0) + (parts[1] || 0) / 60;
+        if (parts.length === 3) hours += (parts[2] || 0) / 3600;
+      } else if (parts.length === 1) {
+        hours = parts[0] || 0;
+      }
+      return hours;
+    };
+
+    workloads.forEach((user) => {
+      // Assuming 'works' is the array of tasks on the user object
+      const userWorks = user.works || [];
+      const completed = userWorks.filter((w: any) => w.status === "completed");
+
+      completed.forEach((w: any) => {
+        totalCompletedCount++;
+        const hours = parseDurationToHours(w.startTime);
+
+        // Agent Stats (Using user_name from the User object)
+        const agentName = user.user_name || "Unknown Agent";
+        const currentAgent = agentStats.get(agentName) || {
+          count: 0,
+          totalHours: 0,
+        };
+        currentAgent.count += 1;
+        currentAgent.totalHours += hours;
+        agentStats.set(agentName, currentAgent);
+
+        // Topic Stats
+        const topic = w.options?.title || "Unspecified";
+        topicStats.set(topic, (topicStats.get(topic) || 0) + hours);
+
+        // Urgency Stats
+        const priority = (w.options?.priority || "low").toLowerCase();
+        if (priority === "high") {
+          urgencyStats.high.totalHours += hours;
+          urgencyStats.high.count++;
+        } else if (priority === "medium") {
+          urgencyStats.medium.totalHours += hours;
+          urgencyStats.medium.count++;
+        } else {
+          urgencyStats.low.totalHours += hours;
+          urgencyStats.low.count++;
+        }
+      });
+    });
+
+    // Transform for Charts
+
+    // Efficiency & Workload
+    const efficiency = Array.from(agentStats.entries()).map(([name, stat]) => ({
+      name,
+      x:
+        stat.count > 0
+          ? parseFloat((stat.totalHours / stat.count).toFixed(2))
+          : 0, // Avg Time (Hours)
+      y: stat.count, // Volume
+    }));
+
+    const sortedByVolume = [...efficiency].sort((a, b) => b.y - a.y);
+    const wLabels = sortedByVolume.map((d) => d.name);
+    const wValues = sortedByVolume.map((d) => d.y);
+    const avgWorkload =
+      wValues.length > 0
+        ? wValues.reduce((a, b) => a + b, 0) / wValues.length
+        : 0;
+
+    // Topics
+    const sortedTopics = Array.from(topicStats.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10); // Top 10 by hours
+    const tLabels = sortedTopics.map((d) => d[0]);
+    const tValues = sortedTopics.map((d) => parseFloat(d[1].toFixed(1)));
+
+    // KPI Stats
+    const getAvg = (s: { totalHours: number; count: number }) =>
+      s.count > 0 ? (s.totalHours / s.count).toFixed(1) : "0.0";
+
+    return {
+      efficiencyData: efficiency,
+      workloadLabels: wLabels,
+      workloadValues: wValues,
+      teamAvgWorkload: avgWorkload,
+      topics: tLabels,
+      topicTime: tValues,
+      kpiStats: {
+        high: getAvg(urgencyStats.high),
+        medium: getAvg(urgencyStats.medium),
+        low: getAvg(urgencyStats.low),
+        total: totalCompletedCount.toLocaleString(),
+      },
+    };
+  }, [workloads]);
 
   // --- Chart Configurations ---
 
@@ -116,14 +226,14 @@ const HeadChart: React.FC = () => {
     labels: workloadLabels,
     datasets: [
       {
-        label: "เคสที่สำเร็จ",
+        label: "งานที่ถูกอนุมัติ",
         data: workloadValues,
         backgroundColor: workloadValues.map((v) =>
           v > teamAvgWorkload * 1.2
             ? "#EF4444"
             : v < teamAvgWorkload * 0.8
-            ? "#FBBF24"
-            : "#3B82F6"
+              ? "#FBBF24"
+              : "#3B82F6",
         ),
         borderRadius: 4,
       },
@@ -192,7 +302,7 @@ const HeadChart: React.FC = () => {
               context.raw.name +
               ": " +
               context.raw.y +
-              " เคส, เฉลี่ย " +
+              " งาน, เฉลี่ย " +
               context.raw.x +
               " ชม."
             );
@@ -204,14 +314,14 @@ const HeadChart: React.FC = () => {
       x: {
         title: {
           display: true,
-          text: "เวลาเฉลี่ยต่อเคส (ชั่วโมง) -> ยิ่งขวา ยิ่งใช้เวลานาน",
+          text: "เวลาเฉลี่ยต่องาน (ชั่วโมง) -> ยิ่งขวา ยิ่งใช้เวลานาน",
         },
         beginAtZero: true,
       },
       y: {
         title: {
           display: true,
-          text: "จำนวนเคสที่สำเร็จ -> ยิ่งสูง ยิ่งปริมาณงานเยอะ",
+          text: "จำนวนงานที่สำเร็จ -> ยิ่งสูง ยิ่งปริมาณงานเยอะ",
         },
         beginAtZero: true,
       },
@@ -273,11 +383,11 @@ const HeadChart: React.FC = () => {
                 <div>
                   <h1 className="text-2xl font-bold text-gray-800 flex items-center">
                     <LineChartOutlined className="text-blue-600 mr-2" />
-                    Support Team Performance Dashboard
+                    Support Team Performance
                   </h1>
                   <p className="text-gray-500 text-sm mt-1">
                     รายงานสรุปประสิทธิภาพการดำเนินงาน (Completed Tasks) | ทีม
-                    Technical Support (20 ท่าน)
+                    {teamName}
                   </p>
                 </div>
               </div>
@@ -292,7 +402,7 @@ const HeadChart: React.FC = () => {
                         เวลาเฉลี่ย (ความเร่งด่วนสูง)
                       </p>
                       <h2 className="text-3xl font-bold text-gray-800 mt-1">
-                        1.5{" "}
+                        {kpiStats.high}{" "}
                         <span className="text-sm font-normal text-gray-500">
                           ชม./เคส
                         </span>
@@ -302,8 +412,8 @@ const HeadChart: React.FC = () => {
                       <FireOutlined style={{ fontSize: "1.25rem" }} />
                     </div>
                   </div>
-                  <p className="text-xs text-green-600 mt-3 flex items-center font-medium">
-                    <ArrowDownOutlined className="mr-1" /> เวลาลดลง 10% (ดีขึ้น)
+                  <p className="text-xs text-gray-400 mt-3 flex items-center font-medium">
+                    <MinusOutlined className="mr-1" /> ข้อมูลปัจจุบัน
                   </p>
                 </div>
 
@@ -315,7 +425,7 @@ const HeadChart: React.FC = () => {
                         เวลาเฉลี่ย (ความเร่งด่วนปานกลาง)
                       </p>
                       <h2 className="text-3xl font-bold text-gray-800 mt-1">
-                        4.2{" "}
+                        {kpiStats.medium}{" "}
                         <span className="text-sm font-normal text-gray-500">
                           ชม./เคส
                         </span>
@@ -327,9 +437,8 @@ const HeadChart: React.FC = () => {
                       />
                     </div>
                   </div>
-                  <p className="text-xs text-red-500 mt-3 flex items-center font-medium">
-                    <ArrowUpOutlined className="mr-1" /> เวลาเพิ่มขึ้น 5%
-                    (ช้าลง)
+                  <p className="text-xs text-gray-400 mt-3 flex items-center font-medium">
+                    <MinusOutlined className="mr-1" /> ข้อมูลปัจจุบัน
                   </p>
                 </div>
 
@@ -341,7 +450,7 @@ const HeadChart: React.FC = () => {
                         เวลาเฉลี่ย (ความเร่งด่วนต่ำ)
                       </p>
                       <h2 className="text-3xl font-bold text-gray-800 mt-1">
-                        12.8
+                        {kpiStats.low}{" "}
                         <span className="text-sm font-normal text-gray-500">
                           ชม./เคส
                         </span>
@@ -352,7 +461,7 @@ const HeadChart: React.FC = () => {
                     </div>
                   </div>
                   <p className="text-xs text-gray-400 mt-3 flex items-center">
-                    <MinusOutlined className="mr-1" /> ไม่เปลี่ยนแปลง
+                    <MinusOutlined className="mr-1" /> ข้อมูลปัจจุบัน
                   </p>
                 </div>
 
@@ -361,12 +470,12 @@ const HeadChart: React.FC = () => {
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="text-gray-500 text-sm font-medium">
-                        เคสที่สำเร็จทั้งหมด
+                        งานที่สำเร็จทั้งหมด
                       </p>
                       <h2 className="text-3xl font-bold text-gray-800 mt-1">
-                        1,240{" "}
+                        {kpiStats.total}{" "}
                         <span className="text-sm font-normal text-gray-500">
-                          เคส
+                          งาน
                         </span>
                       </h2>
                     </div>
@@ -374,8 +483,8 @@ const HeadChart: React.FC = () => {
                       <FileDoneOutlined style={{ fontSize: "1.25rem" }} />
                     </div>
                   </div>
-                  <p className="text-xs text-green-600 mt-3 flex items-center font-medium">
-                    <ArrowUpOutlined className="mr-1" /> +120 เคส (MoM)
+                  <p className="text-xs text-gray-400 mt-3 flex items-center font-medium">
+                    <MinusOutlined className="mr-1" /> ข้อมูลปัจจุบัน
                   </p>
                 </div>
               </div>
@@ -390,12 +499,11 @@ const HeadChart: React.FC = () => {
                       สมดุลภาระงานรายบุคคล (Workload Balance)
                     </h3>
                     <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded border">
-                      หน่วย: จำนวนเคสที่ปิดได้
+                      หน่วย: จำนวนงานที่ปิดได้
                     </span>
                   </div>
                   <p className="text-xs text-gray-500 mb-2">
                     เปรียบเทียบปริมาณงานรายบุคคล เทียบกับค่าเฉลี่ยของทีม
-                    (เส้นประ)
                   </p>
                   <div className="relative h-[300px] w-full">
                     <Bar

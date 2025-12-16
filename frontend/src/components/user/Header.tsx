@@ -8,8 +8,6 @@ import {
   Badge,
   Avatar,
   Modal,
-  Table,
-  Tag,
 } from "antd";
 import { LogoutOutlined, MailOutlined } from "@ant-design/icons";
 import { logout } from "../../pages/home/home";
@@ -28,12 +26,11 @@ interface User {
 
 interface Workload {
   id: number;
+  description: string;
   department: string;
-  assignee: string;
   status: "pending" | "not_completed" | "completed";
-  dateTimeStart: string;
-  dateTimeEnd: string;
-  dateTimeNow: string;
+  startTime: string; // Duration in HH:mm:ss format
+  dateTimeNow: string; // Date of the record
   options: any;
 }
 
@@ -114,38 +111,8 @@ const DeanHeader: React.FC = () => {
   };
 
   const notCompletedWorkloads = workloads.filter(
-    (workload) => workload.status === "not_completed"
+    (workload) => workload.status === "not_completed",
   );
-
-  const columns = [
-    {
-      title: "หัวข้อ",
-      dataIndex: "options",
-      key: "options",
-      render: (text: any) => (
-        <Text strong style={{ color: theme.primary }}>
-          {text.title}
-        </Text>
-      ),
-    },
-    {
-      title: "ระดับความเร่งด่วน",
-      dataIndex: "options",
-      key: "options",
-      render: (priority: any) => (
-        <Tag
-          color={getPriorityColor(priority.priority)}
-          style={{
-            padding: "4px 8px",
-            borderRadius: theme.borderRadius.sm,
-            fontSize: theme.fontSize.sm,
-          }}
-        >
-          {getPriorityText(priority.priority)}
-        </Tag>
-      ),
-    },
-  ];
 
   return (
     <Header
@@ -230,17 +197,59 @@ const DeanHeader: React.FC = () => {
           onOk={handleOk}
           onCancel={handleCancel}
           footer={null}
+          width={700}
         >
-          <Table
-            dataSource={notCompletedWorkloads}
-            columns={columns}
-            pagination={{
-              pageSize: 10,
-              // showSizeChanger: true,
-              showTotal: (total) => `ทั้งหมด ${total} รายการ`,
-            }}
-            scroll={{ x: "max-content" }}
-          />
+          <div className="overflow-x-auto mt-4">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr>
+                  <th className="border-b p-4 text-sm font-semibold text-gray-600">
+                    หัวข้อ
+                  </th>
+                  <th className="border-b p-4 text-sm font-semibold text-gray-600">
+                    ระดับความเร่งด่วน
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {notCompletedWorkloads.length > 0 ? (
+                  notCompletedWorkloads.map((workload) => (
+                    <tr
+                      key={workload.id}
+                      className="border-b hover:bg-gray-50 transition-colors"
+                    >
+                      <td className="p-4 text-sm text-gray-700">
+                        <Text strong style={{ color: theme.primary }}>
+                          {workload.options.title}
+                        </Text>
+                      </td>
+                      <td className="p-4">
+                        <span
+                          className="px-2 py-1 rounded text-white text-xs font-medium"
+                          style={{
+                            backgroundColor: getPriorityColor(
+                              workload.options.priority,
+                            ),
+                          }}
+                        >
+                          {getPriorityText(workload.options.priority)}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={2} className="p-4 text-center text-gray-500">
+                      ไม่พบข้อมูล
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            <div className="p-4 text-right text-sm text-gray-500">
+              ทั้งหมด {notCompletedWorkloads.length} รายการ
+            </div>
+          </div>
         </Modal>
 
         <Button
