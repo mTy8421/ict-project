@@ -13,7 +13,7 @@ export default defineConfig({
     },
     host: true,
     port: 5173,
-    allowedHosts: ["reprints-water-resort-attacks.trycloudflare.com"],
+    allowedHosts: ["loading-judy-replies-spend.trycloudflare.com"],
   },
   css: {
     postcss: "./postcss.config.cjs",
