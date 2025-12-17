@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Layout } from "antd";
 import {
   BarChart,
@@ -14,6 +14,7 @@ import DeanHeader from "../../components/dean/Header";
 import DeanNavbar from "../../components/dean/Navbar";
 import ReHeader from "../../components/dean/NavbarHeader";
 import theme from "../../theme";
+import axiosInstance from "../../utils/axios";
 
 const { Content } = Layout;
 
@@ -32,19 +33,19 @@ interface TopicData {
   impact: string;
 }
 
-interface Employee {
-  id: number;
-  name: string;
-  role: string;
-  totalHours: number;
-  criticalTask: number;
-  avgTime: string;
-  status: string;
-}
-
 interface IconProps {
   size?: number;
   className?: string;
+}
+
+interface Workload {
+  id: number;
+  description: string;
+  department: string;
+  status: "pending" | "not_completed" | "completed";
+  startTime: string; // Duration in HH:mm:ss format
+  dateTimeNow: string; // Date of the record
+  options: any;
 }
 
 // --- Icons (Inline SVGs) ---
@@ -157,76 +158,6 @@ const Filter: React.FC<IconProps> = ({ size = 24, className = "" }) => (
   </svg>
 );
 
-// --- Mock Data ---
-const supervisorData: SupervisorData[] = [
-  {
-    name: "ทีม A (คุณสมศักดิ์)",
-    critical: 120,
-    normal: 340,
-    totalHours: 460,
-    efficiency: 85,
-  },
-  {
-    name: "ทีม B (คุณวิชัย)",
-    critical: 280,
-    normal: 150,
-    totalHours: 430,
-    efficiency: 72,
-  },
-  {
-    name: "ทีม C (คุณมาลี)",
-    critical: 40,
-    normal: 200,
-    totalHours: 240,
-    efficiency: 95,
-  },
-  {
-    name: "ทีม D (คุณปราณี)",
-    critical: 90,
-    normal: 310,
-    totalHours: 400,
-    efficiency: 88,
-  },
-];
-
-const topicData: TopicData[] = [
-  { topic: "ปัญหาเข้าสู่ระบบ/Auth", hours: 450, impact: "High" },
-  { topic: "ขอดึงข้อมูลรายงาน", hours: 320, impact: "Medium" },
-  { topic: "ติดตั้งซอฟต์แวร์", hours: 150, impact: "Low" },
-  { topic: "อุปกรณ์ฮาร์ดแวร์เสีย", hours: 120, impact: "Low" },
-  { topic: "การเชื่อมต่อเครือข่าย", hours: 80, impact: "Medium" },
-];
-
-const teamB_Employees: Employee[] = [
-  {
-    id: 1,
-    name: "พนักงาน 001",
-    role: "Support L2",
-    totalHours: 160,
-    criticalTask: 120,
-    avgTime: "2.5 ชม.",
-    status: "งานล้นมือ (Overloaded)",
-  },
-  {
-    id: 2,
-    name: "พนักงาน 002",
-    role: "Support L1",
-    totalHours: 145,
-    criticalTask: 90,
-    avgTime: "1.2 ชม.",
-    status: "งานหนัก (High Load)",
-  },
-  {
-    id: 3,
-    name: "พนักงาน 003",
-    role: "Support L2",
-    totalHours: 125,
-    criticalTask: 70,
-    avgTime: "2.0 ชม.",
-    status: "ปกติ (Normal)",
-  },
-];
-
 // --- Colors ---
 const COLORS = {
   critical: "#EF4444",
@@ -288,6 +219,131 @@ export default function ChartDean() {
   );
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
 
+  const [workloads, setWorkloads] = useState<Workload[]>([]);
+
+  const fetchWorkloads = async () => {
+    try {
+      const response = await axiosInstance.get("/work");
+      setWorkloads(response.data);
+    } catch (error) {
+      console.error("Error fetching workloads:", error);
+    } finally {
+      // setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkloads();
+  }, []);
+
+  // --- Data Processing (useMemo) ---
+  const {
+    supervisorData,
+    topicData,
+    totalHoursFormatted,
+    criticalPct,
+    avgTimeFormatted,
+    bottleneck,
+    departmentTasks, // Map of department -> tasks
+  } = useMemo(() => {
+    const completed = workloads.filter((w) => w.status === "completed");
+
+    // Group by Department
+    const deptGroups = new Map<
+      string,
+      { critical: number; normal: number; total: number; tasks: Workload[] }
+    >();
+
+    // Group by Topic
+    const topicGroups = new Map<string, number>();
+
+    let totalMinutes = 0;
+    let criticalCount = 0;
+
+    completed.forEach((w) => {
+      // Parse duration HH:mm:ss
+      const [h, m] = (w.startTime || "0:0").split(":").map(Number);
+      const durationMins = (h || 0) * 60 + (m || 0);
+      const durationHours = durationMins / 60;
+
+      totalMinutes += durationMins;
+
+      const isCritical = w.options?.priority === "high";
+      if (isCritical) criticalCount++;
+
+      // Topic
+      const topic = w.options?.title || "ไม่ระบุหัวข้อ";
+      topicGroups.set(topic, (topicGroups.get(topic) || 0) + durationHours);
+
+      // Department
+      const dept = w.department || "ไม่ระบุแผนก";
+      if (!deptGroups.has(dept)) {
+        deptGroups.set(dept, { critical: 0, normal: 0, total: 0, tasks: [] });
+      }
+      const g = deptGroups.get(dept)!;
+      g.total += durationHours;
+      if (isCritical) g.critical += durationHours;
+      else g.normal += durationHours;
+      g.tasks.push(w);
+    });
+
+    // Format for Supervisor Chart
+    const supervisorData: SupervisorData[] = Array.from(
+      deptGroups.entries(),
+    ).map(([name, stats]) => ({
+      name,
+      critical: parseFloat(stats.critical.toFixed(2)),
+      normal: parseFloat(stats.normal.toFixed(2)),
+      totalHours: parseFloat(stats.total.toFixed(2)),
+      efficiency:
+        stats.total > 0 ? Math.round((stats.normal / stats.total) * 100) : 100,
+    }));
+
+    // Format for Topics
+    const topicData: TopicData[] = Array.from(topicGroups.entries())
+      .map(([topic, hours]) => ({
+        topic,
+        hours: parseFloat(hours.toFixed(1)),
+        impact: hours > 20 ? "High" : hours > 5 ? "Medium" : "Low",
+      }))
+      .sort((a, b) => b.hours - a.hours)
+      .slice(0, 5);
+
+    // KPIs
+    const totalHours = Math.floor(totalMinutes / 60);
+    const totalHoursFormatted = `${totalHours.toLocaleString()} ชม.`;
+
+    const avgMinutes = completed.length
+      ? Math.round(totalMinutes / completed.length)
+      : 0;
+    const avgTimeFormatted =
+      avgMinutes > 60
+        ? `${Math.floor(avgMinutes / 60)} ชม. ${avgMinutes % 60} น.`
+        : `${avgMinutes} นาที`;
+
+    const criticalPct = completed.length
+      ? Math.round((criticalCount / completed.length) * 100)
+      : 0;
+
+    const bottleneck = topicData.length > 0 ? topicData[0] : null;
+
+    // Create a simple map for drilldown lookup
+    const departmentTasks = new Map<string, Workload[]>();
+    deptGroups.forEach((val, key) => {
+      departmentTasks.set(key, val.tasks);
+    });
+
+    return {
+      supervisorData,
+      topicData,
+      totalHoursFormatted,
+      criticalPct,
+      avgTimeFormatted,
+      bottleneck,
+      departmentTasks,
+    };
+  }, [workloads]);
+
   const handleBarClick = (data: any) => {
     if (data && data.activePayload) {
       const teamName = data.activePayload[0].payload.name;
@@ -311,32 +367,38 @@ export default function ChartDean() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
           title="ชั่วโมงซัพพอร์ตโดยรวม"
-          value="1,530 ชม."
-          subtext="+12% จากเดือนที่แล้ว"
+          value={totalHoursFormatted}
+          subtext="รวมงานที่เสร็จสิ้นทั้งหมด"
           icon={Clock}
           colorClass="bg-blue-500 text-blue-600"
-          trend="negative"
+          trend="positive"
         />
         <KPICard
           title="% งานด่วน (Critical)"
-          value="35%"
-          subtext="เกินเกณฑ์มาตรฐาน (30%)"
+          value={`${criticalPct}%`}
+          subtext={criticalPct > 30 ? "สูงกว่าเกณฑ์มาตรฐาน" : "อยู่ในเกณฑ์ปกติ"}
           icon={AlertTriangle}
-          colorClass="bg-red-500 text-red-600"
-          trend="negative"
+          colorClass={
+            criticalPct > 30
+              ? "bg-red-500 text-red-600"
+              : "bg-green-500 text-green-600"
+          }
+          trend={criticalPct > 30 ? "negative" : "positive"}
         />
         <KPICard
           title="เวลาปิดงานเฉลี่ย"
-          value="45 นาที"
-          subtext="-5 นาที (ดีขึ้น)"
+          value={avgTimeFormatted}
+          subtext="เวลาเฉลี่ยต่อหนึ่งงาน"
           icon={Activity}
           colorClass="bg-indigo-500 text-indigo-600"
           trend="positive"
         />
         <KPICard
           title="ปัญหาคอขวดสูงสุด"
-          value="ระบบ Login"
-          subtext="เสียเวลา 450 ชม./เดือน"
+          value={bottleneck ? bottleneck.topic : "-"}
+          subtext={
+            bottleneck ? `เสียเวลา ${bottleneck.hours} ชม.` : "ไม่มีข้อมูล"
+          }
           icon={Filter}
           colorClass="bg-orange-500 text-orange-600"
           trend="negative"
@@ -348,8 +410,8 @@ export default function ChartDean() {
         <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-100">
           <div className="flex justify-between items-center mb-4">
             <SectionHeader
-              title="การกระจายภาระงานตามหัวหน้าทีม"
-              subtitle="เปรียบเทียบงานด่วน vs งานทั่วไป (คลิกที่กราฟเพื่อดูรายชื่อพนักงาน)"
+              title="การกระจายภาระงานตามแผนก"
+              subtitle="เปรียบเทียบงานด่วน vs งานทั่วไป (คลิกที่กราฟเพื่อดูรายละเอียด)"
             />
             <div className="flex gap-2 text-xs">
               <span className="flex items-center gap-1">
@@ -419,7 +481,7 @@ export default function ChartDean() {
             </ResponsiveContainer>
           </div>
           <div className="mt-2 text-xs text-slate-400 text-center italic">
-            * คลิกที่แท่งกราฟเพื่อดูรายละเอียดพนักงานในทีมนั้น
+            * คลิกที่แท่งกราฟเพื่อดูรายการงานในแผนกนั้น
           </div>
         </div>
 
@@ -441,128 +503,142 @@ export default function ChartDean() {
                 <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
                   <div
                     className={`h-2.5 rounded-full ${index === 0 ? "bg-red-500" : "bg-slate-400"}`}
-                    style={{ width: `${(item.hours / 500) * 100}%` }}
+                    style={{
+                      width: `${(item.hours / (topicData[0]?.hours || 1)) * 100}%`,
+                    }}
                   ></div>
                 </div>
                 {index === 0 && (
                   <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-                    <AlertTriangle size={10} /> ควรเร่งแก้ไขที่ระบบ (System Fix)
+                    <AlertTriangle size={10} /> ควรตรวจสอบและแก้ไข (High Impact)
                   </p>
                 )}
               </div>
             ))}
+            {topicData.length === 0 && (
+              <div className="text-center text-slate-400 text-sm py-8">
+                ไม่มีข้อมูลงานที่เสร็จสิ้น
+              </div>
+            )}
           </div>
-          <div className="mt-8 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
-            <h4 className="text-indigo-900 font-semibold text-sm mb-2">
-              ข้อเสนอแนะ (Recommendation)
-            </h4>
-            <p className="text-xs text-indigo-700 leading-relaxed">
-              <strong>"ปัญหาเข้าสู่ระบบ/Auth"</strong> กินเวลาถึง 30% ของทั้งหมด
-              การแก้ไขระบบ SSO อาจช่วยประหยัดเวลาได้ประมาณ 450 ชม./เดือน
-              (เทียบเท่ากำลังคน 2.8 คน)
-            </p>
-          </div>
+          {topicData.length > 0 && (
+            <div className="mt-8 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+              <h4 className="text-indigo-900 font-semibold text-sm mb-2">
+                ข้อเสนอแนะ (Recommendation)
+              </h4>
+              <p className="text-xs text-indigo-700 leading-relaxed">
+                <strong>"{topicData[0]?.topic}"</strong> กินเวลามากที่สุด
+                การปรับปรุงกระบวนการหรือแก้ไขที่ต้นเหตุอาจช่วยลดภาระงานลงได้
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 
-  const renderDrillDown = () => (
-    <div className="animate-slide-in">
-      <style>{`
+  const renderDrillDown = () => {
+    const tasks = selectedTeam ? departmentTasks.get(selectedTeam) || [] : [];
+
+    return (
+      <div className="animate-slide-in">
+        <style>{`
         @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         .animate-slide-in { animation: slideIn 0.3s ease-out; }
       `}</style>
-      <button
-        onClick={handleBack}
-        className="flex items-center text-slate-500 hover:text-slate-800 mb-6 transition-colors font-medium"
-      >
-        <ArrowLeft size={20} className="mr-2" /> กลับไปหน้าภาพรวม
-      </button>
-      <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-          <div>
-            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <Users size={24} className="text-blue-500" />
-              {selectedTeam} : รายละเอียดประสิทธิภาพทีม
-            </h2>
-            <p className="text-slate-500 text-sm mt-1">
-              มุมมองเจาะลึกแสดงภาระงานรายบุคคล
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <div className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-600">
-              หัวหน้าทีม: <strong>คุณวิชัย</strong>
+        <button
+          onClick={handleBack}
+          className="flex items-center text-slate-500 hover:text-slate-800 mb-6 transition-colors font-medium cursor-pointer bg-transparent border-none"
+        >
+          <ArrowLeft size={20} className="mr-2" /> กลับไปหน้าภาพรวม
+        </button>
+        <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+          <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+            <div>
+              <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <Users size={24} className="text-blue-500" />
+                {selectedTeam} : รายละเอียดภาระงาน
+              </h2>
+              <p className="text-slate-500 text-sm mt-1">
+                รายการงานทั้งหมดในแผนก
+              </p>
             </div>
-            <div className="px-4 py-2 bg-red-50 border border-red-100 rounded-lg text-sm text-red-600 font-medium">
-              ระดับความเสี่ยง: สูง (High)
+            <div className="flex gap-3">
+              <div className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-600">
+                จำนวนงาน: <strong>{tasks.length}</strong>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50 text-slate-500 text-sm uppercase tracking-wider">
-                <th className="p-4 font-semibold border-b border-slate-100">
-                  ชื่อพนักงาน
-                </th>
-                <th className="p-4 font-semibold border-b border-slate-100">
-                  ตำแหน่ง
-                </th>
-                <th className="p-4 font-semibold border-b border-slate-100 text-right">
-                  ชั่วโมงรวม
-                </th>
-                <th className="p-4 font-semibold border-b border-slate-100 text-right">
-                  งานด่วน (ชม.)
-                </th>
-                <th className="p-4 font-semibold border-b border-slate-100 text-center">
-                  สถานะภาระงาน
-                </th>
-                <th className="p-4 font-semibold border-b border-slate-100 text-center">
-                  ดำเนินการ
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {teamB_Employees.map((emp) => (
-                <tr
-                  key={emp.id}
-                  className="hover:bg-slate-50/80 transition-colors"
-                >
-                  <td className="p-4 font-medium text-slate-800">{emp.name}</td>
-                  <td className="p-4 text-slate-600">{emp.role}</td>
-                  <td className="p-4 text-slate-800 text-right font-bold">
-                    {emp.totalHours}
-                  </td>
-                  <td className="p-4 text-red-600 text-right font-medium">
-                    {emp.criticalTask}
-                  </td>
-                  <td className="p-4 text-center">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${emp.status.includes("Overloaded") ? "bg-red-100 text-red-800" : emp.status.includes("High Load") ? "bg-orange-100 text-orange-800" : "bg-green-100 text-green-800"}`}
-                    >
-                      {emp.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-center">
-                    <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                      ดูงานคงค้าง
-                    </button>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 text-slate-500 text-sm uppercase tracking-wider">
+                  <th className="p-4 font-semibold border-b border-slate-100">
+                    หัวข้อ (Topic)
+                  </th>
+                  <th className="p-4 font-semibold border-b border-slate-100">
+                    รายละเอียด
+                  </th>
+                  <th className="p-4 font-semibold border-b border-slate-100 text-right">
+                    วันที่
+                  </th>
+                  <th className="p-4 font-semibold border-b border-slate-100 text-right">
+                    ระยะเวลา
+                  </th>
+                  <th className="p-4 font-semibold border-b border-slate-100 text-center">
+                    ความเร่งด่วน
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="p-4 bg-yellow-50 text-yellow-800 text-sm flex items-center gap-2 m-4 rounded-lg border border-yellow-100">
-          <AlertTriangle size={16} />
-          <strong>Insight:</strong> พนักงาน 001 รับภาระงานด่วนถึง 40% ของทีม
-          แนะนำให้กระจายงานทั่วไป (Non-critical) ไปให้ พนักงาน 003 แทน
-          เพื่อลดความเสี่ยง
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {tasks.map((task) => (
+                  <tr
+                    key={task.id}
+                    className="hover:bg-slate-50/80 transition-colors"
+                  >
+                    <td className="p-4 font-medium text-slate-800">
+                      {task.options?.title || "-"}
+                    </td>
+                    <td className="p-4 text-slate-600 truncate max-w-xs">
+                      {task.description}
+                    </td>
+                    <td className="p-4 text-slate-800 text-right">
+                      {task.dateTimeNow
+                        ? new Date(task.dateTimeNow).toLocaleDateString()
+                        : "-"}
+                    </td>
+                    <td className="p-4 text-slate-800 text-right font-bold">
+                      {task.startTime}
+                    </td>
+                    <td className="p-4 text-center">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          task.options?.priority === "high"
+                            ? "bg-red-100 text-red-800"
+                            : task.options?.priority === "medium"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-green-100 text-green-800"
+                        }`}
+                      >
+                        {task.options?.priority || "Normal"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+                {tasks.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="p-8 text-center text-slate-400">
+                      ไม่พบข้อมูลงานในแผนกนี้
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <Layout style={{ minHeight: "100vh", background: theme.background }}>

@@ -13,7 +13,9 @@ export default defineConfig({
     },
     host: true,
     port: 5173,
-    allowedHosts: ["loading-judy-replies-spend.trycloudflare.com"],
+    allowedHosts: [
+      "connectivity-sublime-advertisements-martial.trycloudflare.com",
+    ],
   },
   css: {
     postcss: "./postcss.config.cjs",
