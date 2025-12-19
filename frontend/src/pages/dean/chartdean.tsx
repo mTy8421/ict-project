@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Layout } from "antd";
+import moment from "moment";
 import {
   BarChart,
   Bar,
@@ -39,13 +40,10 @@ interface IconProps {
 }
 
 interface Workload {
-  id: number;
-  description: string;
-  department: string;
-  status: "pending" | "not_completed" | "completed";
-  startTime: string; // Duration in HH:mm:ss format
-  dateTimeNow: string; // Date of the record
-  options: any;
+  user_id: number;
+  user_name: string;
+  user_role: string;
+  works: any;
 }
 
 // --- Icons (Inline SVGs) ---
@@ -158,6 +156,24 @@ const Filter: React.FC<IconProps> = ({ size = 24, className = "" }) => (
   </svg>
 );
 
+const SearchIcon: React.FC<IconProps> = ({ size = 24, className = "" }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <circle cx="11" cy="11" r="8" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+  </svg>
+);
+
 // --- Colors ---
 const COLORS = {
   critical: "#EF4444",
@@ -218,12 +234,16 @@ export default function ChartDean() {
     "overview",
   );
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
+  const [dateFilter, setDateFilter] = useState<
+    "thisMonth" | "lastMonth" | "thisYear"
+  >("thisMonth");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [workloads, setWorkloads] = useState<Workload[]>([]);
 
   const fetchWorkloads = async () => {
     try {
-      const response = await axiosInstance.get("/work");
+      const response = await axiosInstance.get("/user/dean");
       setWorkloads(response.data);
     } catch (error) {
       console.error("Error fetching workloads:", error);
@@ -246,12 +266,40 @@ export default function ChartDean() {
     bottleneck,
     departmentTasks, // Map of department -> tasks
   } = useMemo(() => {
-    const completed = workloads.filter((w) => w.status === "completed");
+    // Flatten works from all users and attach user_name
+    const allWorks = workloads.flatMap((user) =>
+      (user.works || []).map((work: any) => ({
+        ...work,
+        user_name: user.user_name,
+      })),
+    );
+
+    // Filter by Date
+    const filteredByDate = allWorks.filter((w: any) => {
+      if (!w.dateTimeNow) return false;
+      const date = moment(w.dateTimeNow);
+      const now = moment();
+
+      if (dateFilter === "thisMonth") {
+        return date.isSame(now, "month");
+      }
+      if (dateFilter === "lastMonth") {
+        return date.isSame(now.clone().subtract(1, "months"), "month");
+      }
+      if (dateFilter === "thisYear") {
+        return date.isSame(now, "year");
+      }
+      return true;
+    });
+
+    const completed = filteredByDate.filter(
+      (w: any) => w.status === "completed",
+    );
 
     // Group by Department
     const deptGroups = new Map<
       string,
-      { critical: number; normal: number; total: number; tasks: Workload[] }
+      { critical: number; normal: number; total: number; tasks: any[] }
     >();
 
     // Group by Topic
@@ -260,10 +308,15 @@ export default function ChartDean() {
     let totalMinutes = 0;
     let criticalCount = 0;
 
-    completed.forEach((w) => {
-      // Parse duration HH:mm:ss
-      const [h, m] = (w.startTime || "0:0").split(":").map(Number);
-      const durationMins = (h || 0) * 60 + (m || 0);
+    const parseDurationToMinutes = (timeStr: string) => {
+      if (!timeStr) return 0;
+      const [hrs, mins] = timeStr.split(":").map(Number);
+      return (hrs || 0) * 60 + (mins || 0);
+    };
+
+    completed.forEach((w: any) => {
+      // Parse duration
+      const durationMins = parseDurationToMinutes(w.startTime);
       const durationHours = durationMins / 60;
 
       totalMinutes += durationMins;
@@ -328,7 +381,7 @@ export default function ChartDean() {
     const bottleneck = topicData.length > 0 ? topicData[0] : null;
 
     // Create a simple map for drilldown lookup
-    const departmentTasks = new Map<string, Workload[]>();
+    const departmentTasks = new Map<string, any[]>();
     deptGroups.forEach((val, key) => {
       departmentTasks.set(key, val.tasks);
     });
@@ -342,7 +395,7 @@ export default function ChartDean() {
       bottleneck,
       departmentTasks,
     };
-  }, [workloads]);
+  }, [workloads, dateFilter]);
 
   const handleBarClick = (data: any) => {
     if (data && data.activePayload) {
@@ -355,6 +408,7 @@ export default function ChartDean() {
   const handleBack = () => {
     setViewState("overview");
     setSelectedTeam(null);
+    setSearchTerm("");
   };
 
   const renderOverview = () => (
@@ -540,6 +594,11 @@ export default function ChartDean() {
   const renderDrillDown = () => {
     const tasks = selectedTeam ? departmentTasks.get(selectedTeam) || [] : [];
 
+    // Filter tasks based on search term
+    const filteredTasks = tasks.filter((task) =>
+      task.user_name?.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+
     return (
       <div className="animate-slide-in">
         <style>{`
@@ -553,7 +612,7 @@ export default function ChartDean() {
           <ArrowLeft size={20} className="mr-2" /> กลับไปหน้าภาพรวม
         </button>
         <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-          <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+          <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-50/50">
             <div>
               <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
                 <Users size={24} className="text-blue-500" />
@@ -563,16 +622,32 @@ export default function ChartDean() {
                 รายการงานทั้งหมดในแผนก
               </p>
             </div>
-            <div className="flex gap-3">
-              <div className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-600">
-                จำนวนงาน: <strong>{tasks.length}</strong>
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              <div className="relative w-full sm:w-auto">
+                <input
+                  type="text"
+                  placeholder="ค้นหาชื่อพนักงาน..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-full sm:w-64 transition-colors"
+                />
+                <SearchIcon
+                  size={16}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                />
+              </div>
+              <div className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-600 whitespace-nowrap">
+                จำนวนงาน: <strong>{filteredTasks.length}</strong>
               </div>
             </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse table-fixed">
               <thead>
                 <tr className="bg-slate-50 text-slate-500 text-sm uppercase tracking-wider">
+                  <th className="p-4 font-semibold border-b border-slate-100">
+                    ชื่อพนักงาน
+                  </th>
                   <th className="p-4 font-semibold border-b border-slate-100">
                     หัวข้อ (Topic)
                   </th>
@@ -583,7 +658,7 @@ export default function ChartDean() {
                     วันที่
                   </th>
                   <th className="p-4 font-semibold border-b border-slate-100 text-right">
-                    ระยะเวลา
+                    เวลาที่ใช้ (ชม : นาที)
                   </th>
                   <th className="p-4 font-semibold border-b border-slate-100 text-center">
                     ความเร่งด่วน
@@ -591,44 +666,59 @@ export default function ChartDean() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {tasks.map((task) => (
-                  <tr
-                    key={task.id}
-                    className="hover:bg-slate-50/80 transition-colors"
-                  >
-                    <td className="p-4 font-medium text-slate-800">
-                      {task.options?.title || "-"}
-                    </td>
-                    <td className="p-4 text-slate-600 truncate max-w-xs">
-                      {task.description}
-                    </td>
-                    <td className="p-4 text-slate-800 text-right">
-                      {task.dateTimeNow
-                        ? new Date(task.dateTimeNow).toLocaleDateString()
-                        : "-"}
-                    </td>
-                    <td className="p-4 text-slate-800 text-right font-bold">
-                      {task.startTime}
-                    </td>
-                    <td className="p-4 text-center">
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          task.options?.priority === "high"
-                            ? "bg-red-100 text-red-800"
-                            : task.options?.priority === "medium"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-green-100 text-green-800"
-                        }`}
-                      >
-                        {task.options?.priority || "Normal"}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-                {tasks.length === 0 && (
+                {filteredTasks.map((task) => {
+                  let hrs = 0;
+                  let mins = 0;
+                  if (task.startTime) {
+                    const parts = task.startTime.split(":").map(Number);
+                    hrs = parts[0] || 0;
+                    mins = parts[1] || 0;
+                  }
+
+                  return (
+                    <tr
+                      key={task.id}
+                      className="hover:bg-slate-50/80 transition-colors"
+                    >
+                      <td className="p-4 text-slate-800 font-medium">
+                        {task.user_name || "-"}
+                      </td>
+                      <td className="p-4 font-medium text-slate-800">
+                        {task.options?.title || "-"}
+                      </td>
+                      <td className="p-4 text-slate-600 truncate max-w-xs">
+                        {task.description}
+                      </td>
+                      <td className="p-4 text-slate-800 text-right">
+                        {task.dateTimeNow
+                          ? moment(task.dateTimeNow).format("DD/MM/YYYY")
+                          : "-"}
+                      </td>
+                      <td className="p-4 text-slate-800 text-right font-bold font-mono">
+                        {hrs} ชม. {mins.toString().padStart(2, "0")} น.
+                      </td>
+                      <td className="p-4 text-center">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            task.options?.priority === "high"
+                              ? "bg-red-100 text-red-800"
+                              : task.options?.priority === "medium"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-green-100 text-green-800"
+                          }`}
+                        >
+                          {task.options?.priority || "Normal"}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {filteredTasks.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-slate-400">
-                      ไม่พบข้อมูลงานในแผนกนี้
+                    <td colSpan={6} className="p-8 text-center text-slate-400">
+                      {searchTerm
+                        ? "ไม่พบข้อมูลที่ค้นหา"
+                        : "ไม่พบข้อมูลงานในแผนกนี้"}
                     </td>
                   </tr>
                 )}
@@ -669,14 +759,48 @@ export default function ChartDean() {
             {/* Embedded Dashboard Content */}
             <div className="bg-transparent font-sans text-slate-900 w-full">
               <div className="w-full">
-                <header className="mb-8">
-                  <h1 className="text-2xl font-bold text-slate-900">
-                    ศูนย์ปฏิบัติการฝ่ายสนับสนุน (Support Ops Center)
-                  </h1>
-                  <p className="text-slate-500">
-                    แดชบอร์ดผู้บริหารและการวางแผนทรัพยากรบุคคล
-                  </p>
-                </header>
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                  <header>
+                    <h1 className="text-2xl font-bold text-slate-900">
+                      ศูนย์ปฏิบัติการฝ่ายสนับสนุน (Support Ops Center)
+                    </h1>
+                    <p className="text-slate-500">
+                      แดชบอร์ดผู้บริหารและการวางแผนทรัพยากรบุคคล
+                    </p>
+                  </header>
+                  <div className="flex bg-white rounded-lg shadow-sm p-1 border border-slate-200">
+                    <button
+                      onClick={() => setDateFilter("thisMonth")}
+                      className={`px-4 py-1.5 text-sm font-medium rounded-md border-none cursor-pointer transition-colors ${
+                        dateFilter === "thisMonth"
+                          ? "bg-blue-50 text-blue-700"
+                          : "text-slate-500 hover:text-slate-700 bg-transparent"
+                      }`}
+                    >
+                      เดือนนี้
+                    </button>
+                    <button
+                      onClick={() => setDateFilter("lastMonth")}
+                      className={`px-4 py-1.5 text-sm font-medium rounded-md border-none cursor-pointer transition-colors ${
+                        dateFilter === "lastMonth"
+                          ? "bg-blue-50 text-blue-700"
+                          : "text-slate-500 hover:text-slate-700 bg-transparent"
+                      }`}
+                    >
+                      เดือนที่แล้ว
+                    </button>
+                    <button
+                      onClick={() => setDateFilter("thisYear")}
+                      className={`px-4 py-1.5 text-sm font-medium rounded-md border-none cursor-pointer transition-colors ${
+                        dateFilter === "thisYear"
+                          ? "bg-blue-50 text-blue-700"
+                          : "text-slate-500 hover:text-slate-700 bg-transparent"
+                      }`}
+                    >
+                      ปีนี้
+                    </button>
+                  </div>
+                </div>
                 {viewState === "overview"
                   ? renderOverview()
                   : renderDrillDown()}

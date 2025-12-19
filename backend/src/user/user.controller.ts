@@ -18,7 +18,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 @Controller('user')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -53,6 +53,11 @@ export class UserController {
   @Get('userAll')
   findAllUserAll() {
     return this.userService.findAllUserAll();
+  }
+
+  @Get('dean')
+  findAllDean() {
+    return this.userService.findAllDean();
   }
 
   @Get()

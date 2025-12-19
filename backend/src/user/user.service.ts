@@ -90,6 +90,22 @@ export class UserService {
     return users;
   }
 
+  async findAllDean(): Promise<User[]> {
+    const users = this.userRepository
+      .createQueryBuilder('user')
+      .select(['user.user_name', 'user.user_role', 'user.user_id'])
+      .leftJoinAndSelect('user.works', 'work')
+      .leftJoinAndSelect('work.options', 'option')
+      .where(
+        'user.user_role != :user_role AND user.user_role NOT LIKE "%คณบดี%"',
+        {
+          user_role: 'admin',
+        },
+      )
+      .getMany();
+    return users;
+  }
+
   async findAllHead(): Promise<User[]> {
     const users = this.userRepository
       .createQueryBuilder('user')
